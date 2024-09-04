@@ -84,21 +84,35 @@ else
     set clipboard+=unnamedplus 
 endif
 
-colorscheme codedark
-
 " PLUGINS ---------------------------------------------------------------- {{{
 
 call plug#begin()
-
+" Plug 'morhetz/gruvbox'
+Plug 'ayu-theme/ayu-vim'
+Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdtree' 
+Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
-
 call plug#end()
 
 " }}}
 
+" ColorScheme Ayu {{{
+colorscheme ayu
+set termguicolors     " enable true colors support
+" let ayucolor="light"  " for light version of theme
+" let ayucolor="mirage" " for mirage version of theme
+let ayucolor="dark"   " for dark version of theme
+" }}}
+
+" IndentLine {{{
+" let g:indentLine_char = ''
+" let g:indentLine_first_char = ''
+let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_setColors = 0
+" }}}
 
 " MAPPINGS --------------------------------------------------------------- {{{
 
@@ -113,10 +127,12 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 " }}}
 
-
 " VIMSCRIPT -------------------------------------------------------------- {{{
 
 " This will enable code folding.
+" autocmd vimenter * ++nested colorscheme gruvbox
+" set bg=dark
+
 " Use the marker method of folding.
 augroup filetype_vim
     autocmd!
@@ -139,22 +155,22 @@ autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' 
     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 " }}}
 
-
 " STATUS LINE ------------------------------------------------------------ {{{
 
-" Clear status line when vimrc is reloaded.
-set statusline=
+" " Clear status line when vimrc is reloaded.
+" set statusline=
 
-" Status line left side.
-set statusline+=\ %F\ %M\ %Y\ %R
+" " Status line left side.
+" set statusline+=\ %F\ %M\ %Y\ %R
 
-" Use a divider to separate the left side from the right side.
-set statusline+=%=
+" " Use a divider to separate the left side from the right side.
+" set statusline+=%=
 
-" Status line right side.
-set statusline+=\ ascii:\ %b\ hex:\ 0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%
+" " Status line right side.
+" set statusline+=\ ascii:\ %b\ hex:\ 0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%
 
-" Show the status on the second to last line.
-set laststatus=2
+" " Show the status on the second to last line.
+" set laststatus=2
 
 " }}}
+
