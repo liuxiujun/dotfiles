@@ -108,8 +108,8 @@ let ayucolor="dark"   " for dark version of theme
 " }}}
 
 " IndentLine {{{
-" let g:indentLine_char = ''
-" let g:indentLine_first_char = ''
+let g:indentLine_char =  '┊'   
+let g:indentLine_first_char = '┊'   
 let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_setColors = 0
 " }}}
@@ -117,6 +117,7 @@ let g:indentLine_setColors = 0
 " MAPPINGS --------------------------------------------------------------- {{{
 
 " Mappings code goes here.
+let mapleader = ","
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
@@ -125,6 +126,16 @@ nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
+" switch between tabs
+nnoremap <C-Right> :tabn<CR>
+nnoremap <C-Left> :tabp<CR>
+" vim-powered terminal in split window
+map <Leader>t :term ++close<cr>
+tmap <Leader>t <c-w>:term ++close<cr>
+
+" vim-powered terminal in new tab
+map <Leader>T :tab term ++close<cr>
+tmap <Leader>T <c-w>:tab term ++close<cr>
 " }}}
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
