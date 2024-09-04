@@ -1,4 +1,6 @@
 # vimfiles
 ``` bash
-ln -s .vim/vimrc_linker.vim .vimrc
+# Linux
+git clone git@github.com:liuxiujun/vimfiles.git ~/.vim
+ln -s ~/.vim/vimrc ~/.vimrc
 ```

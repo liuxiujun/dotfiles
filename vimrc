@@ -75,11 +75,15 @@ set wildmode=list:longest
 " Wildmenu will ignore files with these extensions.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
-" Using the clipboard as the default register for MS Windows Only
-set clipboard=unnamed
+:if has("windows")
+    " Using the clipboard as the default register for MS Windows Only
+    set clipboard=unnamed
+    set t_Co=256
+    set t_ut=
+:elseif
+    set clipboard+=unnamedplus 
+:endif
 
-set t_Co=256
-set t_ut=
 colorscheme codedark
 
 " PLUGINS ---------------------------------------------------------------- {{{
