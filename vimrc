@@ -1,3 +1,9 @@
+" Though the default behaviour may be surprising, 
+" the backspace 'not working' can be considered a feature;
+" it can prevent you from accidentally removing indentation, 
+" and from removing too much text by restricting it to the current line and/or the start of the insert.
+set backspace=indent,eol,start
+
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
 
