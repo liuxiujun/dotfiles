@@ -91,7 +91,9 @@ if has("win32")
     set t_Co=256
     set t_ut=
 else
-    set clipboard+=unnamedplus 
+    if has("unix")
+        set clipboard+=unnamedplus 
+     endif
 endif
 
 " PLUGINS ---------------------------------------------------------------- {{{
@@ -105,7 +107,31 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
+Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 call plug#end()
+
+" IndentLine {{{
+let g:indentLine_char =  '┊'   
+let g:indentLine_first_char = '┊'   
+let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_setColors = 0
+" }}}
+
+" instant_markdown {{{
+"Uncomment to override defaults:
+"let g:instant_markdown_slow = 1
+"let g:instant_markdown_autostart = 0
+"let g:instant_markdown_open_to_the_world = 1
+"let g:instant_markdown_allow_unsafe_content = 1
+"let g:instant_markdown_allow_external_content = 0
+let g:instant_markdown_mathjax = 1
+"let g:instant_markdown_mermaid = 1
+"let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
+"let g:instant_markdown_autoscroll = 0
+"let g:instant_markdown_port = 8888
+"let g:instant_markdown_python = 1
+let g:instant_markdown_theme = 'dark'
+" }}}
 
 " }}}
 
@@ -115,13 +141,6 @@ set termguicolors     " enable true colors support
 " let ayucolor="light"  " for light version of theme
 " let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
-" }}}
-
-" IndentLine {{{
-let g:indentLine_char =  '┊'   
-let g:indentLine_first_char = '┊'   
-let g:indentLine_showFirstIndentLevel = 1
-let g:indentLine_setColors = 0
 " }}}
 
 " MAPPINGS --------------------------------------------------------------- {{{
