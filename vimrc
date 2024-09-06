@@ -182,10 +182,10 @@ autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' 
 " If your intention is just to avoid working outside of Vim 
 " The first line maps escape to the caps lock key when you enter Vim, and the second line returns normal functionality to caps lock when you quit. 
 " This requires Linux with the xorg-xmodmap package installed.
-if has('Unix')
-    au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-    au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
-endif
+" if has('Unix')
+"     au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+"     au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
+" endif
 
 " }}}
 
