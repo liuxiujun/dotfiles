@@ -4,6 +4,10 @@
 " and from removing too much text by restricting it to the current line and/or the start of the insert.
 set backspace=indent,eol,start
 
+" Set bell style
+set belloff=all
+set vb t_vb=
+
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
 
@@ -132,6 +136,8 @@ nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
+nnoremap <leader>s :write<CR>
+
 " switch between tabs
 nnoremap <C-Right> :tabn<CR>
 nnoremap <C-Left> :tabp<CR>
@@ -142,6 +148,8 @@ tmap <Leader>t <c-w>:term ++close<cr>
 " vim-powered terminal in new tab
 map <Leader>T :tab term ++close<cr>
 tmap <Leader>T <c-w>:tab term ++close<cr>
+
+
 " }}}
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
@@ -170,6 +178,15 @@ autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silen
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
 autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+" If your intention is just to avoid working outside of Vim 
+" The first line maps escape to the caps lock key when you enter Vim, and the second line returns normal functionality to caps lock when you quit. 
+" This requires Linux with the xorg-xmodmap package installed.
+if has('Unix')
+    au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+    au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
+endif
+
 " }}}
 
 " STATUS LINE ------------------------------------------------------------ {{{
