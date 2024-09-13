@@ -100,6 +100,7 @@ endif
 
 call plug#begin()
 " Plug 'morhetz/gruvbox'
+Plug 'easymotion/vim-easymotion'
 Plug 'ayu-theme/ayu-vim'
 Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdtree' 
@@ -107,6 +108,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
+Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 call plug#end()
 
@@ -131,6 +133,10 @@ let g:instant_markdown_mathjax = 1
 "let g:instant_markdown_port = 8888
 "let g:instant_markdown_python = 1
 let g:instant_markdown_theme = 'dark'
+" }}}
+
+" NERDTree {{{
+let NERDTreeShowHidden = 1
 " }}}
 
 " }}}
