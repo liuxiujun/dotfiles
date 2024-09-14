@@ -121,6 +121,13 @@ call plug#end()
 "" basic key mappings
 nnoremap <leader>s :write<CR>
 
+" source vimrc
+nnoremap <leader>9 :source vimrc<CR>
+
+" close buffer
+nnoremap <leader>q :bd<CR>
+nnoremap <leader>Q :%bd<CR>
+
 " switch between windows
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
@@ -128,8 +135,8 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " switch between tabs
-nnoremap <C-Right> :tabn<CR>
-nnoremap <C-Left> :tabp<CR>
+nnoremap <A-n> :tabn<CR>
+nnoremap <A-p> :tabp<CR>
 
 " vim-powered terminal in split window
 map <Leader>t :term ++close<cr>
@@ -279,11 +286,7 @@ autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' 
     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 " NREDTree Key Mappings
-map <leader>tt :NERDTreeToggle<CR>
-map <leader>tc :NERDTreeClose<CR>
-map <leader>to :NERDTreeFocus<CR>
-map <leader>tf :NERDTreeFind<CR>
-map <leader>tr :NERDTreeRefreshRoot<CR>
+map <leader>t :NERDTreeToggle<CR>
 " }}}
 
 " ColorScheme Ayu {{{

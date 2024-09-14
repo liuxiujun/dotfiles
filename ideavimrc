@@ -23,7 +23,7 @@ set incsearch                   " start searching as you type, rather than waiti
 
 " plugins {{{
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
-set surround " Lets you surround with motion : ysiw" would sourround a word with "
+set surround " Lets you surround with motion : ysiw" would surround a word with "
 set easymotion
 set highlightedyank
 set textobj-entire
@@ -110,8 +110,8 @@ nmap <leader>wc <Action>(Unsplit)
 nmap <leader>wm <Action>(MoveEditorToOppositeTabGroup)
 
 " switch between tabs gt/gT
-nnoremap <C-Right> :tabn<CR>
-nnoremap <C-Left> :tabp<CR>
+nnoremap <A-n> :tabn<CR>
+nnoremap <A-p> :tabp<CR>
 
 " pane navigation
 nnoremap <C-j> <C-W>j
