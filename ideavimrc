@@ -5,85 +5,206 @@
 
 let mapleader = ","
 
-"" basic stuff
-set clipboard+=unnamed
-" set relativenumber
-set scrolloff=5
-set incsearch
-set idearefactormode=visual
+" basic stuff {{{
+set clipboard+=unnamed          " ensures that IdeaVim shares its clipboard with the system clipboard.
+set number
+set scrolloff=10                " defines the number of lines to leave on the screen before scrolling.
+                                " That is, if the value is set to 10, when moving the cursor down the page,
+                                " once only 10 lines remain, the page will start to scroll.
+set idearefactormode=keep
 set showmode
 set showcmd
-set ignorecase smartcase
-set visualbell
+set visualbell                  " causes the annoying audible bell sound to stop being emitted whenever you enter an invalid input.
+set ignorecase                  " use case-insensitive search by default
+set smartcase                   " if any of the search characters are uppercase, treat the search as case-sensitive.
+set hlsearch                    " ensures all of the search results are highlighted.
+set incsearch                   " start searching as you type, rather than waiting for you to submit the complete search string first.
+" }}}
 
+" plugins {{{
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
-" Plug 'easymotion/vim-easymotion' "require ideavim-easymotion and AceJump Plugins By JetBrains
-" Plug 'machakann/vim-highlightedyank'
-" Plug 'kana/vim-textobj-user'
-" Plug 'kana/vim-textobj-entire'
-" Plug 'tpope/vim-commentary'
-" Plug 'preservim/nerdtree'
+set surround " Lets you surround with motion : ysiw" would sourround a word with "
 set easymotion
 set highlightedyank
 set textobj-entire
 set commentary
 set nerdtree
 set which-key
+" }}}
 
-" which-key
+" WhichKey settings {{{
 set notimeout
-let g:WhichKeyDesc_commentray_prefix = "gc"
-let g:WhichKeyDesc_commentray_action = "gcc"
-let g:WhichKey_ShowVimAction = "true"
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+let g:WhichKeyDesc_leader = "<leader> Leader key"
+let g:WhichKeyDesc_easymotion_prefix = "<leader><leader>"
 
-"" Key Mappings
-" basic stuff
-nnoremap <leader>s :write<CR>
+let g:WhichKeyDesc_Write = "<leader>s Save"
 
-" code refactoring
-:map <leader>rr <Action>(RenameElement)
-:map <leader>RR <Action>(Refactorings.QuickListPopupAction)
-:map <leader>sw <Action>(SurroundWith)
-:map <leader>oi <Action>(OptimizeImports)
+let g:WhichKeyDesc_Window = "<leader>w Window Splits"
+let g:WhichKeyDesc_window_split_vertically = "<leader>wv Split vertically"
+let g:WhichKeyDesc_window_split_horizontally = "<leader>wh Split horizontally"
+let g:WhichKeyDesc_window_split_unsplit = "<leader>wu Unsplit"
+let g:WhichKeyDesc_window_split_move_editor = "<leader>wm Move editor to opposite tab group"
 
-"" easymotion
-" let g:EasyMotion_do_mapping=0
-" map  <leader>f <Plug>(easymotion-bd-f)
-" nmap <leader>f <Plug>(easymotion-overwin-f)
-" nmap s <Plug>(easymotion-overwin-f2)
-" map <leader>L <Plug>(easymotion-bd-jk)
-" nmap <leader>L <Plug>(easymotion-overwin-line)
-" mFindap  <leader>w <Plug>(easymotion-bd-w)
-" nmap <leader>w <Plug>(easymotion-overwin-w)
+let g:WhichKeyDesc_Close_Tab = "<leader>q Close Tab"
+let g:WhichKeyDesc_Close_All_Tab = "<leader>Q Close All Tab"
+let g:WhichKeyDesc_Close_Other_Tab = "<leader>x Close Other Tab"
 
-map <leader>d <Action>(Debug)
-map <leader>r <Action>(RenameElement)
-map <leader>c <Action>(Stop)
-map <leader>z <Action>(ToggleDistractionFreeMode)
+let g:WhichKeyDesc_fold = "<leader>z Folding"
+let g:WhichKeyDesc_fold_all = "<leader>zc fold all regions"
+let g:WhichKeyDesc_unfold_all = "<leader>zo unfold all regions"
 
-map <leader>a <Action>(Annotate)
-map <leader>h <Action>(Vcs.ShowTabbedFileHistory)
-map <S-Space> <Action>(GotoNextError)
+let g:WhichKeyDesc_display = "<leader>d Display options"
+let g:WhichKeyDesc_zen_mode = "<leader>dz Toggle Zen mode"
+let g:WhichKeyDesc_df_mode = "<leader>dd Toggle Distraction-Free mode"
+let g:WhichKeyDesc_fullscreen = "<leader>df Toggle full screen"
 
-map <leader>b <Action>(ToggleLineBreakpoint)
-map <leader>o <Action>(FileStructurePopup)
+let g:WhichKeyDesc_NREDTree = "<leader>t NERDTree"
 
-" NERDTree
-let g:WhichKeyDesc_NREDTree = "<leader>t NERDTree" 
-map <leader>tt :NERDTreeToggle<CR>
-map <leader>tc :NERDTreeClose<CR>
-map <leader>to :NERDTreeFocus<CR>
-map <leader>tf :NERDTreeFind<CR>
-map <leader>tr :NERDTreeRefreshRoot<CR>
+let g:WhichKeyDesc_File = "<leader>f File"
+let g:WhichKeyDesc_File_GotoFile = "<leader>ff Go To"
+let g:WhichKeyDesc_File_RecentFiles = "<leader>fr Recent Files"
+let g:WhichKeyDesc_File_FindInPath = "<leader>fc Find In Path"
+let g:WhichKeyDesc_File_RecentLocations = "<leader>fl Recent Locations"
+let g:WhichKeyDesc_File_NewScratchFile = "<leader>fs New ScratchFile"
 
-" switch between tabs
+let g:WhichKeyDesc_Refactoring = "<leader>r Refactoring"
+let g:WhichKeyDesc_Refactoring_Rename = "<leader>rn rename"
+let g:WhichKeyDesc_Refactoring_ExtractMethod = "<leader>rm extract method"
+let g:WhichKeyDesc_Refactoring_IntroduceVariable = "<leader>rv introduce variable"
+let g:WhichKeyDesc_Refactoring_IntroduceField = "<leader>rf introduce field"
+let g:WhichKeyDesc_Refactoring_SurroundWith = "<leader>rs surround with"
+let g:WhichKeyDesc_Refactoring_PopAction = "<leader>rr QuickListPopupAction"
+let g:WhichKeyDesc_Refactoring_OptimizeImports = "<leader>ro optimize imports"
+let g:WhichKeyDesc_Refactoring_ReformatCode = "<leader>rl reformat code"
+
+let g:WhichKeyDesc_1 = "<leader>1 Run"
+let g:WhichKeyDesc_2 = "<leader>2 Debug"
+let g:WhichKeyDesc_0 = "<leader>0 stop"
+let g:WhichKeyDesc_Config = "<leader>c Run & Debug Configuration"
+let g:WhichKeyDesc_Config_Run = "<leader>c1 Run Configuration"
+let g:WhichKeyDesc_Config_Debug = "<leader>c2 Debug Configuration"
+
+let g:WhichKeyDesc_Breakpoint = "<leader>b Breakpoint"
+let g:WhichKeyDesc_Breakpoint_t = "<leader>bt toggle breakpoint"
+let g:WhichKeyDesc_Breakpoint_r = "<leader>br remove breakpoint"
+let g:WhichKeyDesc_Breakpoint_s = "<leader>bs view breakpoints"
+
+let g:WhichKeyDesc_relative_ln = "<leader><Tab> Toggle Relative Line Number"
+let g:WhichKeyDesc_reload= "<leader>9 source .ideavimrc"
+" }}}
+
+" Key Mappings {{{
+" idea actions
+map <C-S-p> :action GotoAction<CR>
+map <C-p> <Action>(SearchEverywhere)
+
+" Popup navigation, config in idea keymaps instead
+" map <Shift-j> <Action>(PopupMenu-selectNext)
+" map <Shift-k> <Action>(PopupMenu-selectPrev)
+
+" splits
+nmap <leader>wv <Action>(SplitVertically)
+nmap <leader>wh <Action>(SplitHorizontally)
+nmap <leader>wc <Action>(Unsplit)
+nmap <leader>wm <Action>(MoveEditorToOppositeTabGroup)
+
+" switch between tabs gt/gT
 nnoremap <C-Right> :tabn<CR>
 nnoremap <C-Left> :tabp<CR>
+
+" pane navigation
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
+
+" close tab
+:nmap <leader>q <Action>(CloseEditor)
+:nmap <leader>Q <Action>(CloseAllEditors)
+:nmap <leader>x <Action>(CloseAllEditorsButActive)
+
+" shortcuts for globally fold and unfold the current file
+map <leader>zc :action CollapseAllRegions<CR>
+map <leader>zo :action ExpandAllRegions<CR>
+
+" Display options
+map <leader>dd <action>(ToggleDistractionFreeMode)
+map <leader>dz <action>(ToggleZenMode)
+map <leader>df <action>(ToggleFullScreen)
+
+" NERDTree
+map <leader>t :NERDTreeFocus<CR>
+" map <leader>tt :NERDTreeToggle<CR>
+" map <leader>tc :NERDTreeClose<CR>
+" map <leader>tf :NERDTreeFocus<CR>
+" map <leader>ts :NERDTreeFind<CR>
+" map <leader>tr :NERDTreeRefreshRoot<CR>
+
+" file navigation
+map <leader>ff <Action>(GotoFile)
+map <leader>fr <Action>(RecentFiles)
+map <leader>fc <Action>(FindInPath)
+map <leader>fl <Action>(RecentLocations)
+map <leader>fs <Action>(NewScratchFile)
+
+" code actions
+nnoremap <leader>s :write<CR>
+let g:WhichKeyDesc_ShowIntentionActions = "<leader>m Show Intention Actions"
+let g:WhichKeyDesc_FileStructurePopup = "<leader>o Show File Structure"
+let g:WhichKeyDesc_Generate= "<leader>n Code Generation"
+let g:WhichKeyDesc_Goto_Popup = "<leader>g Go To"
+
+map <leader>m <Action>(ShowIntentionActions)
+map <leader>o <Action>(FileStructurePopup)
+map <leader>h <Action>(QuickImplementations)
+map <leader>g <Action>(EditorPopupMenu.GoTo)
+map <leader>n <Action>(Generate)
+
+nmap ge <Action>(GotoNextError)
+nmap gE <Action>(GotoPreviousError)
+
+" methods navigation
+nmap [[ <Action>(MethodUp)
+nmap ]] <Action>(MethodDown)
+
+" code refactoring
+map <leader>rn <Action>(RenameElement)
+map <leader>rm <Action>(ExtractMethod)
+map <leader>rv <Action>(IntroduceVariable)
+map <leader>rf <Action>(IntroduceField)
+map <leader>rS <Action>(ChangeSignature)
+map <leader>rr <Action>(Refactorings.QuickListPopupAction)
+map <leader>ro <Action>(OptimizeImports)
+map <leader>rl <Action>(ReformatCode)
+map <leader>rs <Action>(SurroundWith)
+
+" run & debug & breakpoints
+:map <leader>1 <Action>(Run)
+:map <leader>2 <Action>(Debug)
+:map <leader>0 <Action>(Stop)
+:map <leader>c1 <Action>(ChooseRunConfiguration)
+:map <leader>c2 <Action>(ChooseDebugConfiguration)
+:map <leader>bt <Action>(ToggleLineBreakpoint)
+:map <leader>bs <Action>(ViewBreakpoints)
+:map <leader>br <Action>(Debugger.RemoveAllBreakpoints)
+
+" toggle line number relative
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set norelativenumber
+  else
+    set relativenumber number
+  endif
+endfunction
+nnoremap <leader><Tab> :call NumberToggle()<CR>
 
 " source
 :map <leader>9 <Action>(IdeaVim.ReloadVimRc.reload)
 
-""" Shortcut Conflicts for Active Keymap ----
+" }}}
+
+" Shortcut Conflicts for Active Keymap {{{
 sethandler <C-2> a:vim
 sethandler <C-S-2> a:vim
 sethandler <C-6> a:vim
@@ -118,3 +239,4 @@ sethandler <C-Y> a:vim
 sethandler <C-[> a:vim
 sethandler <C-\> a:vim
 sethandler <C-]> a:vim
+" }}}

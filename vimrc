@@ -1,3 +1,5 @@
+
+" basic stuff {{{
 " Though the default behaviour may be surprising, 
 " the backspace 'not working' can be considered a feature;
 " it can prevent you from accidentally removing indentation, 
@@ -96,7 +98,10 @@ else
      endif
 endif
 
-" PLUGINS ---------------------------------------------------------------- {{{
+" }}}
+
+" map leader to ,
+let mapleader = ","
 
 call plug#begin()
 " Plug 'morhetz/gruvbox'
@@ -110,7 +115,128 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
+Plug 'liuchengxu/vim-which-key'
 call plug#end()
+
+"" basic key mappings
+nnoremap <leader>s :write<CR>
+
+" switch between windows
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-h> <C-W>h
+nnoremap <C-l> <C-W>l
+
+" switch between tabs
+nnoremap <C-Right> :tabn<CR>
+nnoremap <C-Left> :tabp<CR>
+
+" vim-powered terminal in split window
+map <Leader>t :term ++close<cr>
+tmap <Leader>t <c-w>:term ++close<cr>
+
+" vim-powered terminal in new tab
+map <Leader>T :tab term ++close<cr>
+tmap <Leader>T <c-w>:tab term ++close<cr>
+
+" Which-Key {{{
+" Timeout
+let g:which_key_timeout = 500
+
+
+let g:mapleader = ','
+" map leader key
+call which_key#register(',', "g:which_key_map")
+nnoremap <silent> <leader> :silent <c-u> :silent WhichKey ','<CR>
+vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual ','<CR>
+
+" vim-which-key look
+let g:which_key_sep = '→'
+let g:which_key_use_floating_win = 0
+let g:which_key_max_size = 0
+autocmd! FileType which_key
+autocmd FileType which_key set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+
+" defining keybindings
+let g:which_key_map = {}
+let g:which_key_map['/'] = [ 'gc' , 'comment' ]
+let g:which_key_map['.'] = [ ':e $MYVIMRC' , 'open init' ]
+let g:which_key_map['='] = [ '<C-W>=' , 'balance windows' ]
+let g:which_key_map['h'] = [ '<C-W>s' , 'split below']
+let g:which_key_map['p'] = [ ':Files' , 'search files' ]
+let g:which_key_map['v'] = [ '<C-W>v' , 'split right']
+
+let g:which_key_map.a = {
+      \ 'name' : '+actions' ,
+      \ 'h' : [':let @/ = ""' , 'remove search highlight'],
+      \ 'S' : [':s/\%V\(.*\)\%V/"\1"/' , 'surround'],
+      \ 'o' : [':set spell!' , 'orthography'],
+      \ }
+
+let g:which_key_map.b = {
+      \ 'name' : '+buffer' ,
+      \ 'f' : ['bfirst' , 'first-buffer'],
+      \ 'l' : ['blast' , 'last buffer'],
+      \ 'n' : ['bnext' , 'next-buffer'],
+      \ 'p' : ['bprevious' , 'previous-buffer'],
+      \ '?' : ['Buffers' , 'fzf-buffer'],
+      \ }
+
+let g:which_key_map.f = {
+      \ 'name' : '+fuzzy-find' ,
+      \ '/' : [':History/' , 'history'],
+      \ ';' : [':Commands' , 'commands'],
+      \ 'B' : [':Buffers' , 'opened buffers'],
+      \ 'f' : [':Files' , 'files'],
+      \ 'h' : [':History' , 'file history'],
+      \ 'H' : [':History:' , 'command history'],
+      \ 'l' : [':Lines' , 'loaded buffers'] ,
+      \ 'b' : [':BLines' , 'current buffer'],
+      \ 'M' : [':Maps' , 'normal maps'] ,
+      \ 'p' : [':Helptags' , 'help tags'] ,
+      \ 'c' : [':Colors' , 'color schemes'],
+      \ 'g' : [':Rg' , 'text Rg'],
+      \ 'w' : [':Windows' , 'search windows'],
+      \ 'z' : [':FZF ~' , 'files in home'],
+      \ 't' : [':Telescope builtin' , 'telescope'],
+      \ }
+
+let g:which_key_map.t = {
+      \ 'name' : '+terminal' ,
+      \ ';' : [':FloatermNew --wintype=normal --height=6' , 'terminal'],
+      \ 'f' : [':FloatermNew fzf' , 'fzf'],
+      \ 'p' : [':FloatermNew python' , 'python'],
+      \ 'r' : [':FloatermNew ranger' , 'ranger'],
+      \ 't' : [':FloatermToggle' , 'toggle'],
+      \ }
+
+let g:which_key_map.g = {
+    \ 'name' : '+go_to' ,
+    \ 'x' : ['gx' , 'go to link under the cursor and use BROWSER'],
+    \ 'e' : ['ge' , 'go to link under the cursor and use vim'],
+    \ }
+
+let g:which_key_map.c = {
+    \ 'name' : '+Columnize-Selected' ,
+    \}
+
+let g:which_key_map.d = {
+    \ 'name' : '+diagnostic' ,
+    \}
+
+let g:which_key_map.u = {
+    \ 'name' : '+ultisnips' ,
+    \}
+
+let g:which_key_map.l = {
+    \ 'name' : '+lsp' ,
+    \}
+
+let g:which_key_map.l.w = {
+    \ 'name' : '+workspace' ,
+    \}
+" }}}
 
 " IndentLine {{{
 let g:indentLine_char =  '┊'   
@@ -137,8 +263,27 @@ let g:instant_markdown_theme = 'dark'
 
 " NERDTree {{{
 let NERDTreeShowHidden = 1
-" }}}
 
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeFileLines = 1
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+" NREDTree Key Mappings
+map <leader>tt :NERDTreeToggle<CR>
+map <leader>tc :NERDTreeClose<CR>
+map <leader>to :NERDTreeFocus<CR>
+map <leader>tf :NERDTreeFind<CR>
+map <leader>tr :NERDTreeRefreshRoot<CR>
 " }}}
 
 " ColorScheme Ayu {{{
@@ -147,34 +292,6 @@ set termguicolors     " enable true colors support
 " let ayucolor="light"  " for light version of theme
 " let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
-" }}}
-
-" MAPPINGS --------------------------------------------------------------- {{{
-
-" Mappings code goes here.
-let mapleader = ","
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
-nnoremap <leader>s :write<CR>
-
-" switch between tabs
-nnoremap <C-Right> :tabn<CR>
-nnoremap <C-Left> :tabp<CR>
-" vim-powered terminal in split window
-map <Leader>t :term ++close<cr>
-tmap <Leader>t <c-w>:term ++close<cr>
-
-" vim-powered terminal in new tab
-map <Leader>T :tab term ++close<cr>
-tmap <Leader>T <c-w>:tab term ++close<cr>
-
-
 " }}}
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
@@ -190,19 +307,6 @@ augroup filetype_vim
 augroup END
 
 " More Vimscripts code goes here.
-" Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-let g:NERDTreeFileLines = 1
-" Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 " If your intention is just to avoid working outside of Vim 
 " The first line maps escape to the caps lock key when you enter Vim, and the second line returns normal functionality to caps lock when you quit. 
@@ -211,25 +315,6 @@ autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' 
 "     au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 "     au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
 " endif
-
-" }}}
-
-" STATUS LINE ------------------------------------------------------------ {{{
-
-" " Clear status line when vimrc is reloaded.
-" set statusline=
-
-" " Status line left side.
-" set statusline+=\ %F\ %M\ %Y\ %R
-
-" " Use a divider to separate the left side from the right side.
-" set statusline+=%=
-
-" " Status line right side.
-" set statusline+=\ ascii:\ %b\ hex:\ 0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%
-
-" " Show the status on the second to last line.
-" set laststatus=2
 
 " }}}
 
