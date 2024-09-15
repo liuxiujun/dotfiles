@@ -1,5 +1,16 @@
 # vimfiles
 
+## Vim (Windows)
+``` powershell
+# Powershell
+cd $Env:USERPROFILE
+git clone git@github.com:liuxiujun/vimfiles.git 
+# Set $VIMRC user environment variable
+[Environment]::SetEnvironmentVariable("VIMRC", $Env:USERPROFILE + "\vimfiles\vimrc", "User")
+# Get Windows environment variables list
+[Environment]::GetEnvironmentVariables()
+```
+
 ## Vim (Linux)
 ``` bash
 git clone git@github.com:liuxiujun/vimfiles.git ~/.vim

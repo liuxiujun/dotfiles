@@ -6,6 +6,9 @@
 " and from removing too much text by restricting it to the current line and/or the start of the insert.
 set backspace=indent,eol,start
 
+" set shell=powershell
+" set shellcmdflag=-command
+
 " Set bell style
 set belloff=all
 set vb t_vb=
@@ -124,8 +127,8 @@ nnoremap <leader>s :write<CR>
 nnoremap <CR> :noh<CR><CR>
 
 " source vimrc
-nnoremap <leader>. :e vimrc<CR>
-nnoremap <leader>0 :so vimrc<CR>
+nnoremap <leader>. :e $VIMRC<CR>
+nnoremap <leader>0 :so $VIMRC<CR>
 
 " close buffer
 nnoremap <leader>q :bd<CR>
