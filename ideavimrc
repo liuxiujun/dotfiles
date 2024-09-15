@@ -1,4 +1,4 @@
-" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+﻿" .ideavimrc is a configuration file for IdeaVim plugin. It uses
 "   the same commands as the original .vimrc configuration.
 " You can find a list of commands here: https://jb.gg/h38q75
 " Find more examples here: https://jb.gg/share-ideavimrc
@@ -8,10 +8,13 @@ let mapleader = ","
 " basic stuff {{{
 set clipboard+=unnamed          " ensures that IdeaVim shares its clipboard with the system clipboard.
 set number
+set list                        " show whitespace
+set trackactionids=off          " (default off) When on, IdeaVim will try to track the current IDE action and display
+                                " the action name in a notification.
 set scrolloff=10                " defines the number of lines to leave on the screen before scrolling.
                                 " That is, if the value is set to 10, when moving the cursor down the page,
                                 " once only 10 lines remain, the page will start to scroll.
-set idearefactormode=keep
+set idearefactormode=keep       " Specifies the mode to be used when a refactoring selects text to be edited
 set showmode
 set showcmd
 set visualbell                  " causes the annoying audible bell sound to stop being emitted whenever you enter an invalid input.
@@ -34,35 +37,48 @@ set which-key
 
 " WhichKey settings {{{
 set notimeout
+" set timeoutlen = 1000
+
 let g:WhichKey_SortOrder = "by_key_prefix_first"
 let g:WhichKeyDesc_leader = "<leader> Leader key"
+let g:WhichKeyDesc_Clear_Search = "<leader><Enter> Clear the Search Buffer"
 let g:WhichKeyDesc_easymotion_prefix = "<leader><leader>"
 
 let g:WhichKeyDesc_Write = "<leader>s Save"
 
-let g:WhichKeyDesc_Window = "<leader>w Window Splits"
+let g:WhichKeyDesc_Window = "<leader>w Split Tab"
 let g:WhichKeyDesc_window_split_vertically = "<leader>wv Split vertically"
 let g:WhichKeyDesc_window_split_horizontally = "<leader>wh Split horizontally"
 let g:WhichKeyDesc_window_split_unsplit = "<leader>wu Unsplit"
 let g:WhichKeyDesc_window_split_move_editor = "<leader>wm Move editor to opposite tab group"
 
+let g:WhichKeyDesc_Tab_1 = "<leader>1 Tab 1"
+let g:WhichKeyDesc_Tab_2 = "<leader>2 Tab 2"
+let g:WhichKeyDesc_Tab_3 = "<leader>3 Tab 3"
+let g:WhichKeyDesc_Tab_4 = "<leader>4 Tab 4"
+let g:WhichKeyDesc_Tab_5 = "<leader>5 Tab 5"
+let g:WhichKeyDesc_Tab_6 = "<leader>6 Tab 6"
+let g:WhichKeyDesc_Tab_7 = "<leader>7 Tab 7"
+let g:WhichKeyDesc_Tab_8 = "<leader>8 Tab 8"
+let g:WhichKeyDesc_Tab_9 = "<leader>9 Tab 9"
+
 let g:WhichKeyDesc_Close_Tab = "<leader>q Close Tab"
-let g:WhichKeyDesc_Close_All_Tab = "<leader>Q Close All Tab"
+let g:WhichKeyDesc_Close_All_Tab = "<leader>Q Close All Tabs"
 let g:WhichKeyDesc_Close_Other_Tab = "<leader>x Close Other Tab"
 
 let g:WhichKeyDesc_fold = "<leader>z Folding"
 let g:WhichKeyDesc_fold_all = "<leader>zc fold all regions"
 let g:WhichKeyDesc_unfold_all = "<leader>zo unfold all regions"
 
-let g:WhichKeyDesc_display = "<leader>d Display options"
-let g:WhichKeyDesc_zen_mode = "<leader>dz Toggle Zen mode"
-let g:WhichKeyDesc_df_mode = "<leader>dd Toggle Distraction-Free mode"
-let g:WhichKeyDesc_fullscreen = "<leader>df Toggle full screen"
+let g:WhichKeyDesc_display = "<leader>D Display Mode"
+let g:WhichKeyDesc_zen_mode = "<leader>DZ Toggle Zen mode"
+let g:WhichKeyDesc_df_mode = "<leader>DD Toggle Distraction-Free mode"
+let g:WhichKeyDesc_fullscreen = "<leader>DF Toggle Full Screen"
 
-let g:WhichKeyDesc_NREDTree = "<leader>t NERDTree"
+let g:WhichKeyDesc_NREDTree = "<leader>t Project Explorer"
 
 let g:WhichKeyDesc_File = "<leader>f File"
-let g:WhichKeyDesc_File_GotoFile = "<leader>ff Go To"
+let g:WhichKeyDesc_File_GotoFile = "<leader>ff go to"
 let g:WhichKeyDesc_File_RecentFiles = "<leader>fr Recent Files"
 let g:WhichKeyDesc_File_FindInPath = "<leader>fc Find In Path"
 let g:WhichKeyDesc_File_RecentLocations = "<leader>fl Recent Locations"
@@ -78,12 +94,12 @@ let g:WhichKeyDesc_Refactoring_PopAction = "<leader>rr QuickListPopupAction"
 let g:WhichKeyDesc_Refactoring_OptimizeImports = "<leader>ro optimize imports"
 let g:WhichKeyDesc_Refactoring_ReformatCode = "<leader>rl reformat code"
 
-let g:WhichKeyDesc_1 = "<leader>1 Run"
-let g:WhichKeyDesc_2 = "<leader>2 Debug"
-let g:WhichKeyDesc_0 = "<leader>0 stop"
-let g:WhichKeyDesc_Config = "<leader>c Run & Debug Configuration"
-let g:WhichKeyDesc_Config_Run = "<leader>c1 Run Configuration"
-let g:WhichKeyDesc_Config_Debug = "<leader>c2 Debug Configuration"
+let g:WhichKeyDesc_Run = "<leader>a Run"
+let g:WhichKeyDesc_Run_Run = "<leader>ar Run"
+let g:WhichKeyDesc_Run_Debug = "<leader>ad Debug"
+let g:WhichKeyDesc_Run_Stop = "<leader>ac Stop"
+let g:WhichKeyDesc_Run_Choose_Run_Configuration= "<leader>a1 Run Configuration"
+let g:WhichKeyDesc_Run_Choose_Debug_Configuration= "<leader>a2 Debug Configuration"
 
 let g:WhichKeyDesc_Breakpoint = "<leader>b Breakpoint"
 let g:WhichKeyDesc_Breakpoint_t = "<leader>bt toggle breakpoint"
@@ -91,27 +107,41 @@ let g:WhichKeyDesc_Breakpoint_r = "<leader>br remove breakpoint"
 let g:WhichKeyDesc_Breakpoint_s = "<leader>bs view breakpoints"
 
 let g:WhichKeyDesc_relative_ln = "<leader><Tab> Toggle Relative Line Number"
-let g:WhichKeyDesc_reload= "<leader>9 source .ideavimrc"
+let g:WhichKeyDesc_reload= "<leader>S source .ideavimrc"
 " }}}
 
 " Key Mappings {{{
+" clear the search buffer when hitting return
+nnoremap <leader><cr> :nohlsearch<cr>
+
 " idea actions
 map <C-S-p> :action GotoAction<CR>
 map <C-p> <Action>(SearchEverywhere)
 
-" Popup navigation, config in idea keymaps instead
+" Navigate in Popup Menu, config in idea keymaps instead
 " map <Shift-j> <Action>(PopupMenu-selectNext)
 " map <Shift-k> <Action>(PopupMenu-selectPrev)
 
-" splits
+" split windows
 nmap <leader>wv <Action>(SplitVertically)
 nmap <leader>wh <Action>(SplitHorizontally)
 nmap <leader>wc <Action>(Unsplit)
 nmap <leader>wm <Action>(MoveEditorToOppositeTabGroup)
 
 " switch between tabs gt/gT
-nnoremap <A-n> :tabn<CR>
-nnoremap <A-p> :tabp<CR>
+" todo go to last active tab
+
+nnoremap <A-l> :tabnext<CR>
+nnoremap <A-h> :tabprevious<CR>
+nnoremap <leader>1 1gt
+nnoremap <leader>2 2gt
+nnoremap <leader>3 3gt
+nnoremap <leader>4 4gt
+nnoremap <leader>5 5gt
+nnoremap <leader>6 6gt
+nnoremap <leader>7 7gt
+nnoremap <leader>8 8gt
+nnoremap <leader>9 9gt
 
 " pane navigation
 nnoremap <C-j> <C-W>j
@@ -129,17 +159,37 @@ map <leader>zc :action CollapseAllRegions<CR>
 map <leader>zo :action ExpandAllRegions<CR>
 
 " Display options
-map <leader>dd <action>(ToggleDistractionFreeMode)
-map <leader>dz <action>(ToggleZenMode)
-map <leader>df <action>(ToggleFullScreen)
+map <leader>DD <action>(ToggleDistractionFreeMode)
+map <leader>DZ <action>(ToggleZenMode)
+map <leader>DF <action>(ToggleFullScreen)
 
-" NERDTree
+" NERDTree https://github.com/JetBrains/ideavim/wiki/NERDTree-support
+"   Key     Desc
+"   o       Open files, directories and bookmarks
+"   O       Recursively open the selected directory
+"   go      Open selected file, but leave cursor in the NERDTree
+"   t       Open selected node/bookmark in a new tab
+"   T       Same as 't', but keep the focus on the current tab
+"   i       Open selected file in a split window horizontally
+"   gi      Same as 'i', but leave the cursor on the NERDTree
+"   s       Open selected file in a split window vertically
+"   gs      Same as 's', but leave the cursor on the NERDTree
+"   x       Close the current nodes parent
+"   X       Recursively close all children of the current node
+"   p       Jump to current nodes parent
+"   P       Jump to the root node
+"   K       Jump up inside directories at the current tree depth
+"   J       Jump down inside directories at the current tree depth
+"   <C-k>   Jump down to next sibling of the current directory
+"   <C-j>   Jump up to next sibling of the current directory
+"   r       Recursively refresh the current directory
+"   R       Recursively refresh the current root
+"   n       Create File
+"   N       Create Directory
+"   m       Display Right-Click Menu
+"   A       Zoom(maximize/minimize) the NERDTree window
+"   q       Close the NERDTree window
 map <leader>t :NERDTreeFocus<CR>
-" map <leader>tt :NERDTreeToggle<CR>
-" map <leader>tc :NERDTreeClose<CR>
-" map <leader>tf :NERDTreeFocus<CR>
-" map <leader>ts :NERDTreeFind<CR>
-" map <leader>tr :NERDTreeRefreshRoot<CR>
 
 " file navigation
 map <leader>ff <Action>(GotoFile)
@@ -153,7 +203,7 @@ nnoremap <leader>s :write<CR>
 let g:WhichKeyDesc_ShowIntentionActions = "<leader>m Show Intention Actions"
 let g:WhichKeyDesc_FileStructurePopup = "<leader>o Show File Structure"
 let g:WhichKeyDesc_Generate= "<leader>n Code Generation"
-let g:WhichKeyDesc_Goto_Popup = "<leader>g Go To"
+let g:WhichKeyDesc_Goto_Popup = "<leader>g Go to"
 
 map <leader>m <Action>(ShowIntentionActions)
 map <leader>o <Action>(FileStructurePopup)
@@ -180,11 +230,11 @@ map <leader>rl <Action>(ReformatCode)
 map <leader>rs <Action>(SurroundWith)
 
 " run & debug & breakpoints
-:map <leader>1 <Action>(Run)
-:map <leader>2 <Action>(Debug)
-:map <leader>0 <Action>(Stop)
-:map <leader>c1 <Action>(ChooseRunConfiguration)
-:map <leader>c2 <Action>(ChooseDebugConfiguration)
+:map <leader>ar <Action>(Run)
+:map <leader>ad <Action>(Debug)
+:map <leader>ac <Action>(Stop)
+:map <leader>a1 <Action>(ChooseRunConfiguration)
+:map <leader>a2 <Action>(ChooseDebugConfiguration)
 :map <leader>bt <Action>(ToggleLineBreakpoint)
 :map <leader>bs <Action>(ViewBreakpoints)
 :map <leader>br <Action>(Debugger.RemoveAllBreakpoints)
@@ -199,8 +249,8 @@ function! NumberToggle()
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
 
-" source
-:map <leader>9 <Action>(IdeaVim.ReloadVimRc.reload)
+" source .ideavimrc
+:map <leader>S <Action>(IdeaVim.ReloadVimRc.reload)
 
 " }}}
 
