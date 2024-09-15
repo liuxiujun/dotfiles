@@ -120,23 +120,35 @@ call plug#end()
 
 "" basic key mappings
 nnoremap <leader>s :write<CR>
+"This unsets the 'last search pattern' register by hitting return
+nnoremap <CR> :noh<CR><CR>
 
 " source vimrc
-nnoremap <leader>9 :source vimrc<CR>
+nnoremap <leader>. :e vimrc<CR>
+nnoremap <leader>0 :so vimrc<CR>
 
 " close buffer
 nnoremap <leader>q :bd<CR>
 nnoremap <leader>Q :%bd<CR>
 
-" switch between windows
+" switch between splits
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " switch between tabs
-nnoremap <A-n> :tabn<CR>
-nnoremap <A-p> :tabp<CR>
+nnoremap <A-l> :tabn<CR>
+nnoremap <A-h> :tabp<CR>
+nnoremap <leader>1 1gt
+nnoremap <leader>2 2gt
+nnoremap <leader>3 3gt
+nnoremap <leader>4 4gt
+nnoremap <leader>5 5gt
+nnoremap <leader>6 6gt
+nnoremap <leader>7 7gt
+nnoremap <leader>8 8gt
+nnoremap <leader>9 9gt
 
 " vim-powered terminal in split window
 map <Leader>t :term ++close<cr>
@@ -147,16 +159,11 @@ map <Leader>T :tab term ++close<cr>
 tmap <Leader>T <c-w>:tab term ++close<cr>
 
 " Which-Key {{{
-" Timeout
 let g:which_key_timeout = 500
-
-
-let g:mapleader = ','
 " map leader key
-call which_key#register(',', "g:which_key_map")
-nnoremap <silent> <leader> :silent <c-u> :silent WhichKey ','<CR>
-vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual ','<CR>
-
+call which_key#register('<,>', "g:which_key_map")
+nnoremap <silent> <leader> :silent <c-u> :silent WhichKey '<,>'<CR>
+vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<,>'<CR>
 " vim-which-key look
 let g:which_key_sep = '→'
 let g:which_key_use_floating_win = 0
@@ -164,85 +171,33 @@ let g:which_key_max_size = 0
 autocmd! FileType which_key
 autocmd FileType which_key set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
-
 " defining keybindings
 let g:which_key_map = {}
-let g:which_key_map['/'] = [ 'gc' , 'comment' ]
-let g:which_key_map['.'] = [ ':e $MYVIMRC' , 'open init' ]
-let g:which_key_map['='] = [ '<C-W>=' , 'balance windows' ]
-let g:which_key_map['h'] = [ '<C-W>s' , 'split below']
-let g:which_key_map['p'] = [ ':Files' , 'search files' ]
-let g:which_key_map['v'] = [ '<C-W>v' , 'split right']
+" let g:which_key_map['.'] = [ ':e $MYVIMRC' , 'open init' ]
+let g:which_key_map['.'] = { 'name': 'vimrc'}
+let g:which_key_map.0 = ':source .vimrc'
 
-let g:which_key_map.a = {
-      \ 'name' : '+actions' ,
-      \ 'h' : [':let @/ = ""' , 'remove search highlight'],
-      \ 'S' : [':s/\%V\(.*\)\%V/"\1"/' , 'surround'],
-      \ 'o' : [':set spell!' , 'orthography'],
-      \ }
+let g:which_key_map.1 = 'tab 1'
+let g:which_key_map.2 = 'tab 2'
+let g:which_key_map.3 = 'tab 3'
+let g:which_key_map.4 = 'tab 4'
+let g:which_key_map.5 = 'tab 5'
+let g:which_key_map.6 = 'tab 6'
+let g:which_key_map.7 = 'tab 7'
+let g:which_key_map.8 = 'tab 8'
+let g:which_key_map.9 = 'tab 9'
 
-let g:which_key_map.b = {
-      \ 'name' : '+buffer' ,
-      \ 'f' : ['bfirst' , 'first-buffer'],
-      \ 'l' : ['blast' , 'last buffer'],
-      \ 'n' : ['bnext' , 'next-buffer'],
-      \ 'p' : ['bprevious' , 'previous-buffer'],
-      \ '?' : ['Buffers' , 'fzf-buffer'],
-      \ }
+let g:which_key_map.q = 'Close'
+let g:which_key_map.Q = 'Close All'
 
-let g:which_key_map.f = {
-      \ 'name' : '+fuzzy-find' ,
-      \ '/' : [':History/' , 'history'],
-      \ ';' : [':Commands' , 'commands'],
-      \ 'B' : [':Buffers' , 'opened buffers'],
-      \ 'f' : [':Files' , 'files'],
-      \ 'h' : [':History' , 'file history'],
-      \ 'H' : [':History:' , 'command history'],
-      \ 'l' : [':Lines' , 'loaded buffers'] ,
-      \ 'b' : [':BLines' , 'current buffer'],
-      \ 'M' : [':Maps' , 'normal maps'] ,
-      \ 'p' : [':Helptags' , 'help tags'] ,
-      \ 'c' : [':Colors' , 'color schemes'],
-      \ 'g' : [':Rg' , 'text Rg'],
-      \ 'w' : [':Windows' , 'search windows'],
-      \ 'z' : [':FZF ~' , 'files in home'],
-      \ 't' : [':Telescope builtin' , 'telescope'],
-      \ }
+let g:which_key_map.s = 'Save'
 
-let g:which_key_map.t = {
-      \ 'name' : '+terminal' ,
-      \ ';' : [':FloatermNew --wintype=normal --height=6' , 'terminal'],
-      \ 'f' : [':FloatermNew fzf' , 'fzf'],
-      \ 'p' : [':FloatermNew python' , 'python'],
-      \ 'r' : [':FloatermNew ranger' , 'ranger'],
-      \ 't' : [':FloatermToggle' , 'toggle'],
-      \ }
-
-let g:which_key_map.g = {
-    \ 'name' : '+go_to' ,
-    \ 'x' : ['gx' , 'go to link under the cursor and use BROWSER'],
-    \ 'e' : ['ge' , 'go to link under the cursor and use vim'],
-    \ }
-
-let g:which_key_map.c = {
-    \ 'name' : '+Columnize-Selected' ,
-    \}
-
-let g:which_key_map.d = {
-    \ 'name' : '+diagnostic' ,
-    \}
-
-let g:which_key_map.u = {
-    \ 'name' : '+ultisnips' ,
-    \}
-
-let g:which_key_map.l = {
-    \ 'name' : '+lsp' ,
-    \}
-
-let g:which_key_map.l.w = {
-    \ 'name' : '+workspace' ,
-    \}
+let g:which_key_map.w = {
+     \ 'name' : '+SplitWin' ,
+     \ 'h' : ['<C-W>s' , 'Split Below'],
+     \ 'v' : ['<C-W>v' , 'Split Right'],
+     \ 'c' : ['<C-W>c' , 'UnSplit'],
+     \ }
 " }}}
 
 " IndentLine {{{
