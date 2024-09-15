@@ -1,21 +1,15 @@
-# vimfiles
-
 ## Vim (Windows)
 ``` powershell
-# Powershell
-cd $Env:USERPROFILE
-git clone git@github.com:liuxiujun/vimfiles.git 
-# Set $VIMRC user environment variable
+# Set VIMRC user environment variables
 [Environment]::SetEnvironmentVariable("VIMRC", $Env:USERPROFILE + "\vimfiles\vimrc", "User")
+[Environment]::SetEnvironmentVariable("IDEAVIMRC", $Env:USERPROFILE + "\.ideavimrc", "User")
 # Get Windows environment variables list
 [Environment]::GetEnvironmentVariables()
+
+cd $Env:USERPROFILE
+git clone git@github.com:liuxiujun/vimfiles.git 
 ```
 
-## Vim (Linux)
-``` bash
-git clone git@github.com:liuxiujun/vimfiles.git ~/.vim
-ln -s ~/.vim/vimrc ~/.vimrc 
-```
 ## Intellij IDEA (Windows)
 IDEA Plugins:
 `IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
@@ -28,5 +22,12 @@ IDEA Keymaps:
 > `Right`   :   Ctrl+l  
 
 ``` powershell
-New-Item -ItemType SymbolicLink -Path "C:\Users\liuxi\.ideavimrc" -Target "C:\Users\liuxi\vimfiles\ideavimrc"
+# Run as Administrator
+New-Item -ItemType SymbolicLink -Path $Env:IDEAVIMRC -Target $Env:USERPROFILE"\vimfiles\ideavimrc"
+```
+
+## Vim (Linux)
+``` bash
+git clone git@github.com:liuxiujun/vimfiles.git ~/.vim
+ln -s ~/.vim/vimrc ~/.vimrc 
 ```

@@ -107,12 +107,13 @@ let g:WhichKeyDesc_Breakpoint_r = "<leader>br remove breakpoint"
 let g:WhichKeyDesc_Breakpoint_s = "<leader>bs view breakpoints"
 
 let g:WhichKeyDesc_relative_ln = "<leader><Tab> Toggle Relative Line Number"
-let g:WhichKeyDesc_reload= "<leader>S source .ideavimrc"
+let g:WhichKeyDesc_Vimrc_edit = "<leader>. edit .ideavimrc"
+let g:WhichKeyDesc_Vimrc_source = "<leader>0 source .ideavimrc"
 " }}}
 
 " Key Mappings {{{
 " clear the search buffer when hitting return
-nnoremap <leader><cr> :nohlsearch<cr>
+nnoremap <CR> :noh<CR><CR>
 
 " idea actions
 map <C-S-p> :action GotoAction<CR>
@@ -249,8 +250,9 @@ function! NumberToggle()
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
 
-" source .ideavimrc
-:map <leader>S <Action>(IdeaVim.ReloadVimRc.reload)
+" .ideavimrc
+map <leader>0 <Action>(IdeaVim.ReloadVimRc.reload)
+map <leader>. :e ~/.ideavimrc<CR>
 
 " }}}
 
