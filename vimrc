@@ -200,6 +200,7 @@ let g:which_key_map.w = {
      \ 'h' : ['<C-W>s' , 'Split Below'],
      \ 'v' : ['<C-W>v' , 'Split Right'],
      \ 'c' : ['<C-W>c' , 'UnSplit'],
+     \ 'f' : ['<F11>' , 'Full Screen'],
      \ }
 " }}}
 

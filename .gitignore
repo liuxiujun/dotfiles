@@ -20,3 +20,5 @@ tags
 # Persistent undo
 [._]*.un~
 
+# exe
+[._]*.exe
