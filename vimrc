@@ -157,17 +157,11 @@ nnoremap <leader>9 9gt
 " vim-powered terminal in new tab
 tmap <Esc> <C-W>N
 
-nmap <C-t> :tab term ++close<cr>
-tmap <C-t> <C-W>:tab term ++close<cr>
+nmap <C-A-t> :tab term ++close<cr>
+tmap <C-A-t> <C-W>:tab term ++close<cr>
 
-nmap <C-v> :vert term ++close<cr>
-tmap <C-v> <C-W>:vert term ++close<cr>
-
-if has('Win32')
-    " Only in Windows
-    nmap <C-h> :hor term ++close<cr>
-    tmap <C-h> <C-W>:hor term ++close<cr>
-endif
+nmap <c-v> :vert term ++close<cr>
+tmap <c-v> <C-W>:vert term ++close<cr>
 
 " Which-Key {{{
 let g:which_key_timeout = 500
