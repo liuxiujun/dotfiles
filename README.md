@@ -30,4 +30,6 @@ New-Item -ItemType SymbolicLink -Path $Env:IDEAVIMRC -Target $Env:USERPROFILE"\v
 ``` bash
 git clone git@github.com:liuxiujun/vimfiles.git ~/.vim
 ln -s ~/.vim/vimrc ~/.vimrc 
+
+echo 'export VIMRC=$HOME/.vimrc' >> ~/.profile
 ```
