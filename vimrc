@@ -1,4 +1,3 @@
-
 " basic stuff {{{
 " Though the default behaviour may be surprising, 
 " the backspace 'not working' can be considered a feature;
@@ -6,8 +5,6 @@
 " and from removing too much text by restricting it to the current line and/or the start of the insert.
 set backspace=indent,eol,start
 
-" set shell=powershell
-" set shellcmdflag=-command
 
 " Set bell style
 set belloff=all
@@ -95,10 +92,12 @@ if has("win32")
     set clipboard=unnamed
     set t_Co=256
     set t_ut=
-else
-    if has("unix")
-        set clipboard+=unnamedplus 
-     endif
+    set shell=powershell
+    set shellcmdflag=-command
+endif
+
+if has("unix")
+    set clipboard+=unnamedplus 
 endif
 
 " }}}
@@ -106,8 +105,8 @@ endif
 " map leader to ,
 let mapleader = ","
 
+
 call plug#begin()
-" Plug 'morhetz/gruvbox'
 Plug 'easymotion/vim-easymotion'
 Plug 'ayu-theme/ayu-vim'
 Plug 'Yggdroot/indentLine'
@@ -121,18 +120,19 @@ Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn in
 Plug 'liuchengxu/vim-which-key'
 call plug#end()
 
-"" basic key mappings
-nnoremap <leader>s :write<CR>
-"This unsets the 'last search pattern' register by hitting return
+" save 
+nnoremap <leader>s :w<CR>
+
+" This unsets the 'last search pattern' register by hitting return
 nnoremap <CR> :noh<CR><CR>
 
 " source vimrc
 nnoremap <leader>. :e $VIMRC<CR>
 nnoremap <leader>0 :so $VIMRC<CR>
 
-" close buffer
+" close tab
 nnoremap <leader>q :bd<CR>
-nnoremap <leader>Q :%bd<CR>
+nnoremap <leader>Q :qa<CR>
 
 " switch between splits
 nnoremap <C-j> <C-W>j
@@ -141,8 +141,8 @@ nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
 " switch between tabs
-nnoremap <A-l> :tabn<CR>
-nnoremap <A-h> :tabp<CR>
+nnoremap <A-n> :tabn<CR>
+nnoremap <A-p> :tabp<CR>
 nnoremap <leader>1 1gt
 nnoremap <leader>2 2gt
 nnoremap <leader>3 3gt
@@ -153,13 +153,15 @@ nnoremap <leader>7 7gt
 nnoremap <leader>8 8gt
 nnoremap <leader>9 9gt
 
-" vim-powered terminal in split window
-map <Leader>t :term ++close<cr>
-tmap <Leader>t <c-w>:term ++close<cr>
 
 " vim-powered terminal in new tab
-map <Leader>T :tab term ++close<cr>
-tmap <Leader>T <c-w>:tab term ++close<cr>
+map <a-s-t> :tab term ++close<cr>
+map <a-s-v> :vert term ++close<cr>
+map <a-s-h> :hor term ++close<cr>
+tmap <Esc> <C-W>N
+tmap <a-s-t> <C-W>:tab term ++close<cr>
+tmap <a-s-v> <C-W>:vert term ++close<cr>
+tmap <a-s-h> <C-W>:hor term ++close<cr>
 
 " Which-Key {{{
 let g:which_key_timeout = 500
@@ -173,7 +175,7 @@ let g:which_key_use_floating_win = 0
 let g:which_key_max_size = 0
 autocmd! FileType which_key
 autocmd FileType which_key set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+            \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
 " defining keybindings
 let g:which_key_map = {}
 " let g:which_key_map['.'] = [ ':e $MYVIMRC' , 'open init' ]
@@ -191,17 +193,10 @@ let g:which_key_map.8 = 'tab 8'
 let g:which_key_map.9 = 'tab 9'
 
 let g:which_key_map.q = 'Close'
-let g:which_key_map.Q = 'Close All'
+let g:which_key_map.Q = 'Quit'
 
 let g:which_key_map.s = 'Save'
 
-let g:which_key_map.w = {
-     \ 'name' : '+SplitWin' ,
-     \ 'h' : ['<C-W>s' , 'Split Below'],
-     \ 'v' : ['<C-W>v' , 'Split Right'],
-     \ 'c' : ['<C-W>c' , 'UnSplit'],
-     \ 'f' : ['<F11>' , 'Full Screen'],
-     \ }
 " }}}
 
 " IndentLine {{{
@@ -230,19 +225,18 @@ let g:instant_markdown_theme = 'dark'
 " NERDTree {{{
 let NERDTreeShowHidden = 1
 
-" Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 let g:NERDTreeFileLines = 1
-" Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
+
+" Start NERDTree when Vim starts with a directory argument.
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+            \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
 autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 " NREDTree Key Mappings
 map <leader>t :NERDTreeToggle<CR>

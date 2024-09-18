@@ -46,12 +46,6 @@ let g:WhichKeyDesc_easymotion_prefix = "<leader><leader>"
 
 let g:WhichKeyDesc_Write = "<leader>s Save"
 
-let g:WhichKeyDesc_Window = "<leader>w Split Tab"
-let g:WhichKeyDesc_window_split_vertically = "<leader>wv Split vertically"
-let g:WhichKeyDesc_window_split_horizontally = "<leader>wh Split horizontally"
-let g:WhichKeyDesc_window_split_unsplit = "<leader>wu Unsplit"
-let g:WhichKeyDesc_window_split_move_editor = "<leader>wm Move editor to opposite tab group"
-
 let g:WhichKeyDesc_Tab_1 = "<leader>1 Tab 1"
 let g:WhichKeyDesc_Tab_2 = "<leader>2 Tab 2"
 let g:WhichKeyDesc_Tab_3 = "<leader>3 Tab 3"
@@ -119,21 +113,11 @@ nnoremap <CR> :noh<CR><CR>
 map <C-S-p> :action GotoAction<CR>
 map <C-p> <Action>(SearchEverywhere)
 
-" Navigate in Popup Menu, config in idea keymaps instead
-" map <Shift-j> <Action>(PopupMenu-selectNext)
-" map <Shift-k> <Action>(PopupMenu-selectPrev)
-
-" split windows
-nmap <leader>wv <Action>(SplitVertically)
-nmap <leader>wh <Action>(SplitHorizontally)
-nmap <leader>wc <Action>(Unsplit)
-nmap <leader>wm <Action>(MoveEditorToOppositeTabGroup)
-
 " switch between tabs gt/gT
 " todo go to last active tab
 
-nnoremap <A-l> :tabnext<CR>
-nnoremap <A-h> :tabprevious<CR>
+nnoremap <A-n> :tabnext<CR>
+nnoremap <A-p> :tabprevious<CR>
 nnoremap <leader>1 1gt
 nnoremap <leader>2 2gt
 nnoremap <leader>3 3gt
@@ -211,6 +195,7 @@ map <leader>o <Action>(FileStructurePopup)
 map <leader>h <Action>(QuickImplementations)
 map <leader>g <Action>(EditorPopupMenu.GoTo)
 map <leader>n <Action>(Generate)
+map <leader>T <Action>(ActivateTerminalToolWindow)
 
 nmap ge <Action>(GotoNextError)
 nmap gE <Action>(GotoPreviousError)
