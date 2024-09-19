@@ -9,3 +9,5 @@
 	proxy = 127.0.0.1:7890
 [https]
 	proxy = 127.0.0.1:7890
+[core]
+	autocrlf = true

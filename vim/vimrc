@@ -107,22 +107,18 @@ endif
 let mapleader = ","
 
 call plug#begin()
-Plug 'easymotion/vim-easymotion'
-Plug 'ayu-theme/ayu-vim'
-Plug 'Yggdroot/indentLine'
-Plug 'preservim/nerdtree' 
-Plug 'vim-airline/vim-airline'
-Plug 'tpope/vim-commentary'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-entire'
-Plug 'machakann/vim-highlightedyank'
-Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
-Plug 'liuchengxu/vim-which-key'
+" Plug 'easymotion/vim-easymotion'
+" Plug 'ayu-theme/ayu-vim'
+" Plug 'Yggdroot/indentLine'
+" Plug 'preservim/nerdtree' 
+" Plug 'vim-airline/vim-airline'
+" Plug 'tpope/vim-commentary'
+" Plug 'kana/vim-textobj-user'
+" Plug 'kana/vim-textobj-entire'
+" Plug 'machakann/vim-highlightedyank'
+" Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown'}
+" Plug 'liuchengxu/vim-which-key'
 call plug#end()
-" Markdown Preview
-let g:instant_markdown_autostart = 0
-nnoremap <leader>mp :InstantMarkdownPreview<CR>
-nnoremap <leader>mc :InstantMarkdownStop<CR>
 
 " save 
 nnoremap <leader>s :w<CR>
@@ -157,16 +153,39 @@ nnoremap <leader>7 7gt
 nnoremap <leader>8 8gt
 nnoremap <leader>9 9gt
 
-
 " vim-powered terminal in new tab
 tmap <Esc> <C-W>N
 
-nmap <C-A-t> :tab term ++close<cr>
-tmap <C-A-t> <C-W>:tab term ++close<cr>
+nmap <A-T> :tab term ++close<cr>
+tmap <A-T> <C-W>:tab term ++close<cr>
 
 nmap <C-A-v> :vert term ++close<cr>
 tmap <C-A-v> <C-W>:vert term ++close<cr>
 
+" Markdown Preview
+nnoremap <leader>mp :InstantMarkdownPreview<CR>
+nnoremap <leader>mc :InstantMarkdownStop<CR>
+
+function! ToggleVerbose()
+    if !&verbose
+        set verbosefile=~/.log/vim/verbose.log
+        set verbose=15
+    else
+        set verbose=0
+        set verbosefile=
+    endif
+endfunction
+nnoremap <leader>l :call ToggleVerbose()<CR>
+
+" toggle line number relative
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set norelativenumber
+  else
+    set relativenumber number
+  endif
+endfunction
+nnoremap <leader><Tab> :call NumberToggle()<CR>
 " Which-Key {{{
 let g:which_key_timeout = 500
 " map leader key
@@ -201,6 +220,8 @@ let g:which_key_map.Q = 'Quit'
 
 let g:which_key_map.s = 'Save'
 
+let g:which_key_map.l = 'Toggle-Verbose'
+
 let g:which_key_map['m'] = {
       \ 'name' : '+Markdown-Preview' ,
       \ 'p' : 'Start'        ,
@@ -218,8 +239,8 @@ let g:indentLine_setColors = 0
 
 " instant_markdown {{{
 "Uncomment to override defaults:
-"let g:instant_markdown_slow = 1
-"let g:instant_markdown_autostart = 0
+" let g:instant_markdown_slow = 1
+" let g:instant_markdown_autostart = 0
 "let g:instant_markdown_open_to_the_world = 1
 "let g:instant_markdown_allow_unsafe_content = 1
 "let g:instant_markdown_allow_external_content = 0
@@ -233,23 +254,29 @@ let g:instant_markdown_theme = 'dark'
 " }}}
 
 " NERDTree {{{
-let NERDTreeShowHidden = 1
-
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-let g:NERDTreeFileLines = 1
+let g:NERDTreeShowHidden = 1
+let g:NERDTreeAutoDeleteBuffer = 1
+let g:NERDTreeDirArrows = 1
+" let g:NERDTreeIgnore = ['\.DAT$', '\.LOG1$', '\.LOG1$']
+let g:NERDTreeIgnore = ['\c^ntuser\..*', '\~$']
+let g:NERDTreeMinimalUI = 1
 
 " Start NERDTree when Vim starts with a directory argument.
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-            \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+" Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
 autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-            \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+" Open the existing NERDTree on each new tab.
+autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
 
 " NREDTree Key Mappings
-map <leader>t :NERDTreeToggle<CR>
+map <silent> <leader>t :NERDTreeToggle<CR>
 " }}}
 
 " ColorScheme Ayu {{{
