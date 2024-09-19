@@ -5,6 +5,7 @@
 " and from removing too much text by restricting it to the current line and/or the start of the insert.
 set backspace=indent,eol,start
 
+set encoding=UTF-8
 
 " Set bell style
 set belloff=all
@@ -14,7 +15,7 @@ set vb t_vb=
 set nocompatible
 
 " Enable type file detection. Vim will be able to try to detect the type of file in use.
-filetype on
+filetype off
 
 " Enable plugins and load plugin for the detected file type.
 filetype plugin on
@@ -87,13 +88,15 @@ set wildmode=list:longest
 " Wildmenu will ignore files with these extensions.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
-if has("win32")
-    " Using the clipboard as the default register for MS Windows Only
+if has('win32')
     set clipboard=unnamed
     set t_Co=256
     set t_ut=
-    set shell=powershell
-    set shellcmdflag=-command
+    " still cannot work -> https://github.com/junegunn/vim-plug/issues/895 
+    " set shell=powershell.exe
+    " set shellquote= shellpipe=\| shellxquote=
+    " set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
+    " set shellredir=\|\ Out-File\ -Encoding\ UTF8
 endif
 
 if has("unix")
@@ -107,17 +110,18 @@ endif
 let mapleader = ","
 
 call plug#begin()
-" Plug 'easymotion/vim-easymotion'
-" Plug 'ayu-theme/ayu-vim'
-" Plug 'Yggdroot/indentLine'
-" Plug 'preservim/nerdtree' 
-" Plug 'vim-airline/vim-airline'
-" Plug 'tpope/vim-commentary'
-" Plug 'kana/vim-textobj-user'
-" Plug 'kana/vim-textobj-entire'
-" Plug 'machakann/vim-highlightedyank'
-" Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown'}
-" Plug 'liuchengxu/vim-which-key'
+Plug 'easymotion/vim-easymotion'
+Plug 'ayu-theme/ayu-vim'
+Plug 'Yggdroot/indentLine'
+Plug 'preservim/nerdtree' 
+Plug 'vim-airline/vim-airline'
+Plug 'tpope/vim-commentary'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-entire'
+Plug 'machakann/vim-highlightedyank'
+Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
+" Plug 'suan/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
+Plug 'liuchengxu/vim-which-key'
 call plug#end()
 
 " save 
@@ -163,19 +167,19 @@ nmap <C-A-v> :vert term ++close<cr>
 tmap <C-A-v> <C-W>:vert term ++close<cr>
 
 " Markdown Preview
-nnoremap <leader>mp :InstantMarkdownPreview<CR>
-nnoremap <leader>mc :InstantMarkdownStop<CR>
+" nnoremap <leader>mp :InstantMarkdownPreview<CR>
+" nnoremap <leader>mc :InstantMarkdownStop<CR>
 
-function! ToggleVerbose()
-    if !&verbose
-        set verbosefile=~/.log/vim/verbose.log
-        set verbose=15
-    else
-        set verbose=0
-        set verbosefile=
-    endif
-endfunction
-nnoremap <leader>l :call ToggleVerbose()<CR>
+" function! ToggleVerbose()
+"     if !&verbose
+"         set verbosefile=~/.log/vim/verbose.log
+"         set verbose=15
+"     else
+"         set verbose=0
+"         set verbosefile=
+"     endif
+" endfunction
+" nnoremap <leader>l :call ToggleVerbose()<CR>
 
 " toggle line number relative
 function! NumberToggle()
@@ -186,6 +190,7 @@ function! NumberToggle()
   endif
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
+
 " Which-Key {{{
 let g:which_key_timeout = 500
 " map leader key
@@ -220,8 +225,6 @@ let g:which_key_map.Q = 'Quit'
 
 let g:which_key_map.s = 'Save'
 
-let g:which_key_map.l = 'Toggle-Verbose'
-
 let g:which_key_map['m'] = {
       \ 'name' : '+Markdown-Preview' ,
       \ 'p' : 'Start'        ,
@@ -238,19 +241,19 @@ let g:indentLine_setColors = 0
 " }}}
 
 " instant_markdown {{{
+let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
 "Uncomment to override defaults:
-" let g:instant_markdown_slow = 1
-" let g:instant_markdown_autostart = 0
+"let g:instant_markdown_slow = 1
+"let g:instant_markdown_autostart = 0
 "let g:instant_markdown_open_to_the_world = 1
 "let g:instant_markdown_allow_unsafe_content = 1
 "let g:instant_markdown_allow_external_content = 0
 let g:instant_markdown_mathjax = 1
-"let g:instant_markdown_mermaid = 1
-"let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
+let g:instant_markdown_mermaid = 1
 "let g:instant_markdown_autoscroll = 0
 "let g:instant_markdown_port = 8888
 "let g:instant_markdown_python = 1
-let g:instant_markdown_theme = 'dark'
+"let g:instant_markdown_theme = 'dark'
 " }}}
 
 " NERDTree {{{

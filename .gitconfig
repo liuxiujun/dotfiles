@@ -11,3 +11,4 @@
 	proxy = 127.0.0.1:7890
 [core]
 	autocrlf = true
+	filemode = false
