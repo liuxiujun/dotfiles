@@ -119,6 +119,10 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'liuchengxu/vim-which-key'
 call plug#end()
+" Markdown Preview
+let g:instant_markdown_autostart = 0
+nnoremap <leader>mp :InstantMarkdownPreview<CR>
+nnoremap <leader>mc :InstantMarkdownStop<CR>
 
 " save 
 nnoremap <leader>s :w<CR>
@@ -160,8 +164,8 @@ tmap <Esc> <C-W>N
 nmap <C-A-t> :tab term ++close<cr>
 tmap <C-A-t> <C-W>:tab term ++close<cr>
 
-nmap <c-v> :vert term ++close<cr>
-tmap <c-v> <C-W>:vert term ++close<cr>
+nmap <C-A-v> :vert term ++close<cr>
+tmap <C-A-v> <C-W>:vert term ++close<cr>
 
 " Which-Key {{{
 let g:which_key_timeout = 500
@@ -196,6 +200,12 @@ let g:which_key_map.q = 'Close'
 let g:which_key_map.Q = 'Quit'
 
 let g:which_key_map.s = 'Save'
+
+let g:which_key_map['m'] = {
+      \ 'name' : '+Markdown-Preview' ,
+      \ 'p' : 'Start'        ,
+      \ 'c' : 'Stop'        ,
+      \ }
 
 " }}}
 
