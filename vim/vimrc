@@ -92,11 +92,6 @@ if has('win32')
     set clipboard=unnamed
     set t_Co=256
     set t_ut=
-    " still cannot work -> https://github.com/junegunn/vim-plug/issues/895 
-    " set shell=powershell.exe
-    " set shellquote= shellpipe=\| shellxquote=
-    " set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
-    " set shellredir=\|\ Out-File\ -Encoding\ UTF8
 endif
 
 if has("unix")
@@ -104,6 +99,24 @@ if has("unix")
     set shell=zsh
 endif
 
+" }}}
+
+" plug.vim stuff {{{
+if has('win32')
+    " https://github.com/junegunn/vim-plug/issues/895 
+    " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
+    set shell=powershell
+    set shellquote= shellpipe=\| shellxquote=
+    set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
+    set shellredir=\|\ Out-File\ -Encoding\ UTF8
+
+    " PlugUpdate
+    command! MyPlugUpdate   :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugUpdate
+    " PlugInstall
+    command! MyPlugInstall  :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugInstall
+    " PlugClean
+    command! MyPlugClean    :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugClean
+endif
 " }}}
 
 " map leader to ,
@@ -120,7 +133,6 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
-" Plug 'suan/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'liuchengxu/vim-which-key'
 call plug#end()
 
@@ -165,10 +177,6 @@ tmap <A-T> <C-W>:tab term ++close<cr>
 
 nmap <C-A-v> :vert term ++close<cr>
 tmap <C-A-v> <C-W>:vert term ++close<cr>
-
-" Markdown Preview
-" nnoremap <leader>mp :InstantMarkdownPreview<CR>
-" nnoremap <leader>mc :InstantMarkdownStop<CR>
 
 " function! ToggleVerbose()
 "     if !&verbose
@@ -313,4 +321,8 @@ augroup END
 " endif
 
 " }}}
-
+" Nasty hacks
+if has('win32')
+  " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
+  set shell=cmd.exe
+endif

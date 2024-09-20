@@ -33,25 +33,25 @@ IDEA Keymaps:
 
 ``` powershell
 # Run as Administrator
-New-Item -ItemType SymbolicLink -Path $Env:IDEAVIMRC -Target $HOME\dotfiles\.ideavimrc"
+New-Item -ItemType SymbolicLink -Path $HOME\.ideavimrc -Target $HOME\dotfiles\.ideavimrc
 ```
 
 ## WSL2
 ``` powershell
 # Run as Administrator
-sudo New-Item -ItemType SymbolicLink -Path $Env:USERPROFILE"\.wslconfig" -Target $Env:USERPROFILE"\dotfiles\.wslconfig"
+sudo New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.wslconfig
 ```
 
 ## Git
 ``` powershell
 # Run as Administrator
-sudo New-Item -ItemType SymbolicLink -Path $Env:USERPROFILE"\.gitconfig" -Target $Env:USERPROFILE"\dotfiles\.gitconfig"
+sudo New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\.gitconfig
 ```
 
 ## NPM
 ``` powershell
 # Run as Administrator
-sudo New-Item -ItemType SymbolicLink -Path $Env:USERPROFILE"\.npmrc" -Target $Env:USERPROFILE"\dotfiles\.npmrc"
+sudo New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.npmrc
 ```
 
 # Linux
