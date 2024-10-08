@@ -105,17 +105,19 @@ endif
 if has('win32')
     " https://github.com/junegunn/vim-plug/issues/895 
     " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
-    set shell=powershell
-    set shellquote= shellpipe=\| shellxquote=
-    set shellcmdflag=\ -NoLogo\ -ExecutionPolicy\ RemoteSigned\ -Command
-    set shellredir=\|\ Out-File\ -Encoding\ UTF8
+    set shell=cmd.exe
+endif
+" }}}
 
-    " PlugUpdate
-    command! MyPlugUpdate   :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugUpdate
-    " PlugInstall
-    command! MyPlugInstall  :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugInstall
-    " PlugClean
-    command! MyPlugClean    :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugClean
+" GUI {{{
+if has("gui_running")
+  if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_macvim")
+    set guifont=Menlo\ Regular:h14
+  elseif has("gui_win32")
+    set guifont=Consolas:h11:cANSI
+  endif
 endif
 " }}}
 
@@ -134,6 +136,12 @@ Plug 'kana/vim-textobj-entire'
 Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'liuchengxu/vim-which-key'
+" Plug 'sheerun/vim-polyglot'
+" Plug 'dense-analysis/ale'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'mattn/vim-lsp-settings'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
 
 " save 
@@ -146,8 +154,8 @@ nnoremap <CR> :noh<CR><CR>
 nnoremap <leader>. :e $VIMRC<CR>
 nnoremap <leader>0 :so $VIMRC<CR>
 
-" close tab
-nnoremap <leader>q :bd<CR>
+" close 
+nnoremap <leader>q :q<CR>
 nnoremap <leader>Q :qa<CR>
 
 " switch between splits
@@ -170,24 +178,26 @@ nnoremap <leader>8 8gt
 nnoremap <leader>9 9gt
 
 " vim-powered terminal in new tab
-tmap <Esc> <C-W>N
+:tmap <Esc> <C-W>N
 
-nmap <A-T> :tab term ++close<cr>
-tmap <A-T> <C-W>:tab term ++close<cr>
+:nmap <A-T> :tab term ++close<cr>
+:tmap <A-T> <C-W>:tab term ++close<cr>
 
-nmap <C-A-v> :vert term ++close<cr>
-tmap <C-A-v> <C-W>:vert term ++close<cr>
+:nmap <A-v> :vert term ++close<cr>
+:tmap <A-v> <C-W>:vert term ++close<cr>
 
-" function! ToggleVerbose()
-"     if !&verbose
-"         set verbosefile=~/.log/vim/verbose.log
-"         set verbose=15
-"     else
-"         set verbose=0
-"         set verbosefile=
-"     endif
-" endfunction
-" nnoremap <leader>l :call ToggleVerbose()<CR>
+" LSP Action
+nnoremap <leader>dd :LspDefinition<cr>
+nnoremap <leader>dn :LspNextDiagnostic<cr>
+nnoremap <leader>dp :LspPreviousDiagnostic<cr>
+nnoremap <leader>df :LspReferences<cr>
+nnoremap <leader>dr :LspRename<cr>
+nnoremap <leader>ds :LspStopServer<cr>
+nnoremap <leader>dp :LspPeekDefinition<cr>
+nnoremap <leader>da :LspCodeAction<cr>
+nnoremap <leader>dh :LspHover<cr>
+nnoremap <leader>df :LspDocumentFormat<cr> 
+nnoremap <leader>dd :LspDefinition<cr>
 
 " toggle line number relative
 function! NumberToggle()
@@ -198,6 +208,19 @@ function! NumberToggle()
   endif
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
+
+" 中文输入法 {{{
+if has('multi_byte_ime') 
+     "未开启 IME 时光标背景色  
+     hi Cursor guifg=bg guibg=Orange gui=NONE  
+     "开启IME 时光标背景色  
+     hi CursorIM guifg=NONE guibg=Skyblue gui=NONE  
+     "关闭Vim的自动切换 IME 输入法(插入模式和检索模式)  
+     set iminsert=0 imsearch=0  
+     "插入模式输入法状态未被记录时，默认关闭IME  
+     "inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
+endif
+" }}}
 
 " Which-Key {{{
 let g:which_key_timeout = 500
@@ -212,33 +235,25 @@ let g:which_key_max_size = 0
 autocmd! FileType which_key
 autocmd FileType which_key set laststatus=0 noshowmode noruler
             \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+
 " defining keybindings
-let g:which_key_map = {}
-" let g:which_key_map['.'] = [ ':e $MYVIMRC' , 'open init' ]
-let g:which_key_map['.'] = { 'name': 'vimrc'}
-let g:which_key_map.0 = ':source .vimrc'
-
-let g:which_key_map.1 = 'tab 1'
-let g:which_key_map.2 = 'tab 2'
-let g:which_key_map.3 = 'tab 3'
-let g:which_key_map.4 = 'tab 4'
-let g:which_key_map.5 = 'tab 5'
-let g:which_key_map.6 = 'tab 6'
-let g:which_key_map.7 = 'tab 7'
-let g:which_key_map.8 = 'tab 8'
-let g:which_key_map.9 = 'tab 9'
-
-let g:which_key_map.q = 'Close'
-let g:which_key_map.Q = 'Quit'
-
-let g:which_key_map.s = 'Save'
-
-let g:which_key_map['m'] = {
-      \ 'name' : '+Markdown-Preview' ,
-      \ 'p' : 'Start'        ,
-      \ 'c' : 'Stop'        ,
-      \ }
-
+let g:which_key_map = {
+    \   'name'    :   'Leader'          ,
+    \   '.'     :   'edit vimrc'        ,
+    \   '0'     :   'source vimrc'      ,
+    \   's'     :   'Save'              ,
+    \   'q'     :   'Close'             ,
+    \   'Q'     :   'Quit'              ,
+    \   '1'     :   'tab1'             ,
+    \   '2'     :   'tab2'             ,
+    \   '3'     :   'tab3'             ,
+    \   '4'     :   'tab4'             ,
+    \   '5'     :   'tab5'             ,
+    \   '6'     :   'tab6'             ,
+    \   '7'     :   'tab7'             ,
+    \   '8'     :   'tab8'             ,
+    \   '9'     :   'tab9'             ,
+    \   }
 " }}}
 
 " IndentLine {{{
@@ -261,7 +276,7 @@ let g:instant_markdown_mermaid = 1
 "let g:instant_markdown_autoscroll = 0
 "let g:instant_markdown_port = 8888
 "let g:instant_markdown_python = 1
-"let g:instant_markdown_theme = 'dark'
+let g:instant_markdown_theme = 'dark'
 " }}}
 
 " NERDTree {{{
@@ -286,8 +301,16 @@ autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' 
 " Open the existing NERDTree on each new tab.
 autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
 
+function! NERDTreeFocusToggle() 
+    if (winnr() == g:NERDTree.GetWinNum())
+        :NERDTreeToggle
+    else
+        :NERDTreeFocus
+    endif
+endfunction
 " NREDTree Key Mappings
-map <silent> <leader>t :NERDTreeToggle<CR>
+" nnoremap <silent> <leader>t :call NERDTreeFocusToggle()<CR>
+nnoremap <silent> <leader>t :NERDTreeToggle<CR>
 " }}}
 
 " ColorScheme Ayu {{{
@@ -321,8 +344,3 @@ augroup END
 " endif
 
 " }}}
-" Nasty hacks
-if has('win32')
-  " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
-  set shell=cmd.exe
-endif

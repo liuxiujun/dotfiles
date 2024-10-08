@@ -1,0 +1,51 @@
+# Setup Windows
+- scoop
+    - 7zip
+    - git
+    - vim
+    - sudo
+    - posh-git
+    - oh-my-posh
+    - meslo-NF
+    - mpv.net
+    - yt-dlp
+    - ffmpeg
+    - clash-nyanpasu 
+    - autohotkey
+    - calibre-normal
+    - quicklook
+    - freeplane
+    - temurin21-jdk 
+    - joplin
+    - maven
+    - nodejs20
+    - perl
+    - racket
+    - python312
+    - dbeaver
+    - postman
+- Microsoft Store
+    - Firefox
+    - vscode
+    - Three Finger Drag
+    - Okular
+    - WPS
+    - Microsoft To Do
+    - Eudic
+    - Microsoft PowerToys
+    - WPS
+    - OneNote
+    - DeepL
+
+- exe
+    - Office 2021
+    - Idea
+    - Navicat
+    - Docker Desktop
+    - Chrome
+
+- firefox plugin
+    - saladict
+    - Adguard Adblocker
+    - Vimium
+

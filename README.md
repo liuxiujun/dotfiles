@@ -48,6 +48,19 @@ sudo New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfil
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\.gitconfig
 ```
 
+## Win-vind
+``` powershell
+# Run as Administrator
+sudo New-Item -ItemType SymbolicLink -Path $HOME\.win-vind\.vindrc -Target $HOME\dotfiles\.vindrc
+```
+
+## mpv
+``` powershell
+# https://mpv.io/manual/stable/#files-on-windows
+# ~/.config/mpv/input.conf consists of a list of key bindings
+sudo New-Item -ItemType SymbolicLink -Path $HOME\.config\mpv\input.conf -Target $HOME\dotfiles\input.conf
+```
+
 ## NPM
 ``` powershell
 # Run as Administrator

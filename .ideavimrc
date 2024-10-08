@@ -174,7 +174,7 @@ map <leader>DF <action>(ToggleFullScreen)
 "   m       Display Right-Click Menu
 "   A       Zoom(maximize/minimize) the NERDTree window
 "   q       Close the NERDTree window
-map <leader>t :NERDTreeFocus<CR>
+nnoremap <leader>t :NERDTreeFocus<CR>
 
 " file navigation
 map <leader>ff <Action>(GotoFile)
@@ -192,10 +192,11 @@ let g:WhichKeyDesc_Goto_Popup = "<leader>g Go to"
 
 map <leader>m <Action>(ShowIntentionActions)
 map <leader>o <Action>(FileStructurePopup)
-map <leader>h <Action>(QuickImplementations)
+" map <leader>h <Action>(QuickImplementations)
+map <leader>h <Action>(HideAllWindows)
 map <leader>g <Action>(EditorPopupMenu.GoTo)
 map <leader>n <Action>(Generate)
-map <leader>T <Action>(ActivateTerminalToolWindow)
+map <leader>w <Action>(Switcher)
 
 nmap ge <Action>(GotoNextError)
 nmap gE <Action>(GotoPreviousError)
@@ -205,19 +206,19 @@ nmap [[ <Action>(MethodUp)
 nmap ]] <Action>(MethodDown)
 
 " code refactoring
-map <leader>rn <Action>(RenameElement)
-map <leader>rm <Action>(ExtractMethod)
-map <leader>rv <Action>(IntroduceVariable)
-map <leader>rf <Action>(IntroduceField)
-map <leader>rS <Action>(ChangeSignature)
-map <leader>rr <Action>(Refactorings.QuickListPopupAction)
-map <leader>ro <Action>(OptimizeImports)
-map <leader>rl <Action>(ReformatCode)
-map <leader>rs <Action>(SurroundWith)
+:map <leader>rn <Action>(RenameElement)
+:map <leader>rm <Action>(ExtractMethod)
+:map <leader>rv <Action>(IntroduceVariable)
+:map <leader>rf <Action>(IntroduceField)
+:map <leader>rS <Action>(ChangeSignature)
+:map <leader>rr <Action>(Refactorings.QuickListPopupAction)
+:map <leader>ro <Action>(OptimizeImports)
+:map <leader>rl <Action>(ReformatCode)
+:map <leader>rs <Action>(SurroundWith)
 
 " run & debug & breakpoints
-:map <leader>ar <Action>(Run)
-:map <leader>ad <Action>(Debug)
+:map <leader>ar <Action>(RunClass)
+:map <leader>ad <Action>(DebugClass)
 :map <leader>ac <Action>(Stop)
 :map <leader>a1 <Action>(ChooseRunConfiguration)
 :map <leader>a2 <Action>(ChooseDebugConfiguration)
