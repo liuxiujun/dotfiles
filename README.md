@@ -5,6 +5,13 @@ cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git 
 ```
 
+## PowerShell
+``` powershell
+# (Run as Administrator) 
+# vim $profile
+sudo New-Item -ItemType SymbolicLink -Path $HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 -Target $HOME\dotfiles\powershell\Microsoft.PowerShell_profile.ps1
+```
+
 ## Vim 
 ``` powershell
 # (Run as Administrator) Create a link of vim config to home

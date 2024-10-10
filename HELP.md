@@ -25,6 +25,7 @@
     - dbeaver
     - postman
 - Microsoft Store
+    - Powershell
     - Firefox
     - vscode
     - Three Finger Drag
