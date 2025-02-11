@@ -121,6 +121,7 @@ if has("gui_running")
 endif
 " }}}
 
+" key mappings {{{
 " map leader to ,
 let mapleader = ","
 
@@ -208,6 +209,7 @@ function! NumberToggle()
   endif
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
+" }}}
 
 " 中文输入法 {{{
 if has('multi_byte_ime') 
