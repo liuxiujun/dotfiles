@@ -42,6 +42,11 @@ IDEA Keymaps:
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.ideavimrc -Target $HOME\dotfiles\.ideavimrc
 ```
+## eclipse vrapper plugin
+``` powershell
+# Run as Administrator
+New-Item -ItemType SymbolicLink -Path $HOME\.vrapperrc -Target $HOME\dotfiles\.vrapperrc
+```
 
 ## WSL2
 ``` powershell

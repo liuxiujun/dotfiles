@@ -1,0 +1,35 @@
+# basic settings
+set clipboard=unnamed
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+set contentassistmode
+
+set number
+# key mappings 
+let mapleader = ","
+
+" save 
+nnoremap <leader>s :w<CR>
+
+" close 
+nnoremap <leader>q :q<CR>
+nnoremap <leader>Q :qa<CR>
+
+" source vimrc
+nnoremap <leader>. :e C:\Users\liuxi\.vrapperrc<CR>
+nnoremap <leader>0 :so C:\Users\liuxi\.vrapperrc<CR>
+
+" switch between tabs
+nnoremap <A-n> :tabn<CR>
+nnoremap <A-p> :tabp<CR>
+nnoremap <leader>1 1gt
+nnoremap <leader>2 2gt
+nnoremap <leader>3 3gt
+nnoremap <leader>4 4gt
+nnoremap <leader>5 5gt
+nnoremap <leader>6 6gt
+nnoremap <leader>7 7gt
+nnoremap <leader>8 8gt
+nnoremap <leader>9 9gt
