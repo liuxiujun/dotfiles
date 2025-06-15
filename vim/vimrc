@@ -143,10 +143,7 @@ if has('unix')
 endif
 " }}}
 
-" key mappings {{{
-" map leader to ,
-let mapleader = ","
-
+" Plugins {{{
 call plug#begin()
 Plug 'easymotion/vim-easymotion'
 Plug 'ayu-theme/ayu-vim'
@@ -159,6 +156,8 @@ Plug 'kana/vim-textobj-entire'
 Plug 'machakann/vim-highlightedyank'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'liuchengxu/vim-which-key'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 " Plug 'sheerun/vim-polyglot'
 " Plug 'dense-analysis/ale'
 " Plug 'prabirshrestha/vim-lsp'
@@ -166,6 +165,11 @@ Plug 'liuchengxu/vim-which-key'
 " Plug 'prabirshrestha/asyncomplete.vim'
 " Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
+" }}}
+
+" key mappings {{{
+" map leader to ,
+let mapleader = ","
 
 " save 
 nnoremap <leader>s :w<CR>
