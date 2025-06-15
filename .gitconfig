@@ -1,10 +1,6 @@
 [user]
 	email = liuxiujun09@outlook.com
 	name = liuxiujun
-[credential "helperselector"]
-	selected = manager
-[credential]
-	helper = !\"C:/ProgramData/scoop/apps/git/2.45.2/mingw64/bin/git-credential-manager.exe\"
 [http]
 	proxy = 127.0.0.1:7890
 [https]
