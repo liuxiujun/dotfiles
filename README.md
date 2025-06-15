@@ -5,14 +5,14 @@ cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git 
 ```
 
-## PowerShell
+### PowerShell
 ``` powershell
 # (Run as Administrator) 
 # vim $profile
 sudo New-Item -ItemType SymbolicLink -Path $HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 -Target $HOME\dotfiles\powershell\Microsoft.PowerShell_profile.ps1
 ```
 
-## Vim 
+### Vim 
 ``` powershell
 # (Run as Administrator) Create a link of vim config to home
 sudo New-Item -ItemType SymbolicLink -Path $HOME\vimfiles -Target $HOME\dotfiles\vim
@@ -28,7 +28,7 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni $HOME/vimfiles/autoload/plug.vim -Force
 ```
 
-## Intellij IDEA .ideavimrc
+### Intellij IDEA .ideavimrc
 IDEA Plugins:
 `IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
 
@@ -42,38 +42,38 @@ IDEA Keymaps:
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.ideavimrc -Target $HOME\dotfiles\.ideavimrc
 ```
-## eclipse vrapper plugin
+### eclipse vrapper plugin
 ``` powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.vrapperrc -Target $HOME\dotfiles\.vrapperrc
 ```
 
-## WSL2
+### WSL2
 ``` powershell
 # Run as Administrator
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.wslconfig
 ```
 
-## Git
+### Git
 ``` powershell
 # Run as Administrator
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\.gitconfig
 ```
 
-## Win-vind
+### Win-vind
 ``` powershell
 # Run as Administrator
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.win-vind\.vindrc -Target $HOME\dotfiles\.vindrc
 ```
 
-## mpv
+### mpv
 ``` powershell
 # https://mpv.io/manual/stable/#files-on-windows
 # ~/.config/mpv/input.conf consists of a list of key bindings
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.config\mpv\input.conf -Target $HOME\dotfiles\input.conf
 ```
 
-## NPM
+### NPM
 ``` powershell
 # Run as Administrator
 sudo New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.npmrc
@@ -84,7 +84,7 @@ sudo New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
 ```
-## Vim
+### Vim
 ``` bash
 ln -s ~/dotfiles/vim ~/.vim 
 
@@ -96,3 +96,46 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
+### IdeaVim
+IDEA Plugins:
+`IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
+
+IDEA Keymaps: 
+> `Up`      :   Ctrl+k  
+> `Down`    :   Ctrl+j  
+> `Left`    :   Ctrl+h  
+> `Right`   :   Ctrl+l  
+``` bash
+ln -s ~/dotfiles/.ideavimrc ~/.ideavimrc
+```
+
+### NPM
+``` bash
+ln -s ~/dotfiles/.npmrc ~/.npmrc
+```
+
+### IBUS
+``` bash
+# 中文输入法
+sudo apt install ibus-pinyin ibus-libpinyin
+# 한국어 input method
+sudo apt install ibus-hangul
+```
+
+### Vim clipboard
+``` bash
+sudo apt install vim-gtk3
+
+# sudo update-alternatives --install /usr/bin/vim vim /usr/bin/vim/gtk3 100
+
+# choose gtk3
+sudo update-alternatives --config vim
+```
+
+### wps输入中文
+``` bash
+sudo tee -a /usr/bin/wps /usr/bin/et << EOF
+export XMODIFIERS="@im=ibus"
+export QT_IM_MODULE="ibus"
+EOF
+```
