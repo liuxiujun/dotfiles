@@ -88,6 +88,8 @@ set wildmode=list:longest
 " Wildmenu will ignore files with these extensions.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
+au BufNewFile,BufRead Jenkinsfile setf groovy
+
 if has('win32')
     set clipboard=unnamed
     set t_Co=256
@@ -95,7 +97,7 @@ if has('win32')
 endif
 
 if has("unix")
-    set clipboard+=unnamedplus 
+    set clipboard=unnamedplus 
     set shell=zsh
 endif
 

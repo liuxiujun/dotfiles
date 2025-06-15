@@ -6,7 +6,17 @@
 let mapleader = ","
 
 " basic stuff {{{
-set clipboard+=unnamed          " ensures that IdeaVim shares its clipboard with the system clipboard.
+
+if has('win32')
+    set clipboard=unnamed
+    set t_Co=256
+    set t_ut=
+endif
+
+if has("unix")
+    set clipboard=unnamedplus 
+endif
+                                " ensures that IdeaVim shares its clipboard with the system clipboard.
 set number
 set list                        " show whitespace
 set trackactionids=off          " (default off) When on, IdeaVim will try to track the current IDE action and display
