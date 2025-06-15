@@ -117,7 +117,9 @@ ln -s ~/dotfiles/.npmrc ~/.npmrc
 ### IBUS
 ``` bash
 # 中文输入法
-sudo apt install ibus-pinyin libpinyin
+sudo apt install ibus-pinyin ibus-libpinyin
+# 한국어 input method
+sudo apt install ibus-hangul
 ```
 
 ### Vim clipboard

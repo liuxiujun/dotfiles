@@ -90,6 +90,7 @@ set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
 au BufNewFile,BufRead Jenkinsfile setf groovy
 
+" Clipboard config
 if has('win32')
     set clipboard=unnamed
     set t_Co=256
@@ -122,6 +123,28 @@ if has("gui_running")
   elseif has("gui_win32")
     set guifont=Consolas:h11:cANSI
   endif
+endif
+" }}}
+
+" Input Method {{{
+if has('unix')
+  let g:input_status = ''
+
+  function! SaveInputStatus() 
+    let g:input_status = system('ibus engine')
+  endfunction
+
+  function! SetEnglish()
+    call system('ibus engine xkb:us::eng')
+  endfunction
+
+  function! RestoreInput()
+    if g:input_status != ''
+      call system('ibus engine ' . g:input_status)
+    endif
+  endfunction
+  autocmd InsertEnter * call RestoreInput()
+  autocmd InsertLeave * call SaveInputStatus() | call SetEnglish()
 endif
 " }}}
 
@@ -213,19 +236,6 @@ function! NumberToggle()
   endif
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
-" }}}
-
-" 中文输入法 {{{
-if has('multi_byte_ime') 
-     "未开启 IME 时光标背景色  
-     hi Cursor guifg=bg guibg=Orange gui=NONE  
-     "开启IME 时光标背景色  
-     hi CursorIM guifg=NONE guibg=Skyblue gui=NONE  
-     "关闭Vim的自动切换 IME 输入法(插入模式和检索模式)  
-     set iminsert=0 imsearch=0  
-     "插入模式输入法状态未被记录时，默认关闭IME  
-     "inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
-endif
 " }}}
 
 " Which-Key {{{
