@@ -12,3 +12,5 @@
 [core]
 	autocrlf = true
 	filemode = false
+[init]
+	defaultBranch = main
