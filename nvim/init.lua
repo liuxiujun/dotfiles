@@ -1,3 +1,5 @@
 require('keymaps')
-require('plugins')
 require('colorscheme')
+require('options')
+require('lsp')
+require('plugin_manager')

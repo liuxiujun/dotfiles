@@ -28,6 +28,12 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni $HOME/vimfiles/autoload/plug.vim -Force
 ```
 
+### NeoVim
+``` powershell
+# (Run as Administrator) 
+New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\nvim -Target $HOME\dotfiles\nvim
+```
+
 ### Intellij IDEA .ideavimrc
 IDEA Plugins:
 `IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
@@ -94,6 +100,11 @@ echo $VIMRC
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
+### NeoVim
+``` bash
+ln -s ~/dotfiles/nvim ~/.config/nvim
 ```
 
 ### Terminal Proxy
