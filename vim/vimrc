@@ -182,8 +182,8 @@ nnoremap <leader>. :e $VIMRC<CR>
 nnoremap <leader>0 :so $VIMRC<CR>
 
 " close 
-nnoremap <leader>q :q<CR>
-nnoremap <leader>Q :qa<CR>
+nnoremap <leader>x :q<CR>
+nnoremap <leader>X :qa<CR>
 
 " switch between splits
 nnoremap <C-j> <C-W>j
@@ -207,11 +207,8 @@ nnoremap <leader>9 9gt
 " vim-powered terminal in new tab
 :tmap <Esc> <C-W>N
 
-:nmap <A-T> :tab term ++close<cr>
-:tmap <A-T> <C-W>:tab term ++close<cr>
-
-:nmap <A-v> :vert term ++close<cr>
-:tmap <A-v> <C-W>:vert term ++close<cr>
+:nmap <leader>tt :tab term ++close<cr>
+:nmap <leader>tv :vert term ++close<cr>
 
 " LSP Action
 nnoremap <leader>dd :LspDefinition<cr>
@@ -256,9 +253,10 @@ let g:which_key_map = {
     \   'name'    :   'Leader'          ,
     \   '.'     :   'edit vimrc'        ,
     \   '0'     :   'source vimrc'      ,
+    \   'e'     :   'Side File Explorer'      ,
     \   's'     :   'Save'              ,
-    \   'q'     :   'Close'             ,
-    \   'Q'     :   'Quit'              ,
+    \   'x'     :   'Close'             ,
+    \   'X'     :   'Quit'              ,
     \   '1'     :   'tab1'             ,
     \   '2'     :   'tab2'             ,
     \   '3'     :   'tab3'             ,
@@ -325,7 +323,7 @@ function! NERDTreeFocusToggle()
 endfunction
 " NREDTree Key Mappings
 " nnoremap <silent> <leader>t :call NERDTreeFocusToggle()<CR>
-nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+nnoremap <silent> <leader>e :NERDTreeToggle<CR>
 " }}}
 
 " ColorScheme Ayu {{{
