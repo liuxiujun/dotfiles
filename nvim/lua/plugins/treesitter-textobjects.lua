@@ -1,6 +1,7 @@
 return {
 	"nvim-treesitter/nvim-treesitter-textobjects",
 	dependencies = "nvim-treesitter/nvim-treesitter",
+    enabled = true,
 	config = function()
         local is_ok, configs = pcall(require, "nvim-treesitter.configs")
         if not is_ok then
