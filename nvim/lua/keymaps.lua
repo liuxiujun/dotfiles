@@ -30,9 +30,19 @@ vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 -- default leader key: \
 vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", opts)
 
+-- custom
 vim.keymap.set("n", "<leader>s", ":w<CR>", opts)
 vim.keymap.set("n", "<leader>x", ":q<CR>", opts)
 vim.keymap.set("n", "<leader>X", ":qa<CR>", opts)
+vim.keymap.set("n", "<leader>1", ":1gt", opts)
+vim.keymap.set("n", "<leader>2", ":2gt", opts)
+vim.keymap.set("n", "<leader>3", ":3gt", opts)
+vim.keymap.set("n", "<leader>4", ":4gt", opts)
+vim.keymap.set("n", "<leader>5", ":5gt", opts)
+vim.keymap.set("n", "<leader>6", ":6gt", opts)
+vim.keymap.set("n", "<leader>7", ":7gt", opts)
+vim.keymap.set("n", "<leader>8", ":8gt", opts)
+vim.keymap.set("n", "<leader>9", ":9gt", opts)
 
 -- For flash.nvim
 -- 1. Press `s` and type jump label
