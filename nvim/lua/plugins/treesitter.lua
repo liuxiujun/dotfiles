@@ -28,6 +28,7 @@ return {
 					"scheme",
 					"sql",
 					"python",
+                    "perl",
 					"groovy",
 					"make",
 					"json",
