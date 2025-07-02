@@ -28,6 +28,7 @@ return {
 			cpp = { "clang-format" },
 			java = { "google-java-format" },
 			python = { "isort", "black" },
+            perl = { "perltidy" },
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 		},
 		-- The options you set here will be merged with the builtin formatters.
