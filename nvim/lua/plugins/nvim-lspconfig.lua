@@ -15,8 +15,18 @@ return {
             -- Set different settings for different languages' LSP.
             -- Support List: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
             local lspconfig = require("lspconfig")
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
+            -- 增强补全能力
+            local capabilities = require('cmp_nvim_lsp').default_capabilities({
+                textDocument = {
+                    completion = {
+                        completionItem = {
+                            snippetSupport = true,
+                            deprecatedSupport = true,
+                            preselectSupport = true,
+                        }
+                    }
+                }
+            })
             -- Case 1. For CMake Users
             --     $ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
             -- Case 2. For Bazel Users, use https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -27,6 +37,30 @@ return {
             lspconfig.clangd.setup({})
             lspconfig.bashls.setup({})
             lspconfig.perlnavigator.setup({
+                capabilities = capabilities,
+                init_options = {
+                    documentFeatures = {
+                        "documentSymbol", -- 必须启用
+                        "folding",
+                        "syntax"
+                    }
+                },
+                settings = {
+                    perlnavigator = {
+                        perlPath = "/usr/bin/perl", -- 可以指定 perl 路径，如 "/usr/bin/perl"
+                        enableWarnings = false,
+                        perlcriticEnabled = true,
+                        includePaths = {
+                            "lib",
+                            "t",
+                            os.getenv("HOME") .. "/perl5/lib/perl5", -- 关键！添加用户模块路径
+                            vim.fn.expand(
+                                "~/.local/share/nvim/mason/packages/perlnavigator/node_modules/perlnavigator-server/src/perl")
+                        },
+                    }
+                }
+            })
+            lspconfig.pyright.setup({
                 capabilities = capabilities,
             })
             lspconfig.ts_ls.setup({})

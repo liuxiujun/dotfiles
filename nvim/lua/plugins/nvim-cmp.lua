@@ -53,18 +53,20 @@ return {
                     end, { "i", "s" }),
                 }),
                 sources = cmp.config.sources({
-                    { name = "nvim_lsp" },
+                    { name = "nvim_lsp", priority = 1000 }, -- 确保 LSP 源优先
+                    { name = "buffer",   priority = 400 },  -- 缓冲区补全次之
+                    { name = "path",     priority = 250 },
                     { name = "luasnip" },
-                    { name = "buffer" },
-                    { name = "path" },
-                    { name = "mkdnflow" },
+                    -- { name = "mkdnflow" },
                 }),
                 experimental = {
                     ghost_text = {
                         hl_group = "CmpGhostText",
                     },
                 },
-                sorting = defaults.sorting,
+                sorting = {
+                    priority_weight = 2.0 -- 提高关键字优先级
+                },
             }
         end,
     },

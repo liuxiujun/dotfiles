@@ -8,6 +8,7 @@
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "conform.nvim": { "branch": "master", "commit": "973f3cb73887d510321653044791d7937c7ec0fa" },
   "hop.nvim": { "branch": "master", "commit": "08ddca799089ab96a6d1763db0b8adc5320bf050" },
+  "im-select.nvim": { "branch": "master", "commit": "630b4bfe1c71ca9947b2b437a52c0f60cc55208c" },
   "indent-blankline.nvim": { "branch": "master", "commit": "005b56001b2cb30bfa61b7986bc50657816ba4ba" },
   "lazy.nvim": { "branch": "main", "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a" },
   "lsp-progress.nvim": { "branch": "main", "commit": "f3df1df8f5ea33d082db047b5d2d2b83cc01cd8a" },

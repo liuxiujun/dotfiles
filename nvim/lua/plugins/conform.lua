@@ -7,7 +7,7 @@ return {
 		{
 			"<leader>cf",
 			function()
-				require("conform").format({ timeout_ms = 3000 })
+				require("conform").format({ timeout_ms = 10000 })
 			end,
 			mode = { "n", "v" },
 			desc = "[C]ode [F]format",
