@@ -54,8 +54,8 @@ return {
                             "lib",
                             "t",
                             os.getenv("HOME") .. "/perl5/lib/perl5", -- 关键！添加用户模块路径
-                            vim.fn.expand(
-                                "~/.local/share/nvim/mason/packages/perlnavigator/node_modules/perlnavigator-server/src/perl")
+                            -- vim.fn.expand(
+                            --     "~/.local/share/nvim/mason/packages/perlnavigator/node_modules/perlnavigator-server/src/perl")
                         },
                     }
                 }

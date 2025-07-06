@@ -128,6 +128,11 @@ IDEA Keymaps:
 ln -s ~/dotfiles/.ideavimrc ~/.ideavimrc
 ```
 
+### Git
+``` bash
+ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+```
+
 ### NPM
 ``` bash
 ln -s ~/dotfiles/.npmrc ~/.npmrc
