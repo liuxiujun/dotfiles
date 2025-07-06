@@ -57,7 +57,7 @@ New-Item -ItemType SymbolicLink -Path $HOME\.vrapperrc -Target $HOME\dotfiles\.v
 ### WSL2
 ``` powershell
 # Run as Administrator
-sudo New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.wslconfig
+New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.wslconfig
 ```
 
 ### Git
