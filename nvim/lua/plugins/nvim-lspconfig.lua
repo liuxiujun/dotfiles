@@ -63,7 +63,29 @@ return {
             lspconfig.pyright.setup({
                 capabilities = capabilities,
             })
-            lspconfig.ts_ls.setup({})
+            lspconfig.ts_ls.setup({
+                filetypes = { "typescript", "javascript" },
+            })
+            lspconfig.volar.setup({
+                filetypes = { "vue" },
+                init_options = {
+                    vue = {
+                        hybridMode = false,
+                    },
+                    typescript = {
+                        tsdk = vim.fn.expand(
+                        "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
+                    },
+                },
+                settings = {
+                    vue = {
+                        autoInsert = {
+                            attributeQuotes = true,
+                            brackets = true,
+                        },
+                    },
+                },
+            })
             lspconfig.lua_ls.setup({
                 settings = {
                     Lua = {
