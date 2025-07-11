@@ -65,6 +65,7 @@ return {
                 settings = {
                     python = {
                         -- 动态设置 pythonPath：优先用虚拟环境，否则用系统 Python
+                        -- 检验path是否生效 :lua print(vim.inspect(require("lspconfig").pyright.get_settings().python.pythonPath))
                         pythonPath = (
                             function()
                                 local venv_path = os.getenv("VIRTUAL_ENV")
