@@ -9,7 +9,7 @@ vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
 local system = require("config.system");
 
-if system.is_wsl then
+if system.is_windows or system.is_wsl then
     print("You're in WSL2!")
     -- Windows 宿主机使用scoop安装win32yank
     vim.g.clipboard = {
@@ -24,6 +24,7 @@ if system.is_wsl then
         },
         cache_enabled = 0,
     }
+    -- vim.notify("📋 Clipboard set for Windows/WSL", vim.log.levels.INFO)
 end
 
 if system.is_arm then
