@@ -62,6 +62,22 @@ return {
             })
             lspconfig.pyright.setup({
                 capabilities = capabilities,
+                settings = {
+                    python = {
+                        -- 动态设置 pythonPath：优先用虚拟环境，否则用系统 Python
+                        pythonPath = (
+                            function()
+                                local venv_path = os.getenv("VIRTUAL_ENV")
+                                if venv_path and venv_path ~= "" then
+                                    return venv_path ..
+                                        (vim.fn.has("win32") == 1 and "\\Scripts\\python.exe" or "/bin/python")
+                                else
+                                    return vim.fn.exepath("python3") or "python3" -- 系统 Python
+                                end
+                            end
+                        )(),
+                    },
+                },
             })
             lspconfig.ts_ls.setup({
                 filetypes = { "typescript", "javascript" },
@@ -74,7 +90,7 @@ return {
                     },
                     typescript = {
                         tsdk = vim.fn.expand(
-                        "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
+                            "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
                     },
                 },
                 settings = {
