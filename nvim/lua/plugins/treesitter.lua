@@ -19,7 +19,6 @@ return {
 				auto_install = true,
 				ignore_install = { "javascript" },
 				ensure_installed = {
-					"c",
 					"lua",
 					"vim",
 					"yaml",
