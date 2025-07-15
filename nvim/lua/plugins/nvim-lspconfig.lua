@@ -24,7 +24,11 @@ return {
                             deprecatedSupport = true,
                             preselectSupport = true,
                         }
-                    }
+                    },
+                    foldingRange = {
+                        dynamicRegistration = false,
+                        lineFoldingOnly = true,
+                    },
                 }
             })
             -- Case 1. For CMake Users
@@ -74,7 +78,7 @@ return {
                     },
                     typescript = {
                         tsdk = vim.fn.expand(
-                        "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
+                            "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
                     },
                 },
                 settings = {
