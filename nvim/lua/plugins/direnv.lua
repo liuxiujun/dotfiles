@@ -1,5 +1,0 @@
--- 在 Neovim 内实时更新 direnv 环境
--- windows环境下有问题
--- return { 
---     "direnv/direnv.vim",
--- }
