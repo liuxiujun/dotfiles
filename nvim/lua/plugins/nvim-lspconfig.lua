@@ -38,7 +38,7 @@ return {
             --     Place your compiler flags in the compile_flags.txt file, located in the root directory
             --     of your project. Each line in the file should contain a single compiler flag.
             -- src: https://clangd.llvm.org/installation#compile_commandsjson
-            lspconfig.clangd.setup({})
+            -- lspconfig.clangd.setup({})
             lspconfig.bashls.setup({})
             lspconfig.perlnavigator.setup({
                 capabilities = capabilities,
@@ -70,6 +70,7 @@ return {
                     python = {
                         -- 动态设置 pythonPath：优先用虚拟环境，否则用系统 Python
                         -- 检验path是否生效 :lua print(vim.inspect(require("lspconfig").pyright.get_settings().python.pythonPath))
+                        -- lua print(vim.inspect(vim.lsp.get_active_clients()[1].config.settings.python.analysis.extraPaths))
                         pythonPath = (
                             function()
                                 local venv_path = os.getenv("VIRTUAL_ENV")
@@ -81,6 +82,11 @@ return {
                                 end
                             end
                         )(),
+                        analysis = {
+                            extraPaths = {
+                                "/usr/lib/python3/dist-packages" -- 添加系统包路径，路径可能因系统而异
+                            }
+                        },
                     },
                 },
             })
