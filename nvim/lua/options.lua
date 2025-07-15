@@ -10,7 +10,7 @@ vim.opt.clipboard = "unnamedplus" -- use system clipboard
 local system = require("config.system");
 
 if system.is_windows or system.is_wsl then
-    print("You're in Windows/WSL2!")
+    -- print("You're in Windows/WSL2!")
     -- Windows 宿主机使用scoop安装win32yank
     vim.g.clipboard = {
         name = "win32yank",
@@ -26,14 +26,21 @@ if system.is_windows or system.is_wsl then
     }
     -- vim.notify("📋 Clipboard set for Windows/WSL", vim.log.levels.INFO)
 end
-
-if system.is_arm then
-    print("Running on ARM architecture")
-elseif system.is_amd64 then
-    print("Running on AMD64 architecture");
-elseif system.is_i386 then
-    print("Running on i386 architecture");
+-- set terminal
+if system.is_windows then
+    vim.opt.shell = "pwsh"
+    vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+    vim.opt.shellquote = ""
+    vim.opt.shellxquote = ""
 end
+
+-- if system.is_arm then
+--     print("Running on ARM architecture")
+-- elseif system.is_amd64 then
+--     print("Running on AMD64 architecture");
+-- elseif system.is_i386 then
+--     print("Running on i386 architecture");
+--end
 
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim
