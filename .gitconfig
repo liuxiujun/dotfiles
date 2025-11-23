@@ -1,12 +1,14 @@
 [user]
-	email = liuxiujun09@outlook.com
-	name = liuxiujun
+    email = liuxiujun09@outlook.com
+    name = liuxiujun
 [http]
-	proxy = 127.0.0.1:7890
+    proxy = 127.0.0.1:12334
 [https]
-	proxy = 127.0.0.1:7890
+    proxy = 127.0.0.1:12334
 [core]
-	autocrlf = true
-	filemode = false
+    autocrlf = true
+    filemode = false
 [init]
-	defaultBranch = main
+    defaultBranch = main
+[credential]
+    helper = manager
