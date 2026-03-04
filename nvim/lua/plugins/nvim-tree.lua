@@ -125,6 +125,20 @@ return {
 			diagnostics = {
 				enable = true,
 			},
+            view = {
+                float = {
+                    enable = true,
+                    open_win_config = {
+                        relative = "editor",
+                        border = "rounded",
+                        width = 30,
+                        height = 40,
+                        row = 1,
+                        col = 1,
+                    },
+                },
+                preserve_window_proportions = true,
+            },
 		})
 	end,
 	keys = {
