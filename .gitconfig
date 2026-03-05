@@ -2,9 +2,9 @@
     email = liuxiujun09@outlook.com
     name = liuxiujun
 [http]
-    proxy = 127.0.0.1:12334
+    proxy = 127.0.0.1:7890
 [https]
-    proxy = 127.0.0.1:12334
+    proxy = 127.0.0.1:7890
 [core]
     autocrlf = true
     filemode = false

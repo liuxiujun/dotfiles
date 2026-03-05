@@ -188,7 +188,7 @@ map <leader>DF <action>(ToggleFullScreen)
 "   m       Display Right-Click Menu
 "   A       Zoom(maximize/minimize) the NERDTree window
 "   q       Close the NERDTree window
-nnoremap <leader>t :NERDTreeFocus<CR>
+nnoremap <leader>e :NERDTreeFocus<CR>
 
 " file navigation
 map <leader>ff <Action>(GotoFile)
