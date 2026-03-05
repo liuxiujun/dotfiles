@@ -125,6 +125,32 @@ return {
 			diagnostics = {
 				enable = true,
 			},
+            tab = {
+                sync = {
+                    open = true,    -- 新标签也自动打开文件树
+                    close = true,   -- 同步关闭所有标签页的文件
+                },
+            },
+            view = {     -- 自定义窗口位置和大小 
+                -- side = "right",   -- 可选值left|right
+                float = {    -- 浮动窗口设置
+                    enable = true,
+                    open_win_config = {
+                        relative = "editor",
+                        border = "rounded",
+                        width = 30,
+                        -- height = 40,
+                        row = 1,
+                        col = 1,
+                    },
+                },
+                width = {
+                    min = 20,
+                    max = 60,
+                    padding = 1,
+                },
+                -- preserve_window_proportions = true,    -- 窗口比例保持：因为调整文件树宽度，默认会挤压编辑区空间
+            },
 		})
 	end,
 	keys = {
