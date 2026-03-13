@@ -94,6 +94,7 @@ if has('win32')
     set clipboard=unnamed
     set t_Co=256
     set t_ut=
+    set guifont=Consolas:h12
     " plug.vim stuff {{{
         " https://github.com/junegunn/vim-plug/issues/895 
         " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
@@ -114,9 +115,10 @@ if has("gui_running")
   if has("gui_gtk2")
     set guifont=Inconsolata\ 12
   elseif has("gui_macvim")
-    set guifont=Menlo\ Regular:h14
+    set guifont=Meslo\ Regular:h14
   elseif has("gui_win32")
-    set guifont=Consolas:h11:cANSI
+    set guifont=MesloLGS\ Nerd\ Font:h11
+    set guifontwide=FangSong:h11
   endif
 endif
 " }}}

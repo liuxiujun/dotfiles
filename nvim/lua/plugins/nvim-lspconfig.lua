@@ -51,15 +51,22 @@ return {
                 },
                 settings = {
                     perlnavigator = {
-                        perlPath = "/usr/bin/perl", -- 可以指定 perl 路径，如 "/usr/bin/perl"
+                        -- Windows 下 perl 通常在 PATH 中，不需要硬编码 /usr/bin/perl
+                        -- 如果报错找不到 perl，可以改为 "perl" 让系统自己去 PATH 找
+                        perlPath = vim.fn.has("win32") == 1 and "perl" or "/usr/bin/perl", 
                         enableWarnings = false,
                         perlcriticEnabled = true,
                         includePaths = {
                             "lib",
                             "t",
-                            os.getenv("HOME") .. "/perl5/lib/perl5", -- 关键！添加用户模块路径
-                            -- vim.fn.expand(
-                            --     "~/.local/share/nvim/mason/packages/perlnavigator/node_modules/perlnavigator-server/src/perl")
+                            -- 【修复核心】安全地获取用户主目录
+                            (function()
+                                local home = os.getenv("HOME") or os.getenv("USERPROFILE")
+                                if not home then return "" end -- 防止 nil
+                                -- Windows 路径分隔符处理
+                                local sep = vim.fn.has("win32") == 1 and "\\" or "/"
+                                return home .. sep .. "perl5" .. sep .. "lib" .. sep .. "perl5"
+                            end)(),
                         },
                     }
                 }
