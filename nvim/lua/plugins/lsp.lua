@@ -34,6 +34,7 @@ return {
         dependencies = { "mason-org/mason.nvim" },
         opts = {
             ensure_installed = {
+                "stylua",
                 "lua_ls",
                 "bashls",
                 "perlnavigator",
