@@ -18,6 +18,7 @@ return {
 	dependencies = {
 		"nvim-tree/nvim-web-devicons", -- 文件图标
 	},
+    event = "VeryLazy",     -- 确保插件在启动时加载
 	keys = {
 		-- 标签页切换
 		{ "<Tab>", "<Cmd>BufferLineCycleNext<CR>", desc = "Next buffer" },
@@ -98,13 +99,13 @@ return {
 			offsets = {
 				{
 					filetype = "NvimTree",
-					text = "File Explorer",
+					-- text = "File Explorer",
 					text_align = "center",
 					separator = true,
 				},
 				{
 					filetype = "TelescopePrompt",
-					text = "Telescope",
+					-- text = "Telescope",
 					text_align = "center",
 					separator = true,
 				},
