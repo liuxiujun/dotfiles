@@ -70,3 +70,19 @@ vim.opt.smartcase = true  -- but make it case sensitive if an uppercase is enter
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+
+if vim.g.neovide then
+  -- 设置一个初始缩放因子，例如 0.85，可以根据实际效果微调
+  vim.g.neovide_scale_factor = 0.85
+
+  -- 添加快捷键，方便随时缩放 [citation:6]
+  local function set_scale(delta)
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+    -- 强制重绘，让缩放立即生效
+    vim.api.nvim_command('redraw!')
+  end
+
+  vim.keymap.set({ "n", "v" }, "<C-=>", function() set_scale(1.1) end, { desc = "Increase Neovide scale" })
+  vim.keymap.set({ "n", "v" }, "<C-->", function() set_scale(0.9) end, { desc = "Decrease Neovide scale" })
+  vim.keymap.set({ "n", "v" }, "<C-0>", function() vim.g.neovide_scale_factor = 1.0; vim.api.nvim_command('redraw!') end, { desc = "Reset Neovide scale" })
+end
