@@ -7,30 +7,49 @@ return {
             "hrsh7th/cmp-nvim-lsp"
         },
 
+        -- 全局（global），在任何缓冲区都有效，不依赖LSP是否启动
+        -- 调用 LSP管理命令 或 诊断相关命令
+        -- lazy.nvim 提供的插件延迟加载机制
+        keys = {
+            -- LSP 服务器管理
+            { "<leader>lI", "<cmd>LspInfo<CR>", desc = "Lsp Info" },
+            { "<leader>lS", "<cmd>LspStart<CR>", desc = "Start LSP server (if not started)" },
+            { "<leader>lR", "<cmd>LspRestart<CR>", desc = "Restart LSP server" },
+            { "<leader>lS", "<cmd>LspStop<CR>", desc = "Stop LSP server" },
+            { "<leader>ll", "<cmd>LspLog<CR>", desc = "Show LSP log" },
+            { "<leader>lm", "<cmd>Mason<CR>", desc = "Open Mason (LSP installer)" },
+
+            -- 诊断导航
+            { "]d", vim.diagnostic.goto_next, desc = "Next diagnostic" },
+            { "[d", vim.diagnostic.goto_prev, desc = "Previous diagnostic" },
+            { "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, desc = "Next error" },
+            { "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, desc = "Previous error" },
+            { "<leader>cd", vim.diagnostic.open_float, desc = "Show line diagnostics" },
+            { "<leader>cq", vim.diagnostic.setloclist, desc = "Send diagnostics to loclist" },
+        },
+
         -- How to add an LSP for a specific programming language?
         -- 1. Use `:Mason` to install the corresponding LSP.
         -- 2. Add the configuration below. The syntax is `lspconfig.<name>.setup(...)`
         -- Hint (find <name> here): https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
         config = function()
-            -- Set different settings for different languages' LSP.
-            -- Support List: https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
-            local lspconfig = require("lspconfig")
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
             -- 增强补全能力
-            local capabilities = require('cmp_nvim_lsp').default_capabilities({
-                textDocument = {
-                    completion = {
-                        completionItem = {
-                            snippetSupport = true,
-                            deprecatedSupport = true,
-                            preselectSupport = true,
-                        }
-                    },
-                    foldingRange = {
-                        dynamicRegistration = false,
-                        lineFoldingOnly = true,
-                    },
-                }
-            })
+            -- local capabilities = require('cmp_nvim_lsp').default_capabilities({
+            --     textDocument = {
+            --         completion = {
+            --             completionItem = {
+            --                 snippetSupport = true,
+            --                 deprecatedSupport = true,
+            --                 preselectSupport = true,
+            --             }
+            --         },
+            --         foldingRange = {
+            --             dynamicRegistration = false,
+            --             lineFoldingOnly = true,
+            --         },
+            --     }
+            -- })
             -- Case 1. For CMake Users
             --     $ cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
             -- Case 2. For Bazel Users, use https://github.com/hedronvision/bazel-compile-commands-extractor
@@ -39,8 +58,14 @@ return {
             --     of your project. Each line in the file should contain a single compiler flag.
             -- src: https://clangd.llvm.org/installation#compile_commandsjson
             -- lspconfig.clangd.setup({})
-            lspconfig.bashls.setup({})
-            lspconfig.perlnavigator.setup({
+            vim.lsp.config("bashls", {
+                cmd = { "bash-language-server", "start" }, -- 启动命令
+                filetypes = { "sh", "bash" },              -- 作用于哪些文件类型
+                root_markers = { ".git", "package.json" }, -- 根目录标记（可选）
+                settings = {},                             -- 服务器特定设置
+            });
+
+            vim.lsp.config("perlnavigator", {
                 capabilities = capabilities,
                 init_options = {
                     documentFeatures = {
@@ -53,7 +78,7 @@ return {
                     perlnavigator = {
                         -- Windows 下 perl 通常在 PATH 中，不需要硬编码 /usr/bin/perl
                         -- 如果报错找不到 perl，可以改为 "perl" 让系统自己去 PATH 找
-                        perlPath = vim.fn.has("win32") == 1 and "perl" or "/usr/bin/perl", 
+                        perlPath = vim.fn.has("win32") == 1 and "perl" or "/usr/bin/perl",
                         enableWarnings = false,
                         perlcriticEnabled = true,
                         includePaths = {
@@ -71,7 +96,8 @@ return {
                     }
                 }
             })
-            lspconfig.pyright.setup({
+
+            vim.lsp.config("pyright", {
                 capabilities = capabilities,
                 settings = {
                     python = {
@@ -97,10 +123,12 @@ return {
                     },
                 },
             })
-            lspconfig.ts_ls.setup({
+
+            vim.lsp.config("ts_ls", {
                 filetypes = { "typescript", "javascript" },
             })
-            lspconfig.volar.setup({
+
+            vim.lsp.config("volar", {
                 filetypes = { "vue" },
                 init_options = {
                     vue = {
@@ -120,7 +148,8 @@ return {
                     },
                 },
             })
-            lspconfig.lua_ls.setup({
+
+            vim.lsp.config("lua_ls", {
                 settings = {
                     Lua = {
                         runtime = {
@@ -142,6 +171,16 @@ return {
                     },
                 },
             })
+
+            vim.lsp.enable({
+                "lua_ls",
+                "pyright",
+                "perlnavigator",
+                "bashls",
+                "ts_ls",
+                "volar"
+            })
+
             -- Use LspAttach autocommand to only map the following keys after
             -- the language server attaches to the current buffer
             vim.api.nvim_create_autocmd("LspAttach", {
@@ -156,8 +195,7 @@ return {
                     vim.keymap.set("n", "<leader>cK", vim.lsp.buf.hover, { buffer = ev.buf, desc = "Hover help" })
                     vim.keymap.set("n", "<leader>crn", vim.lsp.buf.rename, { buffer = ev.buf, desc = "Rename" })
                     vim.keymap.set(
-                        "n",
-                        "<leader>cgr",
+                        "n", "<leader>cgr",
                         vim.lsp.buf.references,
                         { buffer = ev.buf, desc = "Goto references" }
                     )
@@ -167,15 +205,10 @@ return {
                         vim.lsp.buf.code_action,
                         { buffer = ev.buf, desc = "Code action" }
                     )
+
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = ev.buf, desc = "Hover help" })
                 end,
             })
         end,
-        keys = {
-            -- Because autostart=false above, need to manually start the language server.
-            { "<leader>cl", "<cmd>LspStart<CR>",       desc = "Start LSP" },
-            { "<leader>ce", vim.diagnostic.open_float, desc = "Open diagnostics/errors" },
-            { "]d",         vim.diagnostic.goto_next,  desc = "Next diagnostic/error" },
-            { "[d",         vim.diagnostic.goto_prev,  desc = "Prev diagnostic/error" },
-        },
     },
 }

@@ -78,8 +78,8 @@ local opts = {
         level = "error", -- Suppress most messages, only show errors
     },
     change_detection = {
-        enabled = false,
-        notify = false,
+        enabled = true,
+        notify = true,
     },
 }
 
