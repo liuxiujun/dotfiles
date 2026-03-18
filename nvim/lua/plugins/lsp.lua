@@ -1,4 +1,7 @@
--- 返回一个列表， 包含所有 LSP 相关的插件及其配置
+-- 返回一个列表，包含所有 LSP 相关的插件及其配置。
+--      包括 Mason、lspconfig、cmp（补全）、Lsp-progress、trouble、vue 等。
+-- 可以把 LSP 客户端、补全、诊断 UI 整合在一起。
+
 return {
     -- 1. Mason: 安装 LSP 服务器、DAP、Linter 等外部工具
     {
