@@ -37,6 +37,7 @@ return {
 					"dockerfile",
 					"git_rebase", "gitcommit", "gitattributes", "gitignore", "git_config", "diff", -- git diff
 					"markdown", "markdown_inline",
+                    -- "gdscript", "gdshader",
 				},
 				incremental_selection = {
 					enable = true,

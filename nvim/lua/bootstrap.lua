@@ -87,4 +87,8 @@ require("lazy").setup({
     spec = {
         { import = "plugins" },
     },
+    git = {
+        -- 替换为国内镜像源
+        url_format = "https://gh-proxy.org/https://github.com/%s.git",
+    },
 }, opts)
