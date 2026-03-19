@@ -107,6 +107,11 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ln -s ~/dotfiles/nvim ~/.config/nvim
 ```
 
+### Tmux
+``` bash
+ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
+```
+
 ### Terminal Proxy
 ``` bash
 sudo tee -a ~/.profile << EOF
