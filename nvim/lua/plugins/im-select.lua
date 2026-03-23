@@ -27,8 +27,8 @@ return {
             else
                 -- 原生 Linux (如 Ubuntu)
                 -- 这里以 Fcitx5 为例，你需要根据自己使用的输入法调整
-                default_im = "keyboard-us" -- Fcitx5 的默认英文键盘 [citation:1]
-                im_command = "fcitx5-remote"
+                -- default_im = "keyboard-us" -- Fcitx5 的默认英文键盘 [citation:1]
+                -- im_command = "fcitx5-remote"
                 -- 如果你使用 IBus，可能是：
                 -- default_im = "xkb:us::eng"
                 -- im_command = "ibus"

@@ -5,6 +5,11 @@ cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git 
 ```
 
+### Wezterm
+``` powershell
+New-Item -ItemType SymbolicLink -Path $HOME\.config\wezterm -Target $HOME\dotfiles\wezterm
+```
+
 ### PowerShell
 ``` powershell
 # (Run as Administrator) 
