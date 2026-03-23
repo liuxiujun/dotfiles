@@ -37,7 +37,7 @@ wezterm.on('user-var-changed', function(window, pane, name, value)
             -- 这里示例进入插入模式不做切换，只退出时切英文
         elseif value == 'normal' then
             -- 离开插入模式（回到普通模式）：强制切回英文
-            -- switch_to_english()
+            switch_to_english()
         end
     end
 end)

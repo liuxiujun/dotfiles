@@ -10,11 +10,25 @@ local function wezterm_set_user_var(name, value)
   io.stdout:flush()
 end
 
-vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
-    callback = function()
-        local mode = vim.fn.mode()
-        print("Mode changed: " .. mode)
-        local value = (mode == 'i' or mode == 'c') and 'insert' or 'normal'
-        wezterm_set_user_var("IM_SWITCH", value)
-    end,
+-- vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
+--     callback = function()
+--         local mode = vim.fn.mode()
+--         print("Mode changed: " .. mode)
+--         local value = (mode == 'i' or mode == 'c') and 'insert' or 'normal'
+--         wezterm_set_user_var("IM_SWITCH", value)
+--     end,
+-- })
+
+vim.api.nvim_create_autocmd("InsertEnter", {
+  callback = function()
+    vim.notify("InsertEnter fired")
+    wezterm_set_user_var("IM_SWITCH", "insert")
+  end,
+})
+
+vim.api.nvim_create_autocmd("InsertLeave", {
+  callback = function()
+    vim.notify("InsertLeave fired")
+    wezterm_set_user_var("IM_SWITCH", "normal")
+  end,
 })
