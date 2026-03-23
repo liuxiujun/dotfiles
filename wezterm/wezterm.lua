@@ -1,5 +1,4 @@
 local wezterm = require("wezterm")
-wezterm.log_info("Config file loaded")
 local act = wezterm.action
 
 -- 检测操作系统，用于输入法切换命令
@@ -46,7 +45,7 @@ local config = {}
 -- ===== 基础外观 =====
 config.color_scheme = "Dracula" -- 可选：'GruvboxDark', 'Tokyo Night' 等
 config.font = wezterm.font("Cascadia Code") -- 或 'Fira Code', 'JetBrains Mono'
-config.font_size = 12.0
+config.font_size = 13.0
 config.enable_tab_bar = true
 config.window_background_opacity = 1.0
 config.hide_tab_bar_if_only_one_tab = false
