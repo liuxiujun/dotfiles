@@ -14,23 +14,16 @@ local english_ime_id = "1033"
 
 -- 输入法切换函数
 local function switch_to_english()
-  wezterm.log_info("switch_to_english called")
   if is_windows then
     local success, stdout, stderr = wezterm.run_child_process({
       im_select_path,
       english_ime_id,
     })
-    if success then
-      wezterm.log_info("im-select succeeded: " .. (stdout or ""))
-    else
-      wezterm.log_error("im-select failed: " .. (stderr or ""))
-    end
   end
 end
 
 -- ===== 输入法自动切换核心：监听 Neovim 发来的用户变量 =====
 wezterm.on('user-var-changed', function(window, pane, name, value)
-    wezterm.log_info("user-var-changed:" .. name .. " = " .. value)
     if name == 'IM_SWITCH' then
         if value == 'insert' then
             -- 进入插入模式：可以保持当前输入法不变（或根据需求切到中文）
