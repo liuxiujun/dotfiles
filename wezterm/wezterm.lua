@@ -4,12 +4,10 @@ local act = wezterm.action
 -- 检测操作系统，用于输入法切换命令
 local is_windows = package.config:sub(1, 1) == "\\"
 
--- 获取 Windows 上 im-select 的路径（请根据实际安装位置调整）
 -- local im_select_path = "C:\\Users\\liuxi\\scoop\\shims\\im-select.exe"
 local im_select_path = "im-select.exe"
 
 -- 自定义输入法 ID（英文键盘）
--- 你可以先在 PowerShell 中执行 im-select.exe，然后切换到英文输入法，再执行一次 im-select.exe 获取 ID
 local english_ime_id = "1033"
 
 -- 输入法切换函数
@@ -24,6 +22,7 @@ end
 
 -- ===== 输入法自动切换核心：监听 Neovim 发来的用户变量 =====
 wezterm.on("user-var-changed", function(window, pane, name, value)
+    wezterm.log_info(string.format("Captured Var: %s = %s", name, value))
 	if name == "IM_SWITCH" then
         wezterm.log_info("Received IM_SWITCH=" .. value)  -- 记录事件
 		if value == "insert" then
@@ -43,6 +42,12 @@ end)
 
 -- 创建配置表
 local config = {}
+
+-- 啟用 ConPTY 的透傳模式（需要較新版本的 Windows 10/11）
+config.enable_conpty_backend = true
+config.conpty_enable_passthrough = true
+-- 檢查是否被轉換成了普通的控制序列
+config.experimental_handle_unsupported_control_sequences = true
 
 -- ===== 基础外观 =====
 config.color_scheme = "Dracula" -- 可选：'GruvboxDark', 'Tokyo Night' 等
