@@ -44,10 +44,10 @@ end)
 local config = {}
 
 -- 啟用 ConPTY 的透傳模式（需要較新版本的 Windows 10/11）
-config.enable_conpty_backend = true
-config.conpty_enable_passthrough = true
+-- config.enable_conpty_backend = true
+-- config.conpty_enable_passthrough = true
 -- 檢查是否被轉換成了普通的控制序列
-config.experimental_handle_unsupported_control_sequences = true
+-- config.experimental_handle_unsupported_control_sequences = true
 
 -- ===== 基础外观 =====
 config.color_scheme = "Dracula" -- 可选：'GruvboxDark', 'Tokyo Night' 等
