@@ -43,7 +43,8 @@ return {
                 "perlnavigator",
                 "pyright",
                 "ts_ls",
-                "vue_ls"
+                -- "vue_ls"
+                "clangd",
             },
             automatic_installation = true,
         },
@@ -322,13 +323,18 @@ return {
                 },
             })
 
+            vim.lsp.config("clangd", {
+                capabilities = capabilities,
+            })
+
             vim.lsp.enable({
                 "lua_ls",
                 "pyright",
                 "perlnavigator",
                 "bashls",
                 "ts_ls",
-                "volar"
+                "volar",
+                "clangd",
             })
         end,
     },

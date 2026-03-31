@@ -5,7 +5,8 @@ local act = wezterm.action
 local is_windows = package.config:sub(1, 1) == "\\"
 
 -- 获取 Windows 上 im-select 的路径（请根据实际安装位置调整）
-local im_select_path = "C:\\Users\\liuxi\\scoop\\shims\\im-select.exe"
+-- local im_select_path = "C:\\Users\\liuxi\\scoop\\shims\\im-select.exe"
+local im_select_path = "im-select.exe"
 
 -- 自定义输入法 ID（英文键盘）
 -- 你可以先在 PowerShell 中执行 im-select.exe，然后切换到英文输入法，再执行一次 im-select.exe 获取 ID
@@ -24,6 +25,7 @@ end
 -- ===== 输入法自动切换核心：监听 Neovim 发来的用户变量 =====
 wezterm.on("user-var-changed", function(window, pane, name, value)
 	if name == "IM_SWITCH" then
+        wezterm.log_info("Received IM_SWITCH=" .. value)  -- 记录事件
 		if value == "insert" then
 			-- 进入插入模式：可以保持当前输入法不变（或根据需求切到中文）
 			-- 这里示例进入插入模式不做切换，只退出时切英文
