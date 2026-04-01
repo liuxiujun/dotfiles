@@ -68,7 +68,7 @@ New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.w
 ### Git
 ``` powershell
 # Run as Administrator
-New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\.gitconfig
+New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\git\.gitconfig
 ```
 
 ### Win-vind

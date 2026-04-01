@@ -1,0 +1,13 @@
+[include]
+    path = ~/dotfiles/git/.gitconfig-common.conf
+
+    [includeIf "os:linux"]
+        path = ~/dotfiles/git/.gitconfig-linux.conf
+    [includeIf "os:windows"]
+        path = ~/dotfiles/git/.gitconfig-windows.conf
+    [includeIf "os:darwin"]
+        path = ~/dotfiles/git/.gitconfig-macos.conf
+
+    # 本地私有配置（不提交到仓库，如工作邮箱、代理）
+    [includeIf "exists:.gitconfig-local.conf"]
+        path = ~/dotfiles/git/.gitconfig-local.conf

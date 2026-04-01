@@ -23,3 +23,6 @@ tags
 
 # exe
 *.exe
+
+# git local config
+git/.gitconfig-local*
