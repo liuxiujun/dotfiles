@@ -7,6 +7,10 @@ vim.g.mapleader = ","
 -- Hint: use `:h <option>` to figure out the meaning if needed
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
+-- File Format
+vim.opt.fileformat = "unix"                 -- 新建文件默认保存为 Unix 格式（LF）
+vim.opt.fileformats = "unix,dos,mac"        -- 打开文件时自动检测行尾，优先当作 Unix 格式处理
+
 -- Set Encoding
 vim.opt.encoding = "utf-8"
 vim.opt.fileencodings = "utf-8,gbk,gb18030,latin1,ucs-bom"

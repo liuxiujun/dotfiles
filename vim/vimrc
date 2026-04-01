@@ -6,6 +6,8 @@
 set backspace=indent,eol,start
 
 set encoding=UTF-8
+set fileformats=unix,dos,mac    "打开时自动识别，优先使用unix
+set fileformat=unix             "新建文件默认保存为unix
 
 " Set bell style
 set belloff=all
@@ -98,7 +100,7 @@ if has('win32')
     " plug.vim stuff {{{
         " https://github.com/junegunn/vim-plug/issues/895 
         " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
-        set shell=bash.exe
+        set shell=cmd.exe
     " }}}
 endif
 
