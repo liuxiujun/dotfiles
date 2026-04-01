@@ -53,7 +53,7 @@ local config = {}
 config.color_scheme = "Dracula" -- 可选：'GruvboxDark', 'Tokyo Night' 等
 config.font = wezterm.font("Cascadia Code") -- 或 'Fira Code', 'JetBrains Mono'
 -- 全局禁用连字功能
-harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
+config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
 config.font_size = 12.0
 config.enable_tab_bar = true
 config.window_background_opacity = 1.0

@@ -15,6 +15,13 @@ vim.opt.fileformats = "unix,dos,mac"        -- 打开文件时自动检测行尾
 vim.opt.encoding = "utf-8"
 vim.opt.fileencodings = "utf-8,gbk,gb18030,latin1,ucs-bom"
 
+-- 设置代码折叠
+vim.opt.foldmethod = "indent"
+-- vim.opt.foldlevel = 99
+-- vim.opt.foldnestmax = 5
+-- vim.opt.foldcolumn = "1"
+-- vim.opt.foldenable = true
+
 local system = require("config.system");
 
 if system.is_windows or system.is_wsl then
@@ -93,4 +100,5 @@ if vim.g.neovide then
   vim.keymap.set({ "n", "v" }, "<C-=>", function() set_scale(1.1) end, { desc = "Increase Neovide scale" })
   vim.keymap.set({ "n", "v" }, "<C-->", function() set_scale(0.9) end, { desc = "Decrease Neovide scale" })
   vim.keymap.set({ "n", "v" }, "<C-0>", function() vim.g.neovide_scale_factor = 1.0; vim.api.nvim_command('redraw!') end, { desc = "Reset Neovide scale" })
+
 end
