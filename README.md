@@ -140,7 +140,7 @@ ln -s ~/dotfiles/.ideavimrc ~/.ideavimrc
 
 ### Git
 ``` bash
-ln -s ~/dotfiles/.gitconfig ~/.gitconfig
+ln -s ~/dotfiles/git/.gitconfig ~/.gitconfig
 ```
 
 ### NPM
