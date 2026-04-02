@@ -49,6 +49,14 @@ if system.is_windows then
     vim.opt.shellxquote = ""
 end
 
+-- Diagnostic 
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    update_in_insert = false,
+    severity_sort = true,
+})
+
 -- if system.is_arm then
 --     print("Running on ARM architecture")
 -- elseif system.is_amd64 then

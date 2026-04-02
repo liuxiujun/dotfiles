@@ -42,11 +42,12 @@ return {
                 "bashls",
                 "perlnavigator",
                 "pyright",
+                "ruff",
                 "ts_ls",
-                -- "vue_ls"
                 "clangd",
             },
             automatic_installation = true,
+            handlers = {},
         },
     },
     -- 3. nvim-cmp 自动补全（与 LSP 配合）
@@ -249,6 +250,8 @@ return {
             })
 
             vim.lsp.config("pyright", {
+                cmd = { "pyright-langserver", "--stdio" }, 
+                filetypes = { "python" },
                 capabilities = capabilities,
                 settings = {
                     python = {
@@ -267,37 +270,41 @@ return {
                             end
                         )(),
                         analysis = {
+                            disableOrganizeImports = true, -- 交给ruff
                             extraPaths = {
                                 "/usr/lib/python3/dist-packages" -- 添加系统包路径，路径可能因系统而异
-                            }
+                            },
                         },
                     },
                 },
+            })
+
+            -- 2. 配置 Ruff 内置语言服务器（负责 linting 和 formatting）
+            vim.lsp.config("ruff", {
+                cmd = { "ruff", "server" },
+                filetypes = { "python" },
+                capabilities = capabilities,
+                -- 可选：覆盖某些能力，避免与 pyright 重复
+                on_attach = function(client, bufnr)
+                    -- 禁用 hover 能力，让 pyright 提供更好的类型信息
+                    client.server_capabilities.hoverProvider = false
+                    -- 可选：保存时自动格式化
+                    vim.api.nvim_create_autocmd("BufWritePre", {
+                        buffer = bufnr,
+                        callback = function()
+                            vim.lsp.buf.format({ bufnr = bufnr, async = false })
+                        end,
+                    })
+                end,
+                -- init_options = {
+                --     settings = {
+                --         -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
+                --     },
+                -- },
             })
 
             vim.lsp.config("ts_ls", {
                 filetypes = { "typescript", "javascript" },
-            })
-
-            vim.lsp.config("volar", {
-                filetypes = { "vue" },
-                init_options = {
-                    vue = {
-                        hybridMode = false,
-                    },
-                    typescript = {
-                        tsdk = vim.fn.expand(
-                            "~/.local/share/nvim/mason/packages/typescript-language-server/node_modules/typescript/lib"),
-                    },
-                },
-                settings = {
-                    vue = {
-                        autoInsert = {
-                            attributeQuotes = true,
-                            brackets = true,
-                        },
-                    },
-                },
             })
 
             vim.lsp.config("lua_ls", {
@@ -330,10 +337,10 @@ return {
             vim.lsp.enable({
                 "lua_ls",
                 "pyright",
+                "ruff",
                 "perlnavigator",
                 "bashls",
                 "ts_ls",
-                "volar",
                 "clangd",
             })
         end,
