@@ -27,7 +27,7 @@ return {
             c = { "clang-format" },
             cpp = { "clang-format" },
             java = { "google-java-format" },
-            python = { "pyright", "ruff" },
+            python = { "ruff" },
             perl = { "perltidy" },
             vue = { "prettier", "eslint_d" },
             javascript = { "prettier", "eslint_d" },

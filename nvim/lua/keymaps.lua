@@ -46,6 +46,23 @@ vim.keymap.set("n", "<leader>X", ":qa<CR>", opts)
 --     'change quot*es'            cs'"            "change quotes"
 --     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
 
+-- For diagnostic
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.goto_next()
+end, { desc = "Next diagnostic" })
+-- vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, desc = "Previous diagnostic" )
+-- vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, desc = "Next error" )
+-- vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, desc = "Previous error" )
+-- vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, desc = "Show line diagnostics" )
+-- vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, desc = "Send diagnostics to loclist" )
+
+vim.keymap.set("n", "<leader>lI", "<cmd>LspInfo<CR>", { noremap = true, silent = true, desc = "Lsp Info" })
+vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { noremap = true, silent = true, desc = "Start LSP server (if not started )" })
+vim.keymap.set("n", "<leader>lR", "<cmd>LspRestart<CR>", { noremap = true, silent = true, desc = "Restart LSP server" })
+vim.keymap.set("n", "<leader>lS", "<cmd>LspStop<CR>", { noremap = true, silent = true, desc = "Stop LSP server" })
+vim.keymap.set("n", "<leader>ll", "<cmd>LspLog<CR>", { noremap = true, silent = true, desc = "Show LSP log" })
+vim.keymap.set("n", "<leader>lm", "<cmd>Mason<CR>", { noremap = true, silent = true, desc = "Open Mason (LSP installer )" })
+
 -----------------
 -- Visual mode --
 -----------------
@@ -59,4 +76,3 @@ vim.keymap.set("v", ">", ">gv", opts)
 -- 2. Now we are in the visual mode.
 -- 3. Press `gsi` to increment selection by AST node. (si = selection incremental)
 -- 4. Press `gsc` to increment selection by scope. (sc = scope)
--- 5. Press `gsd` to decrement selection. (sd = selection decrement)

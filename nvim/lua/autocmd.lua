@@ -43,3 +43,55 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 		wezterm_set_user_var("IM_SWITCH", "normal")
 	end,
 })
+
+-- LspAttach 回调：所有 LSP 功能快捷键在这里设置（buffer-local
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+    callback = function(ev)
+
+        local opts = { buffer = ev.buf, remap = false }
+
+        -- 跳转
+        vim.keymap.set("n", "gd", vim.lsp.buf.definition, vim.tbl_extend("keep", opts, { desc = "Goto definition" }))
+        vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("keep", opts, { desc = "Goto declaration" }))
+        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, vim.tbl_extend("keep", opts, { desc = "Goto implementation" }))
+        vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_extend("keep", opts, { desc = "Goto references" }))
+        vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, vim.tbl_extend("keep", opts, { desc = "Goto type definition" }))
+
+        -- 悬停与签名帮助
+        vim.keymap.set("n", "K", vim.lsp.buf.hover, vim.tbl_extend("keep", opts, { desc = "Hover documentation" }))
+        vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, vim.tbl_extend("keep", opts, { desc = "Signature help" }))
+
+        -- 代码操作与重构
+        vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("keep", opts, { desc = "Rename symbol" }))
+        vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("keep", opts, { desc = "Code action" }))
+        vim.keymap.set("v", "<leader>ca", vim.lsp.buf.code_action, vim.tbl_extend("keep", opts, { desc = "Code action (visual)" }))
+        vim.keymap.set("n", "<leader>cf", function() vim.lsp.buf.format { async = true } end, vim.tbl_extend("keep", opts, { desc = "Format buffer" }))
+
+        -- 其他实用功能
+        vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, vim.tbl_extend("keep", opts, { desc = "Add workspace folder" }))
+        vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, vim.tbl_extend("keep", opts, { desc = "Remove workspace folder" }))
+        vim.keymap.set("n", "<leader>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, vim.tbl_extend("keep", opts, { desc = "List workspace folders" }))
+
+        -- 获取 client 对象
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        if not client then
+            return
+        end
+
+        -- 动态获取缓冲区所在服务器的能力，可以设置更精细的快捷键（可选）
+        if client and  client.server_capabilities.documentHighlightProvider then
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                buffer = ev.buf,
+                callback = vim.lsp.buf.document_highlight,
+                group = vim.api.nvim_create_augroup("LspDocumentHighlight", {}),
+            })
+            vim.api.nvim_create_autocmd("CursorMoved", {
+                buffer = ev.buf,
+                callback = vim.lsp.buf.clear_references,
+                group = vim.api.nvim_create_augroup("LspClearHighlight", {}),
+            })
+        end
+    end,
+})
+

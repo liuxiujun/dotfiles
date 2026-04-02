@@ -1,7 +1,7 @@
 local M = {}
 
 -- 获取 uname 或系统名
-local uname = vim.loop.os_uname()
+local uname = vim.uv.os_uname()
 
 -- 判断平台
 M.is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
@@ -19,10 +19,5 @@ local arch = uname.machine
 M.is_arm = arch == "aarch64" or arch == "arm64"
 M.is_amd64 = arch == "x86_64"
 M.is_i386 = arch == "i386" or arch == "i686"
-
--- 输出结果（调试用）
--- print("System:", uname.sysname)
--- print("Release:", uname.release)
--- print("Arch:", uname.machine)
 
 return M

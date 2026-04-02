@@ -2,10 +2,10 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+local system = require("config.system");
+
 vim.g.mapleader = ","
 
--- Hint: use `:h <option>` to figure out the meaning if needed
-vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
 -- File Format
 vim.opt.fileformat = "unix"                 -- 新建文件默认保存为 Unix 格式（LF）
@@ -22,26 +22,25 @@ vim.opt.foldmethod = "indent"
 -- vim.opt.foldcolumn = "1"
 -- vim.opt.foldenable = true
 
-local system = require("config.system");
+-- Clipboard
+-- Hint: use `:h <option>` to figure out the meaning if needed
+vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
+-- for Windows WSL
 if system.is_windows or system.is_wsl then
-    -- print("You're in Windows/WSL2!")
-    -- Windows 宿主机使用scoop安装win32yank
-    vim.g.clipboard = {
-        name = "win32yank",
-        copy = {
-            ["+"] = "win32yank.exe -i --crlf",
-            ["*"] = "win32yank.exe -i --crlf",
-        },
-        paste = {
-            ["+"] = "win32yank.exe -o --lf",
-            ["*"] = "win32yank.exe -o --lf",
-        },
-        cache_enabled = 0,
-    }
-    -- vim.notify("📋 Clipboard set for Windows/WSL", vim.log.levels.INFO)
+    if vim.fn.executable("win32yank.exe") == 1 then
+        vim.g.clipboard = {
+            name = "win32yank",
+            copy = { ["+"] = "win32yank.exe -i --crlf", ["*"] = "win32yank.exe -i --crlf" },
+            paste = { ["+"] = "win32yank.exe -o --lf", ["*"] = "win32yank.exe -o --lf" },
+            cache_enabled = 0,
+        }
+    else 
+        vim.notify("📋 win32yank not found, clipboard may not work on Windows/WSL", vim.log.levels.INFO)
+    end
 end
--- set terminal
+
+-- set terminal (windows)
 if system.is_windows then
     vim.opt.shell = "pwsh"
     vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
@@ -50,22 +49,36 @@ if system.is_windows then
 end
 
 -- Diagnostic 
+-- :help vim.diagnostic.Opts
 vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    update_in_insert = false,
     severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    underline = { severity = vim.diagnostic.severity.ERROR },
+    virtual_text = true,
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = " ", -- 这里配置“错误”的图标，需要nerd font字体
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.INFO] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+        },
+    },
+    virtual_text = {
+        source = "if_many",
+        spacing = 2,
+        format = function(diagnostic)
+            local diagnostic_message = {
+                [vim.diagnostic.severity.error] = diagnostic.message,
+                [vim.diagnostic.severity.warn] = diagnostic.message,
+                [vim.diagnostic.severity.info] = diagnostic.message,
+                [vim.diagnostic.severity.hint] = diagnostic.message,
+            }
+            return diagnostic_message[diagnostic.severity]
+        end,
+    },
 })
 
--- if system.is_arm then
---     print("Running on ARM architecture")
--- elseif system.is_amd64 then
---     print("Running on AMD64 architecture");
--- elseif system.is_i386 then
---     print("Running on i386 architecture");
---end
-
-vim.opt.completeopt = { "menu", "menuone", "noselect" }
+-- Mouse 
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim
 
 -- Tab
@@ -94,19 +107,38 @@ vim.opt.smartcase = true  -- but make it case sensitive if an uppercase is enter
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+
+-- for neovide 
 if vim.g.neovide then
-  -- 设置一个初始缩放因子，例如 0.85，可以根据实际效果微调
-  vim.g.neovide_scale_factor = 0.85
+    vim.g.neovide_scale_factor = 0.85
 
-  -- 添加快捷键，方便随时缩放 [citation:6]
-  local function set_scale(delta)
-    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
-    -- 强制重绘，让缩放立即生效
-    vim.api.nvim_command('redraw!')
-  end
+    -- 添加快捷键，方便随时缩放 [citation:6]
+    local function set_scale(delta)
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+        -- 强制重绘，让缩放立即生效
+        vim.api.nvim_command('redraw!')
+    end
 
-  vim.keymap.set({ "n", "v" }, "<C-=>", function() set_scale(1.1) end, { desc = "Increase Neovide scale" })
-  vim.keymap.set({ "n", "v" }, "<C-->", function() set_scale(0.9) end, { desc = "Decrease Neovide scale" })
-  vim.keymap.set({ "n", "v" }, "<C-0>", function() vim.g.neovide_scale_factor = 1.0; vim.api.nvim_command('redraw!') end, { desc = "Reset Neovide scale" })
+    vim.keymap.set(
+        { "n", "v" }, 
+        "<C-=>", 
+        function() set_scale(1.1) end, 
+        { desc = "Increase Neovide scale" }
+    )
+    vim.keymap.set(
+        { "n", "v" }, 
+        "<C-->", 
+        function() set_scale(0.9) end, 
+        { desc = "Decrease Neovide scale" }
+    )
+    vim.keymap.set(
+        { "n", "v" }, 
+        "<C-0>", 
+        function() 
+            vim.g.neovide_scale_factor = 1.0; 
+            vim.api.nvim_command('redraw!') 
+        end, 
+        { desc = "Reset Neovide scale" }
+    )
 
 end
