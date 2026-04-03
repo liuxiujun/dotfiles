@@ -67,10 +67,11 @@ vim.lsp.config("pyright", {
     },
 })
 
--- 2. 配置 Ruff 内置语言服务器（负责 linting 和 formatting）
+-- 配置 Ruff 内置语言服务器（负责 linting 和 formatting）
 vim.lsp.config("ruff", {
     cmd = { "ruff", "server" },
     filetypes = { "python" },
+    root_markers = { ".git", "", "pyproject.toml", "pyrightconfig.json", "ruff.toml", ".ruff.toml" },
     capabilities = capabilities,
     -- 可选：覆盖某些能力，避免与 pyright 重复
     on_attach = function(client, bufnr)
@@ -84,11 +85,11 @@ vim.lsp.config("ruff", {
             end,
         })
     end,
-    init_options = {
-        settings = {
-            -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
-        },
-    },
+    -- init_options = {
+    --     settings = {
+    --         -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
+    --     },
+    -- },
 })
 
 vim.lsp.config("ts_ls", {
@@ -108,7 +109,12 @@ vim.lsp.config("lua_ls", {
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files.
-                library = vim.api.nvim_get_runtime_file("", true),
+                library = {
+                    -- 1. 添加 Vim 运行时路径
+                    vim.api.nvim_get_runtime_file("", true),
+                    -- 2. 添加 $VIMRUNTIME/lua 目录
+                    vim.fn.expand("$VIMRUNTIME/lua")
+                },
             },
             -- Do not send telemetry data containing a randomized but unique identifier.
             telemetry = {

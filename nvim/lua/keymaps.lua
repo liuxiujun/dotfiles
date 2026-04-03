@@ -27,9 +27,9 @@ vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
 -- custom
-vim.keymap.set("n", "<leader>s", ":w<CR>", opts)
-vim.keymap.set("n", "<leader>x", ":q<CR>", opts)
-vim.keymap.set("n", "<leader>X", ":qa<CR>", opts)
+vim.keymap.set("n", "<leader>s", ":w<CR>", { noremap = true, silent = true, desc="[S]ave" })
+vim.keymap.set("n", "<leader>x", ":q<CR>", { noremap = true, silent = true, desc="Close" })
+vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, desc="Close All" })
 
 -- For flash.nvim
 -- 1. Press `s` and type jump label
@@ -47,21 +47,28 @@ vim.keymap.set("n", "<leader>X", ":qa<CR>", opts)
 --     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
 
 -- For diagnostic
-vim.keymap.set("n", "]d", function()
-	vim.diagnostic.goto_next()
-end, { desc = "Next diagnostic" })
+vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, { noremap = true, silent = true, desc = "Previous diagnostic" } )
 vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { noremap = true, silent = true, desc = "Next error" } )
 vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { noremap = true, silent = true, desc = "Previous error" } )
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show line diagnostics" } )
 vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Send diagnostics to loclist" } )
 
-vim.keymap.set("n", "<leader>lI", "<cmd>LspInfo<CR>", { noremap = true, silent = true, desc = "Lsp Info" })
-vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { noremap = true, silent = true, desc = "Start LSP server (if not started )" })
-vim.keymap.set("n", "<leader>lR", "<cmd>LspRestart<CR>", { noremap = true, silent = true, desc = "Restart LSP server" })
-vim.keymap.set("n", "<leader>lS", "<cmd>LspStop<CR>", { noremap = true, silent = true, desc = "Stop LSP server" })
-vim.keymap.set("n", "<leader>ll", "<cmd>LspLog<CR>", { noremap = true, silent = true, desc = "Show LSP log" })
-vim.keymap.set("n", "<leader>lm", "<cmd>Mason<CR>", { noremap = true, silent = true, desc = "Open Mason (LSP installer )" })
+-- Manage Lsp 
+vim.keymap.set("n", "<leader>lC", "<cmd>checkhealth vim.lsp<CR>", { noremap = true, silent = true, desc = "[C]heckhealth (LspInfo)" })
+-- vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { noremap = true, silent = true, desc = "Start LSP server (if not started )" })
+vim.keymap.set("n", "<leader>lR", 
+    function() 
+        local bufnr = vim.api.nvim_get_current_buf()
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+            client:stop()
+            vim.lsp.start(client.config, { bufnr = bufnr })
+        end 
+        vim.notify("LSP clients restarted", vmi.log.levels.INFO)
+    end , { desc = "[R]estart LSP clients for current buffer" })
+-- vim.keymap.set("n", "<leader>lS", "<cmd>LspStop<CR>", { noremap = true, silent = true, desc = "Stop LSP server" })
+vim.keymap.set("n", "<leader>lL", "<cmd>lua vim.cmd('edit ' .. vim.lsp.get_log_path())<CR>", { noremap = true, silent = true, desc = "Show LSP [L]og" })
+vim.keymap.set("n", "<leader>lM", "<cmd>Mason<CR>", { noremap = true, silent = true, desc = "Open [M]ason (LSP installer )" })
 
 -----------------
 -- Visual mode --

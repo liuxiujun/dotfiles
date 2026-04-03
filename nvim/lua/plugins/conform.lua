@@ -29,7 +29,7 @@ return {
             java = { "google-java-format" },
             python = { "ruff" },
             perl = { "perltidy" },
-            vue = { "prettier", "eslint_d" },
+            -- vue = { "prettier", "eslint_d" },
             javascript = { "prettier", "eslint_d" },
             typescript = { "prettier", "eslint_d" },
             html = { "prettier" },

@@ -6,6 +6,8 @@ local system = require("config.system");
 
 vim.g.mapleader = ","
 
+-- Enable undo/redo changes even after closing and reopening a file
+vim.opt.undofile = true
 
 -- File Format
 vim.opt.fileformat = "unix"                 -- 新建文件默认保存为 Unix 格式（LF）
@@ -67,13 +69,13 @@ vim.diagnostic.config({
         source = "if_many",
         spacing = 2,
         format = function(diagnostic)
-            local diagnostic_message = {
-                [vim.diagnostic.severity.error] = diagnostic.message,
-                [vim.diagnostic.severity.warn] = diagnostic.message,
-                [vim.diagnostic.severity.info] = diagnostic.message,
-                [vim.diagnostic.severity.hint] = diagnostic.message,
+            local icons = {
+                [vim.diagnostic.severity.ERROR] = " ",
+                [vim.diagnostic.severity.WARN]  = " ",
+                [vim.diagnostic.severity.INFO]  = " ",
+                [vim.diagnostic.severity.HINT]  = " ",
             }
-            return diagnostic_message[diagnostic.severity]
+            return (icons[diagnostic.severity] or "") .. diagnostic.message
         end,
     },
 })

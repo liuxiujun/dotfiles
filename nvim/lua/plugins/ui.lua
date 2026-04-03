@@ -35,6 +35,10 @@ return {
 		{ "<leader>3", "<Cmd>BufferLineGoToBuffer 3<CR>", desc = "Goto buffer 3" },
 		{ "<leader>4", "<Cmd>BufferLineGoToBuffer 4<CR>", desc = "Goto buffer 4" },
 		{ "<leader>5", "<Cmd>BufferLineGoToBuffer 5<CR>", desc = "Goto buffer 5" },
+		{ "<leader>6", "<Cmd>BufferLineGoToBuffer 6<CR>", desc = "Goto buffer 6" },
+		{ "<leader>7", "<Cmd>BufferLineGoToBuffer 7<CR>", desc = "Goto buffer 7" },
+		{ "<leader>8", "<Cmd>BufferLineGoToBuffer 8<CR>", desc = "Goto buffer 8" },
+		{ "<leader>9", "<Cmd>BufferLineGoToBuffer 9<CR>", desc = "Goto buffer 9" },
 		-- 更多序号可自行添加
 	},
 	opts = {

@@ -95,3 +95,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
+-- vim.api.nvim_create_user_command("LspStatus", function()
+--     local clients = vim.lsp.get_clients()
+--     if vim.tbl_isempty(clients) then
+--         print("No active LSP clients.")
+--     else
+--         for _, client in ipairs(clients) do
+--             local attached_buffers = vim.tbl_keys(client.attached_buffers)
+--             local attached_str = vim.inspect(attached_buffers)
+--             print(string.format("Client '%s' (id=%d) attached to buffers: %s", client.name, client.id, attached_str))
+--             
+--         end
+--     end
+-- end, {})
