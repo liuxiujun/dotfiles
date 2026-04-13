@@ -90,6 +90,9 @@ set wildmode=list:longest
 " Wildmenu will ignore files with these extensions.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
+" 内置语法设置json文件不隐藏双引号
+let g:vim_json_conceal = 0
+
 au BufNewFile,BufRead Jenkinsfile setf groovy
 
 if has('win32')

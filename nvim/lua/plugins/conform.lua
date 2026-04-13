@@ -29,6 +29,7 @@ return {
             java = { "google-java-format" },
             python = { "ruff" },
             perl = { "perltidy" },
+            go = { "goimports", "gofumpt" },
             -- vue = { "prettier", "eslint_d" },
             javascript = { "prettier", "eslint_d" },
             typescript = { "prettier", "eslint_d" },

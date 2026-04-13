@@ -31,6 +31,13 @@ vim.keymap.set("n", "<leader>s", ":w<CR>", { noremap = true, silent = true, desc
 vim.keymap.set("n", "<leader>x", ":q<CR>", { noremap = true, silent = true, desc="Close" })
 vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, desc="Close All" })
 
+-- Overseer
+vim.keymap.set("n", "<leader>rr", "<cmd>OverseerRun<cr>", { desc = "Overseer Run Task" })
+vim.keymap.set("n", "<leader>rt", "<cmd>OverseerToggle<cr>", { desc = "Overseer Toggle" })
+vim.keymap.set("n", "<leader>rc", "<cmd>OverseerRunCmd<cr>", { desc = "Overseer Run Custom Cmd" })
+vim.keymap.set("n", "<leader>ra", "<cmd>OverseerRunAction<cr>", { desc = "Overseer Run Task Action" })
+vim.keymap.set("n", "<leader>rq", "<cmd>OverseerQuickAction<cr>", { desc = "Overseer Quick Action" })
+
 -- For flash.nvim
 -- 1. Press `s` and type jump label
 -- 2. Press `S` and type jump label for specefic selection based on tree-sitter.

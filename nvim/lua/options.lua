@@ -9,6 +9,9 @@ vim.g.mapleader = ","
 -- Enable undo/redo changes even after closing and reopening a file
 vim.opt.undofile = true
 
+vim.opt.exrc = true
+vim.opt.secure = true   -- 安全起见
+
 -- File Format
 vim.opt.fileformat = "unix"                 -- 新建文件默认保存为 Unix 格式（LF）
 vim.opt.fileformats = "unix,dos,mac"        -- 打开文件时自动检测行尾，优先当作 Unix 格式处理

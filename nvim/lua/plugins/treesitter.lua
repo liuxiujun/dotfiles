@@ -32,6 +32,7 @@ return {
 					"python",
                     "perl",
 					"c", "cpp", "make", "llvm",
+                    "go", "gomod", "gowork", "gotmpl",
 					"java", "groovy",
 					"html", "css", "javascript", "typescript",
 					"dockerfile",
