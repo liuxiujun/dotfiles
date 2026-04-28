@@ -4,11 +4,8 @@
 
 local system = require("config.system");
 
-vim.g.mapleader = ","
-
 -- Enable undo/redo changes even after closing and reopening a file
 vim.opt.undofile = true
-
 vim.opt.exrc = true
 vim.opt.secure = true   -- 安全起见
 
@@ -53,36 +50,6 @@ if system.is_windows then
     vim.opt.shellxquote = ""
 end
 
--- Diagnostic 
--- :help vim.diagnostic.Opts
-vim.diagnostic.config({
-    severity_sort = true,
-    float = { border = "rounded", source = "if_many" },
-    underline = { severity = vim.diagnostic.severity.ERROR },
-    virtual_text = true,
-    signs = {
-        text = {
-            [vim.diagnostic.severity.ERROR] = " ", -- 这里配置“错误”的图标，需要nerd font字体
-            [vim.diagnostic.severity.WARN] = " ",
-            [vim.diagnostic.severity.INFO] = " ",
-            [vim.diagnostic.severity.HINT] = " ",
-        },
-    },
-    virtual_text = {
-        source = "if_many",
-        spacing = 2,
-        format = function(diagnostic)
-            local icons = {
-                [vim.diagnostic.severity.ERROR] = " ",
-                [vim.diagnostic.severity.WARN]  = " ",
-                [vim.diagnostic.severity.INFO]  = " ",
-                [vim.diagnostic.severity.HINT]  = " ",
-            }
-            return (icons[diagnostic.severity] or "") .. diagnostic.message
-        end,
-    },
-})
-
 -- Mouse 
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim
 
@@ -112,6 +79,35 @@ vim.opt.smartcase = true  -- but make it case sensitive if an uppercase is enter
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- Diagnostic 
+-- :help vim.diagnostic.Opts
+vim.diagnostic.config({
+    severity_sort = true,
+    float = { border = "rounded", source = "if_many" },
+    underline = { severity = vim.diagnostic.severity.ERROR },
+    virtual_text = true,
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = " ", -- 这里配置“错误”的图标，需要nerd font字体
+            [vim.diagnostic.severity.WARN] = " ",
+            [vim.diagnostic.severity.INFO] = " ",
+            [vim.diagnostic.severity.HINT] = " ",
+        },
+    },
+    virtual_text = {
+        source = "if_many",
+        spacing = 2,
+        format = function(diagnostic)
+            local icons = {
+                [vim.diagnostic.severity.ERROR] = " ",
+                [vim.diagnostic.severity.WARN]  = " ",
+                [vim.diagnostic.severity.INFO]  = " ",
+                [vim.diagnostic.severity.HINT]  = " ",
+            }
+            return (icons[diagnostic.severity] or "") .. diagnostic.message
+        end,
+    },
+})
 
 -- for neovide 
 if vim.g.neovide then
