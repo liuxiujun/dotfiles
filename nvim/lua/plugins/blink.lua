@@ -34,7 +34,28 @@ return {
 		},
 
 		-- (Default) Only show the documentation popup when manually triggered
-		completion = { documentation = { auto_show = false } },
+		completion = {
+			documentation = {
+				auto_show = false,
+				-- 扩展：让文档窗口渲染 Markdown
+				window = {
+					drawing = {
+						draw = function(opts)
+							-- 先调用默认绘制逻辑
+							opts.default_implementation()
+							-- 然后让 render-markdown 渲染这个缓冲区
+							pcall(
+								require("render-markdown.core.ui").update,
+								opts.window.buf,
+								opts.window:get_win(),
+								"BlinkDraw",
+								true
+							)
+						end,
+					},
+				},
+			},
+		},
 
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`

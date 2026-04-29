@@ -4,6 +4,8 @@
 
 local system = require("config.system");
 
+vim.opt.guifont = "MesloLGS Nerd Font:h11"
+
 -- Enable undo/redo changes even after closing and reopening a file
 vim.opt.undofile = true
 vim.opt.exrc = true
@@ -111,7 +113,8 @@ vim.diagnostic.config({
 
 -- for neovide 
 if vim.g.neovide then
-    vim.g.neovide_scale_factor = 0.85
+    vim.g.neovide_scale_factor = 1
+    -- vim.g.guifont = "MesloLGS Nerd Font:h11"
 
     -- 添加快捷键，方便随时缩放 [citation:6]
     local function set_scale(delta)
