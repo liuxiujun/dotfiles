@@ -38,22 +38,22 @@ return {
 			documentation = {
 				auto_show = false,
 				-- 扩展：让文档窗口渲染 Markdown
-				window = {
-					drawing = {
-						draw = function(opts)
-							-- 先调用默认绘制逻辑
-							opts.default_implementation()
-							-- 然后让 render-markdown 渲染这个缓冲区
-							pcall(
-								require("render-markdown.core.ui").update,
-								opts.window.buf,
-								opts.window:get_win(),
-								"BlinkDraw",
-								true
-							)
-						end,
-					},
-				},
+				-- window = {
+				-- 	drawing = {
+				-- 		draw = function(opts)
+				-- 			-- 先调用默认绘制逻辑
+				-- 			opts.default_implementation()
+				-- 			-- 然后让 render-markdown 渲染这个缓冲区
+				-- 			pcall(
+				-- 				require("render-markdown.core.ui").update,
+				-- 				opts.window.buf,
+				-- 				opts.window:get_win(),
+				-- 				"BlinkDraw",
+				-- 				true
+				-- 			)
+				-- 		end,
+				-- 	},
+				-- },
 			},
 		},
 

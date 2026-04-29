@@ -7,62 +7,58 @@
 --  nvim-ts-context-commentstring 智能注释， 根据光标所在位置（代码中还是字符串里），自动设置正确的注释符号
 
 return {
-	"nvim-treesitter/nvim-treesitter",
-	branch = "main",
-	lazy = false,
-	build = ":TSUpdate",
-	opts = {
-		highlight = {
-			enable = true,
-			additional_vim_regex_highlighting = false,
+	-- 1. treesitter
+	-- need to run: npm install -g tree-sitter-cli
+	{
+		"nvim-treesitter/nvim-treesitter",
+		lazy = false,
+		branch = "main",
+		config = function()
+			---@diagnostic disable-next-line: param-type-mismatch
+			require("nvim-treesitter").setup({
+				auto_install = true,
+				ensure_installed = {
+					-- "stable",
+					-- "unstable",
+					"lua",
+				},
+			})
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(details)
+					local bufnr = details.buf
+					if not pcall(vim.treesitter.start, bufnr) then
+						return
+					end
+					vim.wo.foldmethod = "expr"
+					vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+					vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				end,
+			})
+			vim.treesitter.language.register("markdown", "blink-cmp-documentation")
+		end,
+		dependencies = {},
+	},
+	-- 2. treesitter-textobjects
+	{ "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
+	-- 3. treesitter-context
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = "BufRead",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter",
+			event = "BufRead",
 		},
-		indent = {
-			enable = true,
-			disable = { "markdown" },
-		},
-		auto_install = true,
-		ensure_installed = {
-			"lua",
-			"luadoc",
-			"vim",
-			"vimdoc",
-			"yaml",
-			"xml",
-			"json",
-			"python",
-			"c",
-			"cpp",
-			"make",
-			"go",
-			"java",
-			"html",
-			"css",
-			"javascript",
-			"typescript",
-			"markdown",
-			"markdown_inline",
-			"diff",
-			"gitignore",
-		},
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = "gss",
-				node_incremental = "gsi",
-				scope_incremental = "gsc",
-				node_decremental = "gsd",
-			},
+		opts = {
+			multiwindow = true,
 		},
 	},
-	config = function(_, opts)
-		-- 核心：不再 require("nvim-treesitter.configs")
-		-- 如果使用的是 main 分支，通常直接調用內置的 setup (如果有的話)
-		-- 或者讓 Lazy 處理。若要手動設置語言註冊：
-		vim.treesitter.language.register("markdown", "blink-cmp-documentation")
-
-		-- 使用 Neovim 內置的 TS 折疊 (0.11+ 推薦)
-		vim.opt.foldmethod = "expr"
-		vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-		vim.opt.foldenable = false
-	end,
+	-- 4. autotag
+	{
+		"windwp/nvim-ts-autotag",
+		config = true,
+	},
+	-- 5. nvim-treesitter-endwise
+	{
+		"RRethy/nvim-treesitter-endwise",
+	},
 }
