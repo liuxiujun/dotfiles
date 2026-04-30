@@ -115,6 +115,7 @@ vim.diagnostic.config({
 if vim.g.neovide then
     vim.g.neovide_scale_factor = 1
     -- vim.g.guifont = "MesloLGS Nerd Font:h11"
+    vim.g.neovide_cursor_animation_length = 0
 
     -- 添加快捷键，方便随时缩放 [citation:6]
     local function set_scale(delta)

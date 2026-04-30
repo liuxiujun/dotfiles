@@ -7,6 +7,9 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+------------------------------------------------------------------------------------
+--- 通过 wezterm 获取本地或远程的nvim模式，用来自动切换本地输入法 
+------------------------------------------------------------------------------------
 local function wezterm_set_user_var(name, value)
 	local encoded = vim.base64.encode(value)
 	local osc = string.format("\x1b]1337;SetUserVar=%s=%s\x1b\\", name, encoded)
@@ -44,7 +47,9 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 	end,
 })
 
--- LspAttach 回调：所有 LSP 功能快捷键在这里设置（buffer-local
+-----------------------------------------------------------------
+--- LspAttach 回调：所有 LSP 功能快捷键在这里设置
+-----------------------------------------------------------------
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("UserLspConfig", {}),
     callback = function(ev)

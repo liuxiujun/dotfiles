@@ -25,7 +25,34 @@ return {
 		-- C-k: Toggle signature help (if signature.enabled = true)
 		--
 		-- See :h blink-cmp-config-keymap for defining your own keymap
-		keymap = { preset = "default" },
+
+		keymap = {
+			-- 使用预设，这是保证 fallback 机制正常工作的基础
+			preset = "default",
+			-- 在这里覆盖或新增你想要的快捷键
+			["<C-k>"] = { "select_prev", "fallback" },
+			["<C-j>"] = { "select_next", "fallback" },
+			["<Tab>"] = { "select_and_accept", "fallback" },
+			["<A-/>"] = { "show", "fallback" },
+			-- 取消不想用的快捷键
+			["<C-e>"] = false,
+		},
+
+		-- (Default) Only show the documentation popup when manually triggered
+		completion = {
+			list = {
+				selection = {
+					preselect = true, -- 自动预选第一项
+					auto_insert = true, -- 选中时自动插入补全预览
+				},
+			},
+			documentation = {
+				auto_show = true,
+				window = {
+					border = "none",
+				},
+			},
+		},
 
 		appearance = {
 			-- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
@@ -33,29 +60,7 @@ return {
 			nerd_font_variant = "mono",
 		},
 
-		-- (Default) Only show the documentation popup when manually triggered
-		completion = {
-			documentation = {
-				auto_show = false,
-				-- 扩展：让文档窗口渲染 Markdown
-				-- window = {
-				-- 	drawing = {
-				-- 		draw = function(opts)
-				-- 			-- 先调用默认绘制逻辑
-				-- 			opts.default_implementation()
-				-- 			-- 然后让 render-markdown 渲染这个缓冲区
-				-- 			pcall(
-				-- 				require("render-markdown.core.ui").update,
-				-- 				opts.window.buf,
-				-- 				opts.window:get_win(),
-				-- 				"BlinkDraw",
-				-- 				true
-				-- 			)
-				-- 		end,
-				-- 	},
-				-- },
-			},
-		},
+		signature = { enabled = true },
 
 		-- Default list of enabled providers defined so that you can extend it
 		-- elsewhere in your config, without redefining it, due to `opts_extend`
