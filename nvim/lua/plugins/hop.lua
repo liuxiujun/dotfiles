@@ -1,20 +1,30 @@
 return {
-	'smoka7/hop.nvim',
+	"smoka7/hop.nvim",
 	version = "*",
-    opts = function() 
-
-		local status_ok, hop = pcall(require, "hop")
-		if not status_ok then
-			vim.notify("hop not found!")
-			return
-		end
-
-		local directions = require("hop.hint").HintDirection
-		vim.keymap.set("", "<leader><leader>w", function()
-			hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
-		end, { remap = true })
-		vim.keymap.set("", "<leader><leader>b", function()
-			hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
-		end, { remap = true })
-    end,
+	-- opts = function()
+	-- 	local hop = require("hop")
+	-- 	local directions = require("hop.hint").HintDirection
+	--
+	-- 	vim.keymap.set("", "<leader><leader>w", function()
+	-- 		hop.hint_words({ direction = directions.AFTER_CURSOR, current_line_only = false })
+	-- 	end, { remap = true })
+	-- 	vim.keymap.set("", "<leader><leader>b", function()
+	-- 		hop.hint_words({ direction = directions.BEFORE_CURSOR, current_line_only = false })
+	-- 	end, { remap = true })
+	-- end,
+    opts = {
+        keys = 'etovxqpdygfblzhckisuran'
+    },
+    keys = {
+		{
+			"<leader><leader>w",
+            "<cmd>HopWordAC<cr>",
+			desc = "Hop Forward to Word",
+		},
+		{
+			"<leader><leader>b",
+            "<cmd>HopWordBC<cr>",
+			desc = "Hop Backward to Word",
+		},
+    }
 }
