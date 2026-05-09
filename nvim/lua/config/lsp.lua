@@ -41,8 +41,8 @@ vim.lsp.config("perlnavigator", {
 	},
 })
 
-vim.lsp.config("pyright", {
-	cmd = { "pyright-langserver", "--stdio" },
+vim.lsp.config("basedpyright", {
+	cmd = { "basedpyright-langserver", "--stdio" },
 	filetypes = { "python" },
 	root_markers = { ".git", ".venv", "pyproject.toml", "pyrightconfig.json" },
 	capabilities = capabilities,
@@ -57,10 +57,20 @@ vim.lsp.config("pyright", {
 				end
 			end)(),
 			analysis = {
-				disableOrganizeImports = true, -- 交给ruff
-				extraPaths = {
-					"/usr/lib/python3/dist-packages", -- 添加系统包路径，路径可能因系统而异
-				},
+                -- 类型检查模式，可选 "off", "basic", "strict"
+                typeCheckingMode = "basic",
+                -- 开启自动导入补全和建议的关键！
+                autoImportCompletions = true,
+                -- 诊断模式，设置为 "workspace" 以获得全局诊断，或 "openFilesOnly"
+                diagnosticMode = "workspace",
+                -- 启用未定义变量诊断（这是自动导入的前提）
+                diagnosticSeverity = {
+                    reportUndefinedVariable = "error",
+                },
+                -- 如果你希望禁用基于 pyright 的 import 组织（交给 ruff），可以保留
+                disableOrganizeImports = true,
+                -- 删除无效的 extraPaths，或者改用 Windows 路径（一般不需要）
+                -- extraPaths = {},
 			},
 		},
 	},
@@ -84,11 +94,14 @@ vim.lsp.config("ruff", {
 			end,
 		})
 	end,
-	-- init_options = {
-	--     settings = {
-	--         -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
-	--     },
-	-- },
+	init_options = {
+	    settings = {
+	        -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
+            lint = {
+                ignore = { "F821" },
+            }
+	    },
+	},
 })
 
 vim.lsp.config("ts_ls", {
@@ -159,11 +172,10 @@ vim.lsp.config("gopls", {
 
 vim.lsp.enable({
 	"lua_ls",
-	"pyright",
+	"basedpyright",
 	"ruff",
 	"perlnavigator",
 	"bashls",
 	"ts_ls",
 	"clangd",
-	"",
 })

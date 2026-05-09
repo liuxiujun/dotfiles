@@ -31,8 +31,10 @@ return {
 			preset = "default",
 			-- 在这里覆盖或新增你想要的快捷键
 			["<C-k>"] = { "select_prev", "fallback" },
+			["<S-Tab>"] = { "select_prev", "fallback" },
 			["<C-j>"] = { "select_next", "fallback" },
-			["<Tab>"] = { "select_and_accept", "fallback" },
+			["<Tab>"] = { "select_next", "fallback" },
+			["<Enter>"] = { "select_and_accept", "fallback" },
 			["<A-/>"] = { "show", "fallback" },
 			-- 取消不想用的快捷键
 			["<C-e>"] = false,
@@ -42,7 +44,7 @@ return {
 		completion = {
 			list = {
 				selection = {
-					preselect = true, -- 自动预选第一项
+					preselect = false, -- 自动预选第一项
 					auto_insert = true, -- 选中时自动插入补全预览
 				},
 			},

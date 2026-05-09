@@ -21,7 +21,7 @@ return {
             ensure_installed = {
                 -- LSP
                 "lua-language-server",
-                "pyright",
+                "basedpyright",
                 "ruff",
                 "bash-language-server",
                 "perlnavigator",
