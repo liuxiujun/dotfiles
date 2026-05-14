@@ -57,20 +57,20 @@ vim.lsp.config("basedpyright", {
 				end
 			end)(),
 			analysis = {
-                -- 类型检查模式，可选 "off", "basic", "strict"
-                typeCheckingMode = "basic",
-                -- 开启自动导入补全和建议的关键！
-                autoImportCompletions = true,
-                -- 诊断模式，设置为 "workspace" 以获得全局诊断，或 "openFilesOnly"
-                diagnosticMode = "workspace",
-                -- 启用未定义变量诊断（这是自动导入的前提）
-                diagnosticSeverity = {
-                    reportUndefinedVariable = "error",
-                },
-                -- 如果你希望禁用基于 pyright 的 import 组织（交给 ruff），可以保留
-                disableOrganizeImports = true,
-                -- 删除无效的 extraPaths，或者改用 Windows 路径（一般不需要）
-                -- extraPaths = {},
+				-- 类型检查模式，可选 "off", "basic", "strict"
+				typeCheckingMode = "basic",
+				-- 开启自动导入补全和建议的关键！
+				autoImportCompletions = true,
+				-- 诊断模式，设置为 "workspace" 以获得全局诊断，或 "openFilesOnly"
+				diagnosticMode = "workspace",
+				-- 启用未定义变量诊断（这是自动导入的前提）
+				diagnosticSeverity = {
+					reportUndefinedVariable = "error",
+				},
+				-- 如果你希望禁用基于 pyright 的 import 组织（交给 ruff），可以保留
+				disableOrganizeImports = true,
+				-- 删除无效的 extraPaths，或者改用 Windows 路径（一般不需要）
+				-- extraPaths = {},
 			},
 		},
 	},
@@ -95,12 +95,12 @@ vim.lsp.config("ruff", {
 		})
 	end,
 	init_options = {
-	    settings = {
-	        -- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
-            lint = {
-                ignore = { "F821" },
-            }
-	    },
+		settings = {
+			-- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
+			lint = {
+				ignore = { "F821" },
+			},
+		},
 	},
 })
 
@@ -170,6 +170,18 @@ vim.lsp.config("gopls", {
 	},
 })
 
+vim.lsp.config("jdtls", {
+    cmd = { os.getenv("USERPROFILE") .. "\\AppData\\Local\\nvim-data\\mason\\bin\\jdtls.cmd" },
+    filetypes = { "java" },
+    root_markers = { ".git", "pom.xml", "build.gradle", "gradlew", "mvnw" },
+    init_options = {
+        extendedClientCapabilities = {
+            classFileContentsSupport = true,   
+        },
+    },
+    capabilities = vim.lsp.protocol.make_client_capabilities(),
+})
+
 vim.lsp.enable({
 	"lua_ls",
 	"basedpyright",
@@ -178,4 +190,5 @@ vim.lsp.enable({
 	"bashls",
 	"ts_ls",
 	"clangd",
+	"jdtls",
 })

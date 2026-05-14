@@ -61,10 +61,8 @@ vim.keymap.set("n", "<leader>rq", "<cmd>OverseerQuickAction<cr>", { desc = "Over
 --     <b>or tag* types</b>        csth1<CR>       <h1>or tag types</h1>
 
 -- For diagnostic
-vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
-vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, { noremap = true, silent = true, desc = "Previous diagnostic" } )
-vim.keymap.set("n", "]e", function() vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR }) end, { noremap = true, silent = true, desc = "Next error" } )
-vim.keymap.set("n", "[e", function() vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR }) end, { noremap = true, silent = true, desc = "Previous error" } )
+-- vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
+-- vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, { noremap = true, silent = true, desc = "Previous diagnostic" } )
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show line diagnostics" } )
 vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Send diagnostics to loclist" } )
 
@@ -78,7 +76,7 @@ vim.keymap.set("n", "<leader>lR",
             client:stop()
             vim.lsp.start(client.config, { bufnr = bufnr })
         end 
-        vim.notify("LSP clients restarted", vmi.log.levels.INFO)
+        vim.notify("LSP clients restarted", vim.log.levels.INFO)
     end , { desc = "[R]estart LSP clients for current buffer" })
 -- vim.keymap.set("n", "<leader>lS", "<cmd>LspStop<CR>", { noremap = true, silent = true, desc = "Stop LSP server" })
 vim.keymap.set("n", "<leader>lL", "<cmd>lua vim.cmd('edit ' .. vim.lsp.get_log_path())<CR>", { noremap = true, silent = true, desc = "Show LSP [L]og" })
@@ -97,3 +95,9 @@ vim.keymap.set("v", ">", ">gv", opts)
 -- 2. Now we are in the visual mode.
 -- 3. Press `gsi` to increment selection by AST node. (si = selection incremental)
 -- 4. Press `gsc` to increment selection by scope. (sc = scope)
+
+
+-------------------
+-- Terminal mode --
+-------------------
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")

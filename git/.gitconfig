@@ -11,3 +11,7 @@
     # 本地私有配置（不提交到仓库，如工作邮箱、代理）
     [includeIf "exists:.gitconfig-local.conf"]
         path = ~/dotfiles/git/.gitconfig-local.conf
+[credential "helperselector"]
+	selected = manager
+[credential "https://gitee.com"]
+	provider = generic

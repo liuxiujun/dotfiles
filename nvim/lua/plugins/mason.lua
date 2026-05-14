@@ -26,6 +26,9 @@ return {
                 "bash-language-server",
                 "perlnavigator",
                 "clangd",
+                "jdtls",
+                "java-debug-adapter",
+                "java-test",
                 -- Formatters / Linters
                 "stylua",
                 "prettier",
