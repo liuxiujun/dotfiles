@@ -71,6 +71,12 @@ vim.lsp.config("basedpyright", {
 				disableOrganizeImports = true,
 				-- 删除无效的 extraPaths，或者改用 Windows 路径（一般不需要）
 				-- extraPaths = {},
+
+				reportMissingTypeStubs = "none",
+				reportUnknownVariableType = "none",
+				reportUnknownMemberType = "none",
+				reportFunctionMemberAccess = "none",
+				reportAny = false,
 			},
 		},
 	},
@@ -171,15 +177,22 @@ vim.lsp.config("gopls", {
 })
 
 vim.lsp.config("jdtls", {
-    cmd = { os.getenv("USERPROFILE") .. "\\AppData\\Local\\nvim-data\\mason\\bin\\jdtls.cmd" },
-    filetypes = { "java" },
-    root_markers = { ".git", "pom.xml", "build.gradle", "gradlew", "mvnw" },
-    init_options = {
-        extendedClientCapabilities = {
-            classFileContentsSupport = true,   
-        },
-    },
-    capabilities = vim.lsp.protocol.make_client_capabilities(),
+    cmd = function()
+        local mason_bin = vim.fn.stdpath("data") .. "/mason/packages/jdtls/bin"
+        if vim.fn.has("win32") == 1 then
+            return { mason_bin .. "jdtls.bat" }
+        else
+            return { mason_bin .. "jdtls" }
+        end
+    end,
+	filetypes = { "java" },
+	root_markers = { ".git", "pom.xml", "build.gradle", "gradlew", "mvnw" },
+	init_options = {
+		extendedClientCapabilities = {
+			classFileContentsSupport = true,
+		},
+	},
+	capabilities = vim.lsp.protocol.make_client_capabilities(),
 })
 
 vim.lsp.enable({
