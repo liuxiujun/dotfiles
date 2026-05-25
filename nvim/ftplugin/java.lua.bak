@@ -32,9 +32,9 @@ for _, client in pairs(existing_clients) do
 end
 
 -- Mason 安装目录
-local mason_data = fn.stdpath("data") .. sep .. "mason" .. sep .. "packages"
-local jdtls_install = mason_data .. sep .. "jdtls"
-local launcher = jdtls_install .. sep .. "bin" .. sep .. (is_win and "jdtls.bat" or "jdtls")
+local mason_bin = vim.fs.joinpath(vim.fn.stdpath("data"), "mason", "bin")
+local separator = vim.fn.has("win32") == 1 and ";" or ":"
+vim.env.PATH = mason_bin .. separator .. vim.env.PATH
 
 -- 工作数据目录
 local workspace_dir = fn.stdpath("cache") .. sep .. "jdtls" .. sep .. fn.sha256(root_dir)
@@ -48,7 +48,7 @@ if fn.filereadable(lombok_jar) then
 end
 
 -- 构建命令
-local cmd = { launcher, "-data", workspace_dir }
+local cmd = { "jdtls", "-data", workspace_dir }
 for _, arg in ipairs(jvm_args) do
 	table.insert(cmd, "--jvm-arg=" .. arg)
 end
