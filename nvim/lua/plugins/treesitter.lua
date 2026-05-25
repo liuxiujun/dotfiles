@@ -14,15 +14,6 @@ return {
 		lazy = false,
 		branch = "main",
 		config = function()
-			---@diagnostic disable-next-line: param-type-mismatch
-			require("nvim-treesitter").setup({
-				auto_install = true,
-				ensure_installed = {
-					-- "stable",
-					-- "unstable",
-					"lua",
-				},
-			})
 			vim.api.nvim_create_autocmd("FileType", {
 				callback = function(details)
 					local bufnr = details.buf

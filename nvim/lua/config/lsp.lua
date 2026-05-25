@@ -192,16 +192,14 @@ vim.lsp.config("gopls", {
 })
 
 vim.lsp.config("php", {
-    cmd = { "phpactor", "language-server", "-vvv" },
-    capabilities = capabilities,
-    filetypes = { "php" },
-    root_markers = { ".git", "composer.json" },
-    
+    cmd = { 'phpactor', 'language-server' },
+    filetypes = { 'php' },
+    root_markers = { '.git', 'composer.json', '.phpactor.json', '.phpactor.yml' },
+    workspace_required = true,
     init_options = {
-        ["php_code_sniffer.enabled"] = false,
-        ["php_code_sniffer.show_diagnostics"] = false,
-        ["php.memory_limit"] = "2G",
-    },
+        ["language_server_phpstan.enabled"] = false,
+        ["language_server_psalm.enabled"] = false,
+    }
 })
 
 -- 1. 获取 JDTLS 安装路径
