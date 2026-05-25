@@ -53,12 +53,12 @@ if system.is_windows or system.is_wsl then
 end
 
 -- set terminal (windows)
-if system.is_windows then
-	vim.opt.shell = "pwsh"
-	vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
-	vim.opt.shellquote = ""
-	vim.opt.shellxquote = ""
-end
+-- if system.is_windows then
+-- 	vim.opt.shell = "pwsh"
+-- 	vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+-- 	vim.opt.shellquote = ""
+-- 	vim.opt.shellxquote = ""
+-- end
 
 -- Mouse
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim
@@ -95,7 +95,6 @@ vim.diagnostic.config({
 	severity_sort = true,
 	float = { border = "rounded", source = "if_many" },
 	underline = { severity = vim.diagnostic.severity.ERROR },
-	virtual_text = true,
 	signs = {
 		text = {
 			[vim.diagnostic.severity.ERROR] = " ", -- 这里配置“错误”的图标，需要nerd font字体

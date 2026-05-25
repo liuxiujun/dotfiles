@@ -12,7 +12,7 @@ return {
 			open_mapping = [[<C-\>]], -- how to open a new terminal
 			hide_numbers = true, -- hide the number column in toggleterm buffers
 			close_on_exit = true, -- close the terminal window when the process exits
-			shell = vim.o.shell, -- change the default shell
+			shell = "pwsh", -- change the default shell
 			direction = "float",
 		})
 
