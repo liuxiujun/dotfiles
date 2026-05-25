@@ -13,7 +13,7 @@ return {
             sort_by = "case_sensitive",
             git = {
                 enable = true,
-                timeout = 2000,
+                timeout = 10000,
             },
             renderer = {
                 group_empty = true,
