@@ -135,7 +135,7 @@ vim.lsp.config("lua_ls", {
             },
             diagnostics = {
                 -- Get the language server to recognize the `vim` global.
-                globals = { "vim" },
+                globals = { "vim", "require", "pcall", "tonumber", "tostring", "unpack" },
             },
             workspace = {
                 -- Make the server aware of Neovim runtime files.
@@ -191,15 +191,20 @@ vim.lsp.config("gopls", {
     },
 })
 
-vim.lsp.config("phpactor", {
-    cmd = { 'phpactor', 'language-server' },
-    filetypes = { 'php' },
+-- vim.lsp.config("phpactor", {
+--     cmd = { 'phpactor', 'language-server' },
+--     filetypes = { 'php' },
+--     root_markers = { '.git', 'composer.json', '.phpactor.json', '.phpactor.yml' },
+--     init_options = {
+--         ["language_server_phpstan.enabled"] = false,
+--         ["language_server_psalm.enabled"] = false,
+--     }
+-- })
+
+vim.lsp.config("intelephense", {
+    cmd = { "intelephense", "--stdio" },
+    filetypes = { "php" },
     root_markers = { '.git', 'composer.json', '.phpactor.json', '.phpactor.yml' },
-    workspace_required = false,
-    init_options = {
-        ["language_server_phpstan.enabled"] = false,
-        ["language_server_psalm.enabled"] = false,
-    }
 })
 
 -- 1. 获取 JDTLS 安装路径
@@ -275,5 +280,5 @@ vim.lsp.enable({
     "ts_ls",
     "clangd",
     "jdtls",
-    "phpactor",
+    "intelephense",
 })
