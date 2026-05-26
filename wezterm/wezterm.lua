@@ -79,7 +79,7 @@ config.launch_menu = {
 	},
 	{
 		label = "WSL:Ubuntu",
-		args = { "wsl.exe", "-d", "Ubuntu" },
+		args = { "wsl.exe", "~", "-d", "Ubuntu" },
 	},
 	{
 		label = "tiankun",
