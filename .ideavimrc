@@ -1,173 +1,272 @@
-﻿" .ideavimrc is a configuration file for IdeaVim plugin. It uses
-"   the same commands as the original .vimrc configuration.
-" You can find a list of commands here: https://jb.gg/h38q75
-" Find more examples here: https://jb.gg/share-ideavimrc
+" =====================================================================================================
+" 1. Basic 
+" =====================================================================================================
+set number                              " 显示绝对行号
+set clipboard+=unnamed,ideaput          " 默认寄存器接入系统剪贴板，并优先使用 IDE 原生粘贴
+set list                                " 显示空白字符
+" set trackactionids                      " 临时排查 Action ID 时再打开，平时开启会频繁弹通知
+set idearefactormode=keep               " 重构选中文本时尽量保留 Vim 的编辑体验
+set showmode                            " 在状态栏显示当前模式
+set showcmd                             " 在状态栏显示未完成的按键序列
+set visualbell                          " 关闭报错时的声音提示
+set ignorecase                          " 搜索默认忽略大小写
+set smartcase                           " 搜索模式里出现大写时自动切换为大小写敏感
+set hlsearch                            " 高亮搜索结果
+set incsearch                           " 输入搜索模式时实时定位
+set timeoutlen=1000                     " 映射等待时间，兼顾 Which-Key 和多键位映射
+set ttimeoutlen=10                      " 键码等待时间，避免 Esc 等按键卡顿
 
+" =====================================================================================================
+" 2. Plugins 
+" =====================================================================================================
+set surround                            " ys/cs/ds 等成对符号操作
+set easymotion                          " 快速跳转
+set highlightedyank                     " 高亮刚复制的文本
+set textobj-entire                      " ae / ie 整个文件文本对象
+set textobj-indent                      " ai / ii 缩进块文本对象，官方插件名是 textobj-indent
+set commentary                          " gcc / gc 注释
+set NERDTree                            " 文件树相关快捷键，需要对应扩展支持
+set which-key                           " 显示 leader 键位提示
+set VimEverywhere                       " 在更多 IDE 输入区域启用 Vim，需要 JetBrains Vim Everywhere 插件
+set peekaboo
+
+" VimEverywhere
+set ideavimsupport+=dialog
+set ideavimsupport-=singleline
+
+" 注意：行末尾不要写任何东西备注也会被命令读取执行
+
+" =====================================================================================================
+" 3. Keymaps 
+" =====================================================================================================
 let mapleader = ","
 
-" basic stuff {{{
-set clipboard=unnamed
-                                " ensures that IdeaVim shares its clipboard with the system clipboard.
-set number
-set list                        " show whitespace
-set trackactionids              " (default off) When on, IdeaVim will try to track the current IDE action and display
-                                " the action name in a notification.
-set scrolloff=10                " defines the number of lines to leave on the screen before scrolling.
-                                " That is, if the value is set to 10, when moving the cursor down the page,
-                                " once only 10 lines remain, the page will start to scroll.
-set idearefactormode=keep       " Specifies the mode to be used when a refactoring selects text to be edited
-set showmode
-set showcmd
-set visualbell                  " causes the annoying audible bell sound to stop being emitted whenever you enter an invalid input.
-set ignorecase                  " use case-insensitive search by default
-set smartcase                   " if any of the search characters are uppercase, treat the search as case-sensitive.
-set hlsearch                    " ensures all of the search results are highlighted.
-set incsearch                   " start searching as you type, rather than waiting for you to submit the complete search string first.
-" }}}
+" -------------------------
+" Config / Self
+" -------------------------
+" 编辑配置文件
+nmap <leader>. :e ~/.ideavimrc<CR>
+" 重载配置文件
+nmap <leader>0 <Action>(IdeaVim.ReloadVimRc.reload)
 
-" plugins {{{
-" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
-set surround
-set easymotion
-set highlightedyank
-set textobj-entire
-set commentary
-set nerdtree
-set which-key
-" }}}
-
-" WhichKey settings {{{
-set notimeout
-" set timeoutlen = 1000
-
-let g:WhichKeyDesc_leader = "<leader> Leader key"
-let g:WhichKeyDesc_Clear_Search = "<leader><Enter> Clear the Search Buffer"
-let g:WhichKeyDesc_easymotion_prefix = "<leader><leader>"
-let g:WhichKeyDesc_Write = "<leader>s Save"
-let g:WhichKeyDesc_fold = "<leader>z Folding"
-let g:WhichKeyDesc_display = "<leader>D Display Mode"
-let g:WhichKeyDesc_NREDTree = "<leader>e Project Explorer"
-let g:WhichKeyDesc_Run = "<leader>r Run"
-let g:WhichKeyDesc_Buffer = "<leader>b Buffer"
-let g:WhichKeyDesc_Code = "<leader>c Code"
-let g:WhichKeyDesc_Find = "<leader>f Find"
-let g:WhichKeyDesc_relative_ln = "<leader><Tab> Toggle Relative Line Number"
-" }}}
-
-" Key Mappings {{{
-" clear the search buffer when hitting return
-nnoremap <CR> :noh<CR><CR>
-
-" idea actions
-map <C-S-p> :action GotoAction<CR>
-map <C-p> <Action>(SearchEverywhere)
-
-" Back/Forward
-map <S-h> <Action>(Back)
-map <S-l> <Action>(Forward)
-
-" switch between tabs gt/gT
-" todo go to last active tab
-
-nnoremap <Tab> :tabnext<CR>
-nnoremap <S-Tab> :tabprevious<CR>
-
-" pane navigation
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
-
-" close tab
-:nmap <leader>bd <Action>(CloseEditor)
-:nmap <leader>bD <Action>(CloseAllEditors)
-:nmap <leader>bo <Action>(CloseAllEditorsButActive)
-
-" shortcuts for globally fold and unfold the current file
-map <leader>zc :action CollapseAllRegions<CR>
-map <leader>zo :action ExpandAllRegions<CR>
-
-" Display options
-map <leader>DD <action>(ToggleDistractionFreeMode)
-map <leader>DZ <action>(ToggleZenMode)
-map <leader>DF <action>(ToggleFullScreen)
-
-" NERDTree https://github.com/JetBrains/ideavim/wiki/NERDTree-support
-"   Key     Desc
-"   o       Open files, directories and bookmarks
-"   O       Recursively open the selected directory
-"   go      Open selected file, but leave cursor in the NERDTree
-"   t       Open selected node/bookmark in a new tab
-"   T       Same as 't', but keep the focus on the current tab
-"   i       Open selected file in a split window horizontally
-"   gi      Same as 'i', but leave the cursor on the NERDTree
-"   s       Open selected file in a split window vertically
-"   gs      Same as 's', but leave the cursor on the NERDTree
-"   x       Close the current nodes parent
-"   X       Recursively close all children of the current node
-"   p       Jump to current nodes parent
-"   P       Jump to the root node
-"   K       Jump up inside directories at the current tree depth
-"   J       Jump down inside directories at the current tree depth
-"   <C-k>   Jump down to next sibling of the current directory
-"   <C-j>   Jump up to next sibling of the current directory
-"   r       Recursively refresh the current directory
-"   R       Recursively refresh the current root
-"   n       Create File
-"   N       Create Directory
-"   m       Display Right-Click Menu
-"   A       Zoom(maximize/minimize) the NERDTree window
-"   q       Close the NERDTree window
-nnoremap <leader>e :NERDTreeFocus<cr>
-nmap <leader>o <Action>(SelectInProjectView)
-
-" Find
+" -------------------------
+" Search / Locate
+" -------------------------
+" 清除搜索高亮
+nmap <CR> :noh<CR>
+" 全局查找/命令入口
 nmap <leader>f <Action>(SearchEverywhere)
 
-" code actions
-nmap <leader>s :write<CR>
-nmap [d <Action>(GotoPreviousError)
-nmap ]d <Action>(GotoNextError)
 
-" methods navigation
+" -------------------------
+" Buffers / Tabs
+" -------------------------
+" 保存
+nmap <leader>s <Action>(SaveAll)
+" 关闭当前标签
+nmap <leader>bd <Action>(CloseEditor)
+" 关闭所有标签
+nmap <leader>bD <Action>(CloseAllEditors)
+" 只保留当前标签
+nmap <leader>bo <Action>(CloseAllEditorsButActive)
+" 切到下一个编辑器标签
+nmap <Tab> <Action>(NextTab)
+" 切到上一个编辑器标签
+nmap <S-Tab> <Action>(PreviousTab)
+
+" -------------------------
+" Tool Windows
+" -------------------------
+" 隐藏所有侧边栏
+nmap <leader>h <Action>(HideSideWindows)
+" Terminal窗口
+nmap <leader>t <Action>(ActivateTerminalToolWindow)
+" Project 窗口
+nmap <leader>e <Action>(ActivateProjectToolWindow)
+" 在项目树中定位当前文件
+nmap <leader>o <Action>(SelectInProjectView)
+" Problems 窗口
+nmap <leader>p <Action>(ActivateProblemsViewToolWindow)
+" Services 窗口
+nmap <leader>rs <Action>(ActivateServicesToolWindow)
+
+" -------------------------
+" Code Navigation
+" -------------------------
+"
+nmap gd <Action>(GotoDeclaration)
+nmap gi <Action>(GotoImplementation)
+nmap gr <Action>(FindUsages)
+nmap gy <Action>(GotoTypeDeclaration)
+nmap gs <Action>(GotoSuperMethod)
+nmap ge <Action>(GotoTest)
+nmap gn <Action>(ShowNavBar)
+
+" 跳到上一个方法
 nmap [[ <Action>(MethodUp)
+" 跳到下一个方法
 nmap ]] <Action>(MethodDown)
 
+" -------------------------
+" Diagnostics
+" -------------------------
+" 跳转到下一个错误
+nmap ]d <Action>(GotoNextError)
+" 跳转到上一个错误
+nmap [d <Action>(GotoPreviousError)
+" 显示当前错误详情
+nmap gl <Action>(ShowErrorDescription)
+
+" -------------------------
 " Code Actions
-:map <leader>cr <Action>(RenameElement)
-:map <leader>ce <Action>(ExtractMethod)
-:map <leader>cS <Action>(ChangeSignature)
-:map <leader>cq <Action>(Refactorings.QuickListPopupAction)
-:map <leader>ci <Action>(OptimizeImports)
-:map <leader>cf <Action>(ReformatCode)
-:map <leader>cs <Action>(SurroundWith)
+" -------------------------
+imap <C-Space> <Action>(CodeCompletion)
+" 优化导入
+nmap <leader>co <Action>(OptimizeImports)
+" 格式化代码
+nmap <leader>cf <Action>(ReformatCode)
+" 显示上下文操作/快速修复
+nmap <leader>ca <Action>(ShowIntentionActions)
 
-" run & debug & breakpoints
-:map <leader>rr <Action>(RunClass)
-:map <leader>rd <Action>(DebugClass)
-:map <leader>rc <Action>(Stop)
-:map <leader>r1 <Action>(ChooseRunConfiguration)
-:map <leader>r2 <Action>(ChooseDebugConfiguration)
-:map <leader>rt <Action>(ToggleLineBreakpoint)
-:map <leader>rs <Action>(ViewBreakpoints)
-:map <leader>rr <Action>(Debugger.RemoveAllBreakpoints)
+vmap <leader>cs <Action>(SurroundWith)
+nmap <leader>cu <Action>(Unwrap)
 
-" toggle line number relative
-function! NumberToggle()
-  if(&relativenumber == 1)
-    set norelativenumber
-  else
-    set relativenumber number
-  endif
-endfunction
-nnoremap <leader><Tab> :call NumberToggle()<CR>
+" -------------------------
+" Generate
+" -------------------------
+nmap <leader>cgc <Action>(GenerateConstructor)
+nmap <leader>cgl <Action>(GenerateLogField)
+nmap <leader>cgg <Action>(GenerateGetterAndSetter)
+nmap <leader>cge <Action>(GenerateEquals)
+nmap <leader>cgo <Action>(OverrideMethods)
+nmap <leader>cgi <Action>(ImplementMethods)
+nmap <leader>cgd <Action>(DelegateMethods)
+nmap <leader>cgt <Action>(GenerateFromTestCreatorsGroup)
 
-" .ideavimrc
-map <leader>0 :so ~/.ideavimrc<CR>
-map <leader>. :e ~/.ideavimrc<CR>
+" -------------------------
+" Refactor
+" -------------------------
+" 重命名
+nmap <leader>cr <Action>(RenameElement)
+" 提取方法
+nmap <leader>cem <Action>(ExtractMethod)
+" 提取变量
+nmap <leader>cev <Action>(IntroduceVariable)
+" 提取常量
+nmap <leader>cec <Action>(ExtractConstant)
+" 提取为成员变量
+nmap <leader>cef <Action>(IntroduceField)
+" 提取为参数
+nmap <leader>cei <Action>(IntroduceParameter)
 
-" }}}
+" -------------------------
+" Fold
+" -------------------------
+" 折叠全部代码块
+nmap <leader>zc <Action>(CollapseAllRegions)
+" 展开全部代码块
+nmap <leader>zo <Action>(ExpandAllRegions)
 
-" Shortcut Conflicts for Active Keymap {{{
-sethandler <C-t> a:vim
-" }}}
+" -------------------------
+" New / Create
+" -------------------------
+nmap <leader>nn <Action>(NewElement)
+
+" -------------------------
+" Run / Debug
+" -------------------------
+" 停止运行/调试
+nmap <leader>rc <Action>(Stop)
+" 选择运行配置并执行
+nmap <leader>rr <Action>(ChooseRunConfiguration)
+" 选择调试配置并执行
+nmap <leader>rd <Action>(ChooseDebugConfiguration)
+
+" =====================================================================================================
+" 4. Which-Key settings
+" =====================================================================================================
+" Which-Key 官方建议：关闭映射超时，保证提示菜单能稳定出现
+set notimeout
+let g:WhichKey_DefaultDelay = 0
+let g:WhichKey_ShowVimActions = "true"
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+let g:WhichKey_SortCaseSensitive = "false"
+
+let g:WhichKeyDesc_gd = "gd Go to declaration"
+let g:WhichKeyDesc_gi = "gi Go to implementation"
+let g:WhichKeyDesc_gr = "gr Find usages"
+let g:WhichKeyDesc_gy = "gy Go to type declaration"
+let g:WhichKeyDesc_gs = "gs Go to super method"
+let g:WhichKeyDesc_ge = "ge Go to test"
+let g:WhichKeyDesc_gn = "gn Show navigation bar"
+
+let g:WhichKeyDesc_gl = "gl Show error description"
+let g:WhichKeyDesc_prev_diag = "[d Previous diagnostic"
+let g:WhichKeyDesc_next_diag = "]d Next diagnostic"
+let g:WhichKeyDesc_method_up = "[[ Previous method"
+let g:WhichKeyDesc_method_down = "]] Next method"
+
+let g:WhichKeyDesc_leader = "<leader> Leader"
+
+let g:WhichKeyDesc_dot = "<leader>. Edit IdeaVim config"
+let g:WhichKeyDesc_zero = "<leader>0 Reload IdeaVim config"
+
+let g:WhichKeyDesc_f = "<leader>f Search everywhere"
+
+let g:WhichKeyDesc_s = "<leader>s Save all"
+
+let g:WhichKeyDesc_b = "<leader>b Buffers / Tabs"
+let g:WhichKeyDesc_bd = "<leader>bd Close current editor"
+let g:WhichKeyDesc_bD = "<leader>bD Close all editors"
+let g:WhichKeyDesc_bo = "<leader>bo Close other editors"
+
+let g:WhichKeyDesc_h = "<leader>h Hide tool windows"
+let g:WhichKeyDesc_t = "<leader>t Terminal"
+let g:WhichKeyDesc_e = "<leader>e Project tool window"
+let g:WhichKeyDesc_o = "<leader>o Reveal current file in project"
+let g:WhichKeyDesc_p = "<leader>p Problems tool window"
+let g:WhichKeyDesc_rs = "<leader>rs Services tool window"
+
+let g:WhichKeyDesc_z = "<leader>z Fold"
+let g:WhichKeyDesc_zc = "<leader>zc Collapse all regions"
+let g:WhichKeyDesc_zo = "<leader>zo Expand all regions"
+
+let g:WhichKeyDesc_c = "<leader>c Code"
+let g:WhichKeyDesc_ca = "<leader>ca Show context actions"
+let g:WhichKeyDesc_cf = "<leader>cf Reformat code"
+let g:WhichKeyDesc_co = "<leader>co Optimize imports"
+let g:WhichKeyDesc_cs = "<leader>cs Surround with"
+let g:WhichKeyDesc_cu = "<leader>cu Unwrap"
+
+let g:WhichKeyDesc_cr = "<leader>cr Rename"
+let g:WhichKeyDesc_ce = "<leader>ce Extract"
+let g:WhichKeyDesc_cec = "<leader>cec Extract constant"
+let g:WhichKeyDesc_cei = "<leader>cei Introduce parameter"
+let g:WhichKeyDesc_cef = "<leader>cef Introduce field"
+let g:WhichKeyDesc_cem = "<leader>cem Extract method"
+let g:WhichKeyDesc_cev = "<leader>cev Introduce variable"
+
+let g:WhichKeyDesc_cg = "<leader>cg Generate"
+let g:WhichKeyDesc_cgc = "<leader>cgc Generate constructor"
+let g:WhichKeyDesc_cgd = "<leader>cgd Delegate methods"
+let g:WhichKeyDesc_cge = "<leader>cge Generate equals"
+let g:WhichKeyDesc_cgg = "<leader>cgg Generate getter and setter"
+let g:WhichKeyDesc_cgi = "<leader>cgi Implement methods"
+let g:WhichKeyDesc_cgl = "<leader>cgl Generate logger field"
+let g:WhichKeyDesc_cgo = "<leader>cgo Override methods"
+let g:WhichKeyDesc_cgt = "<leader>cgt Generate tests"
+
+let g:WhichKeyDesc_n = "<leader>n New / Create"
+let g:WhichKeyDesc_nn = "<leader>nn New element"
+
+let g:WhichKeyDesc_r = "<leader>r Run / Debug"
+let g:WhichKeyDesc_rc = "<leader>rc Stop"
+let g:WhichKeyDesc_rd = "<leader>rd Choose debug configuration"
+let g:WhichKeyDesc_rr = "<leader>rr Choose run configuration"
+
+" =====================================================================================================
+" 5. Shortcut conflicts for active keymap
+" =====================================================================================================
+sethandler <C-T> a:vim
+sethandler <C-N> a:ide
+sethandler <C-P> a:ide
