@@ -15,6 +15,7 @@ set hlsearch                            " 高亮搜索结果
 set incsearch                           " 输入搜索模式时实时定位
 set timeoutlen=1000                     " 映射等待时间，兼顾 Which-Key 和多键位映射
 set ttimeoutlen=10                      " 键码等待时间，避免 Esc 等按键卡顿
+set keep-english-in-normal-and-restore-in-insert
 
 " =====================================================================================================
 " 2. Plugins 
@@ -42,6 +43,17 @@ set ideavimsupport-=singleline
 let mapleader = ","
 
 " -------------------------
+" Editor
+" -------------------------
+set lookupkeys-=<C-J>
+set lookupkeys-=<C-K>
+
+" imap <C-j> <Action>(EditorDown)
+" imap <C-k> <Action>(EditorUp)
+imap <C-j> <Down>
+imap <C-k> <Up>
+
+" -------------------------
 " Config / Self
 " -------------------------
 " 编辑配置文件
@@ -56,7 +68,6 @@ nmap <leader>0 <Action>(IdeaVim.ReloadVimRc.reload)
 nmap <CR> :noh<CR>
 " 全局查找/命令入口
 nmap <leader>f <Action>(SearchEverywhere)
-
 
 " -------------------------
 " Buffers / Tabs
@@ -89,6 +100,8 @@ nmap <leader>o <Action>(SelectInProjectView)
 nmap <leader>p <Action>(ActivateProblemsViewToolWindow)
 " Services 窗口
 nmap <leader>rs <Action>(ActivateServicesToolWindow)
+"Zen mode
+nmap <leader>zz <Action>(ToggleZenMode)
 
 " -------------------------
 " Code Navigation
@@ -171,6 +184,7 @@ nmap <leader>zo <Action>(ExpandAllRegions)
 " New / Create
 " -------------------------
 nmap <leader>nn <Action>(NewElement)
+nmap <leader>nc <Action>(NewClass)
 
 " -------------------------
 " Run / Debug
@@ -226,6 +240,7 @@ let g:WhichKeyDesc_e = "<leader>e Project tool window"
 let g:WhichKeyDesc_o = "<leader>o Reveal current file in project"
 let g:WhichKeyDesc_p = "<leader>p Problems tool window"
 let g:WhichKeyDesc_rs = "<leader>rs Services tool window"
+let g:WhichKeyDesc_zz = "<leader>zz Toggle Zen Mode"
 
 let g:WhichKeyDesc_z = "<leader>z Fold"
 let g:WhichKeyDesc_zc = "<leader>zc Collapse all regions"
@@ -267,6 +282,5 @@ let g:WhichKeyDesc_rr = "<leader>rr Choose run configuration"
 " =====================================================================================================
 " 5. Shortcut conflicts for active keymap
 " =====================================================================================================
-sethandler <C-T> a:vim
-sethandler <C-N> a:ide
-sethandler <C-P> a:ide
+sethandler <C-J> a:vim
+sethandler <C-K> a:vim
