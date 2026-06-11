@@ -94,7 +94,7 @@ if is_windows then
                 "ssh",
                 "-i",
                 wezterm.home_dir .. "/.ssh/id_ed25519",
-                "tiankun@172.31.0.150",
+                "lxj@172.31.0.150",
             },
         },
         {
