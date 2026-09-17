@@ -14,7 +14,7 @@ set smartcase                           " 搜索模式里出现大写时自动�
 set hlsearch                            " 高亮搜索结果
 set incsearch                           " 输入搜索模式时实时定位
 set timeoutlen=1000                     " 映射等待时间，兼顾 Which-Key 和多键位映射
-set ttimeoutlen=10                      " 键码等待时间，避免 Esc 等按键卡顿
+" set ttimeoutlen=10                      " 键码等待时间，避免 Esc 等按键卡顿
 set keep-english-in-normal-and-restore-in-insert
 
 " =====================================================================================================
@@ -29,7 +29,7 @@ set commentary                          " gcc / gc 注释
 set NERDTree                            " 文件树相关快捷键，需要对应扩展支持
 set which-key                           " 显示 leader 键位提示
 set VimEverywhere                       " 在更多 IDE 输入区域启用 Vim，需要 JetBrains Vim Everywhere 插件
-set peekaboo
+" set peekaboo
 
 " VimEverywhere
 set ideavimsupport+=dialog
@@ -81,9 +81,11 @@ nmap <leader>bD <Action>(CloseAllEditors)
 " 只保留当前标签
 nmap <leader>bo <Action>(CloseAllEditorsButActive)
 " 切到下一个编辑器标签
-nmap <Tab> <Action>(NextTab)
+" nmap <Tab> <Action>(NextTab)
+nmap ]b <Action>(NextTab)
 " 切到上一个编辑器标签
-nmap <S-Tab> <Action>(PreviousTab)
+" nmap <S-Tab> <Action>(PreviousTab)
+nmap [b <Action>(PreviousTab)
 
 " -------------------------
 " Tool Windows
