@@ -62,37 +62,6 @@ return {
 			{ "<leader>dl", function() require("dap").run_last() end, desc = "Debug: run last" },
 			{ "<leader>dt", function() require("dap").terminate() end, desc = "Debug: terminate" },
 		},
-		config = function()
-			local dap = require("dap")
-			local java_debug = mason_package_path("java-debug-adapter")
-
-			dap.adapters.java = function(callback)
-				if not java_debug then
-					vim.notify("java-debug-adapter not found, run :Mason", vim.log.levels.ERROR)
-					return
-				end
-
-				local jar = vim.fn.glob(join_paths(java_debug, "extension", "server", "com.microsoft.java.debug.plugin-*.jar"))
-				if jar == "" then
-					vim.notify("java-debug-adapter jar not found, run :Mason", vim.log.levels.ERROR)
-					return
-				end
-
-				callback({
-					type = "executable",
-					command = "java",
-					args = { "-jar", jar },
-				})
-			end
-
-			dap.configurations.java = {
-				{
-					type = "java",
-					request = "launch",
-					name = "Launch Java",
-				},
-			}
-		end,
 	},
 
 	{

@@ -1,5 +1,6 @@
 local M = {
     'kevinhwang91/nvim-ufo',
+    event = 'BufReadPost',
     dependencies = { 'kevinhwang91/promise-async' },
     opts = {
         filetype_exclude = { 'help', 'alpha', 'dashboard', 'neo-tree', 'Trouble', 'lazy', 'mason' },

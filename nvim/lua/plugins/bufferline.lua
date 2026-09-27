@@ -17,7 +17,6 @@ return {
 	version = "*", -- 跟踪最新稳定版
 	dependencies = {
 		"nvim-tree/nvim-web-devicons", -- 文件图标
-		"echasnovski/mini.nvim",
 	},
 	event = "VeryLazy", -- 确保插件在启动时加载
 	opts = {

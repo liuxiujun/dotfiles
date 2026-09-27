@@ -27,9 +27,6 @@ return {
                 "bash-language-server",
                 "perlnavigator",
                 "clangd",
-                "jdtls",
-                "java-debug-adapter",
-                "java-test",
                 "typescript-language-server", -- ts_ls
                 "intelephense",               -- php
                 "gopls",
@@ -40,7 +37,6 @@ return {
                 "clang-format",
                 "goimports",
                 "gofumpt",
-                "google-java-format",
                 -- perltidy 不在 mason 仓库，需自行安装：cpan Perl::Tidy
                 "eslint_d",
             },

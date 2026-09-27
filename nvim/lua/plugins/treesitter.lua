@@ -69,10 +69,12 @@ return {
 	-- 4. autotag
 	{
 		"windwp/nvim-ts-autotag",
+		event = "InsertEnter",
 		config = true,
 	},
 	-- 5. nvim-treesitter-endwise
 	{
 		"RRethy/nvim-treesitter-endwise",
+		event = "InsertEnter",
 	},
 }

@@ -110,7 +110,7 @@ vim.lsp.config("basedpyright", {
 vim.lsp.config("ruff", {
     cmd = { "ruff", "server" },
     filetypes = { "python" },
-    root_markers = { ".git", "", "pyproject.toml", "pyrightconfig.json", "ruff.toml", ".ruff.toml" },
+    root_markers = { ".git", "pyproject.toml", "pyrightconfig.json", "ruff.toml", ".ruff.toml" },
     capabilities = capabilities,
     -- 可选：覆盖某些能力，避免与 pyright 重复
     on_attach = function(client)
@@ -135,6 +135,8 @@ vim.lsp.config("ts_ls", {
     capabilities = capabilities,
 })
 
+-- Neovim 运行时与插件类型提示已由 plugins/lazydev.lua 按需接管，
+-- 此处不再手动配置 workspace.library (nvim_get_runtime_file)，避免全量扫描导致卡顿
 vim.lsp.config("lua_ls", {
     cmd = { "lua-language-server" },
     capabilities = capabilities,
@@ -142,23 +144,8 @@ vim.lsp.config("lua_ls", {
     settings = {
         Lua = {
             runtime = {
-                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim).
                 version = "LuaJIT",
             },
-            diagnostics = {
-                -- Get the language server to recognize the `vim` global.
-                globals = { "vim", "require", "pcall", "tonumber", "tostring", "unpack" },
-            },
-            workspace = {
-                -- Make the server aware of Neovim runtime files.
-                library = {
-                    -- 1. 添加 Vim 运行时路径
-                    vim.api.nvim_get_runtime_file("", true),
-                    -- 2. 添加 $VIMRUNTIME/lua 目录
-                    vim.fn.expand("$VIMRUNTIME/lua"),
-                },
-            },
-            -- Do not send telemetry data containing a randomized but unique identifier.
             telemetry = {
                 enable = false,
             },
@@ -219,7 +206,8 @@ vim.lsp.config("gopls", {
 vim.lsp.config("intelephense", {
     cmd = { "intelephense", "--stdio" },
     filetypes = { "php" },
-    root_markers = { '.git', 'composer.json', '.phpactor.json', '.phpactor.yml' },
+    root_markers = { ".git", "composer.json", ".phpactor.json", ".phpactor.yml" },
+    capabilities = capabilities,
 })
 
 -- Racket LSP（需先 raco pkg install racket-langserver）
@@ -231,72 +219,6 @@ vim.lsp.config("racket_langserver", {
     capabilities = capabilities,
 })
 
--- 1. 获取 JDTLS 安装路径
-local jdtls_path = vim.fn.stdpath("data") .. "/mason/packages/jdtls"
-
--- 2. 获取确切的 launcher jar 文件名
-local launcher_jar = vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar")
--- glob 可能返回多行（如果有多个匹配），只取第一行
-if type(launcher_jar) == "string" and launcher_jar:find("\n") then
-    launcher_jar = launcher_jar:match("[^\n]+")
-end
-
--- 3. 如果找不到 launcher jar，报错并停止
-if not launcher_jar or launcher_jar == "" then
-    vim.notify("jdtls launcher jar not found at " .. jdtls_path .. "/plugins/", vim.log.levels.ERROR)
-else
-    -- 4. JDK 21 的 java 可执行文件（根据你的实际路径）
-    local java21 = "C:/Users/liuxi/scoop/apps/temurin21-jdk/current/bin/java.exe"
-
-    -- 5. 配置 jdtls
-    vim.lsp.config("jdtls", {
-        cmd = {
-            java21,
-            "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-            "-Dosgi.bundles.defaultStartLevel=4",
-            "-Declipse.product=org.eclipse.jdt.ls.core.product",
-            "-Dlog.protocol=true",
-            "-Dlog.level=ALL",
-            "-javaagent:" .. jdtls_path .. "/lombok.jar",
-            "-Xmx2G",
-            "--add-modules=ALL-SYSTEM",
-            "--add-opens", "java.base/java.util=ALL-UNNAMED",
-            "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-            "-jar", launcher_jar, -- 使用精确路径
-            "-configuration", jdtls_path .. "/config_win",
-            "-data", vim.fn.stdpath("data") .. "/jdtls_workspace",
-        },
-        filetypes = { "java" },
-        root_markers = { ".git", "pom.xml", "build.gradle", "gradle.build", "mvnw", "gradlew" },
-        capabilities = capabilities, -- 确保这个变量已定义
-        init_options = {
-            extendedClientCapabilities = {
-                classFileContentsSupport = true,
-            },
-            settings = {
-                java = {
-                    configuration = {
-                        runtimes = {
-                            {
-                                name = "JavaSE-21",
-                                default = true,
-                                path = "C:/Users/liuxi/scoop/apps/temurin21-jdk/current",
-                            },
-                            {
-                                name = "JavaSE-17",
-                                path = "C:/Users/liuxi/scoop/apps/temurin17-jdk/current",
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    })
-    vim.lsp.enable("jdtls")
-end
-
--- jdtls 只在上面的 launcher jar 找到时启用，不放在下面的列表里，
--- 避免找不到 jar 时启用一个没有 cmd 的空配置
 vim.lsp.enable({
     "lua_ls",
     "basedpyright",

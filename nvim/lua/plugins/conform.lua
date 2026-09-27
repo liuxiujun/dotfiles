@@ -26,7 +26,6 @@ return {
             bash = { "shfmt" },
             c = { "clang-format" },
             cpp = { "clang-format" },
-            java = { "google-java-format" },
             python = { "ruff" },
             perl = { "perltidy" },
             go = { "goimports", "gofumpt" },
