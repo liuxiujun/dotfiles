@@ -22,5 +22,5 @@ nnoremap <leader>. :e C:/Users/liuxi/.vrapperrc<CR>
 # nnoremap <leader>0 :so C:/Users/liuxi/.vrapperrc<CR>
 
 " switch between tabs
-nnoremap <Tab> :tabn<CR>
-nnoremap <S-Tab> :tabp<CR>
+nnoremap ]b :tabn<CR>
+nnoremap [b :tabp<CR>

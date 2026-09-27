@@ -1,7 +1,10 @@
 -- Status line
 return {
 	"nvim-lualine/lualine.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+		"linrongbin16/lsp-progress.nvim",
+	},
 	config = function()
 		local is_ok, lualine = pcall(require, "lualine")
 		if not is_ok then
@@ -52,6 +55,9 @@ return {
 						path = 3,
 						shorting_target = 40, -- Shortens path to leave 40 spaces in the window
 					},
+					function()
+						return require("lsp-progress").progress()
+					end,
 				},
 				lualine_x = { "encoding", "fileformat", "filetype" },
 				lualine_y = { "progress" },
@@ -69,6 +75,14 @@ return {
 			winbar = {},
 			inactive_winbar = {},
 			extensions = {},
+		})
+
+		-- Listen to lsp-progress event and refresh lualine
+		vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+		vim.api.nvim_create_autocmd("User", {
+			group = "lualine_augroup",
+			pattern = "LspProgressStatusUpdated",
+			callback = lualine.refresh,
 		})
 	end,
 }

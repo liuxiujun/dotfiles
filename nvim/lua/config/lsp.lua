@@ -131,6 +131,7 @@ vim.lsp.config("ruff", {
 vim.lsp.config("ts_ls", {
     cmd = { "typescript-language-server", "--stdio" },
     filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+    root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
     capabilities = capabilities,
 })
 

@@ -15,3 +15,5 @@
 	selected = manager
 [credential "https://gitee.com"]
 	provider = generic
+[core]
+	protectNTFS = false
