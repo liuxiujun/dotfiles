@@ -1,5 +1,7 @@
--- 彩虹括号：为不同层级的 () {} [] 赋予不同颜色，Lisp 系语言尤其受用。
--- 基于 treesitter，默认策略即可用，无需额外 setup。
+--------------------------------------------------------------------------------
+-- 插件名称：HiPhish/rainbow-delimiters.nvim
+-- 功能用途：彩虹括号（基于 Treesitter 为不同嵌套层级的 () [] {} 赋予高对比度色弱友好颜色）
+--------------------------------------------------------------------------------
 -- return {
 --     "HiPhish/rainbow-delimiters.nvim",
 --     dependencies = { "nvim-treesitter/nvim-treesitter" },

@@ -1,6 +1,12 @@
--- Tree-sitter 核心及其扩展。
---      如 treesitter.lua, treesitter-context.lua, treesitter-textobjects.lua。
---  彩虹括号见 plugins/rainbow-delimiters.lua
+--------------------------------------------------------------------------------
+-- 插件名称：Tree-sitter 语法树套件
+-- 包含组件：
+--   1. nvim-treesitter             语法树解析核心（提供精准语法高亮、代码折叠与缩进计算）
+--   2. nvim-treesitter-textobjects 语法文本对象（提供 am/im/ac/ic 选中函数/类，以及 [m/]m 函数间跳转）
+--   3. nvim-treesitter-context     顶部上下文吸顶（滚动长函数时在窗口顶部固定显示当前所属函数签名）
+--   4. nvim-ts-autotag             HTML/JSX 标签自动闭合与同步重命名
+--   5. nvim-treesitter-endwise     Lua/Bash/Ruby 等语言自动补全 end 关键字
+--------------------------------------------------------------------------------
 -- todo:
 --  nvim-treesitter-refactor 智能代码重构
 --  nvim-ts-context-commentstring 智能注释， 根据光标所在位置（代码中还是字符串里），自动设置正确的注释符号

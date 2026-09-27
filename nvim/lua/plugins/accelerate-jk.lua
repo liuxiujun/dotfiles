@@ -1,4 +1,7 @@
--- speeds up vertical navigation with j and k (Pure Lua implementation)
+--------------------------------------------------------------------------------
+-- 插件名称：rainbowhxch/accelerated-jk.nvim
+-- 功能用途：垂直移动加速（长按 j / k 时自动按阶梯曲线加快光标上下移动速度）
+--------------------------------------------------------------------------------
 return {
 	{
 		"rainbowhxch/accelerated-jk.nvim",

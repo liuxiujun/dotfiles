@@ -1,3 +1,8 @@
+--------------------------------------------------------------------------------
+-- 插件名称：nvim-dap 调试套件 (nvim-dap / dap-ui / dap-virtual-text / dap-python / mason-nvim-dap)
+-- 功能用途：代码断点调试器（支持打断点、单步执行、变量监控面板与行内变量值预览）
+-- 常用按键：<F5> (启动/继续)、<F10/11/12> (步过/步入/步出)、<leader>db (断点)、<leader>du (调试面板)
+--------------------------------------------------------------------------------
 local function join_paths(...)
 	local separator = package.config:sub(1, 1)
 	return table.concat({ ... }, separator)
