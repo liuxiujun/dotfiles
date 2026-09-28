@@ -71,7 +71,30 @@ return {
 						return require("lsp-progress").progress()
 					end,
 				},
-				lualine_x = { "encoding", "fileformat", "filetype" },
+				lualine_x = {
+					{
+						function()
+							local venv = vim.env.VIRTUAL_ENV or vim.env.CONDA_DEFAULT_ENV
+							if not venv or venv == "" then
+								return ""
+							end
+							local name = vim.fn.fnamemodify(venv, ":t")
+							if name == ".venv" or name == "venv" then
+								local project = vim.fn.fnamemodify(venv, ":h:t")
+								return string.format(" %s (%s)", project, name)
+							end
+							return " " .. name
+						end,
+						cond = function()
+							return (vim.env.VIRTUAL_ENV ~= nil and vim.env.VIRTUAL_ENV ~= "")
+								or (vim.env.CONDA_DEFAULT_ENV ~= nil and vim.env.CONDA_DEFAULT_ENV ~= "")
+						end,
+						-- color = { fg = "#9eda26", gui = "bold" },
+					},
+					"encoding",
+					"fileformat",
+					"filetype",
+				},
 				lualine_y = { "progress" },
 				lualine_z = { "location" },
 			},

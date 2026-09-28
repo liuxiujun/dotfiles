@@ -24,7 +24,7 @@ return {
                     return vim.o.shell
                 end
             end,
-            direction = "float",
+            direction = "horizontal",
         })
 
         -- Define key mappings
