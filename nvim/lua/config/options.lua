@@ -27,16 +27,39 @@ vim.filetype.add({
 	},
 })
 
--- 代码折叠不在这里全局设置：
--- treesitter 在 FileType 时设置 foldmethod=expr（配合 nvim-ufo），
--- 没有语法解析器的文件保持默认 manual，不做折叠
+-- 代码折叠（Neovim 0.10+ 原生彩色折叠 + snacks.statuscolumn，替代 nvim-ufo）：
+-- 具体 foldmethod=expr 由 treesitter.lua 在 FileType 时按需启用
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+vim.opt.foldtext = "" -- 设为空字符串以保留折叠首行的 Treesitter 彩色语法高亮
+vim.opt.fillchars = {
+	foldopen = "",
+	foldclose = "",
+	fold = " ",
+	foldsep = " ",
+	diff = "╱",
+	eob = " ",
+}
 
 -- Clipboard
 -- Hint: use `:h <option>` to figure out the meaning if needed
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
--- for Windows WSL
-if system.is_windows or system.is_wsl then
+-- SSH 远程会话：使用 Neovim 0.10+ 原生内置的 OSC52 剪贴板（替代 ojroques/nvim-osc52 插件）
+if vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+	vim.g.clipboard = {
+		name = "OSC 52",
+		copy = {
+			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+		},
+		paste = {
+			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+		},
+	}
+elseif system.is_windows or system.is_wsl then
 	if vim.fn.executable("win32yank.exe") == 1 then
 		vim.g.clipboard = {
 			name = "win32yank",
@@ -50,12 +73,12 @@ if system.is_windows or system.is_wsl then
 end
 
 -- set terminal (windows)
--- if system.is_windows then
--- 	vim.opt.shell = "pwsh"
--- 	vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
--- 	vim.opt.shellquote = ""
--- 	vim.opt.shellxquote = ""
--- end
+if system.is_windows then
+	vim.opt.shell = "pwsh"
+	vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+	vim.opt.shellquote = ""
+	vim.opt.shellxquote = ""
+end
 
 -- Mouse
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim

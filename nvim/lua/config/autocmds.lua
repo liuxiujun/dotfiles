@@ -50,10 +50,6 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -----------------------------------------------------------------
 --- LspAttach 回调：所有 LSP 功能快捷键在这里设置
 -----------------------------------------------------------------
--- 高亮相关的 augroup 只创建一次；光标停留时高亮符号，移动时清除
-local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
-local clear_highlight_augroup = vim.api.nvim_create_augroup("LspClearHighlight", { clear = true })
-
 -- 使用 Snacks.picker 接管 LSP typeHierarchy（让 grs 告别原生 Quickfix 简陋窗口）
 local function snacks_type_hierarchy_handler(title)
 	return function(_, result, ctx)
@@ -104,6 +100,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		-- 其余全部使用 Neovim 0.11 内置最佳实践：
 		-- grn (重命名), gra (Code Action，已由 snacks.picker.ui_select 自动接管), gO (大纲), K (悬浮文档)
+		-- 光标停留同名符号高亮已由 snacks.words 自动接管（支持 ]] / [[ 跳转）
 		-- 基础跳转与引用：全部接入 Snacks.picker（单个目标时直接秒跳，多个目标时弹预览窗）
 		vim.keymap.set("n", "gd", function()
 			Snacks.picker.lsp_definitions()
@@ -121,20 +118,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.keymap.set("n", "grr", function()
 			Snacks.picker.lsp_references()
 		end, vim.tbl_extend("keep", opts, { desc = "Goto references / Find Usages (Snacks)" }))
-
-		-- 光标停留高亮同名符号
-		local client = vim.lsp.get_client_by_id(ev.data.client_id)
-		if client and client.server_capabilities.documentHighlightProvider then
-			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-				buffer = ev.buf,
-				callback = vim.lsp.buf.document_highlight,
-				group = highlight_augroup,
-			})
-			vim.api.nvim_create_autocmd("CursorMoved", {
-				buffer = ev.buf,
-				callback = vim.lsp.buf.clear_references,
-				group = clear_highlight_augroup,
-			})
-		end
 	end,
 })

@@ -1,12 +1,15 @@
 --------------------------------------------------------------------------------
--- 插件名称：folke/snacks.nvim
--- 功能用途：现代化瑞士军刀插件集（接管模糊搜索 Picker、文件树 Explorer、缩进线 Indent、终端 Terminal、通知 Notifier、输入框美化 Input 及大文件防卡死 Bigfile）
--- 常用按键：<leader>ff (找文件)、<leader>fg (全局搜索)、<leader>e (开关文件树)、<C-\> (开关终端)、<leader>tf (浮动终端)
+-- 插件名称：folke/snacks.nvim (+ echasnovski/mini.icons)
+-- 功能用途：现代化瑞士军刀插件集（接管模糊搜索 Picker、文件树 Explorer、缩进线 Indent、状态列 Statuscolumn、终端 Terminal、同名符号高亮 Words、无损关 Buffer Bufdelete、Git 单行追溯、动态开关 Toggle、通知 Notifier、输入框 Input 及大文件防卡死 Bigfile）
+-- 常用按键：<leader>ff (找文件)、<leader>fg (全局搜索)、<leader>e (开关文件树)、<C-\> (开关终端)、<leader>gb (Git 单行历史)、<leader>u* (UI 动态开关)
 --------------------------------------------------------------------------------
 return {
 	"folke/snacks.nvim",
 	priority = 1000,
 	lazy = false,
+	dependencies = {
+		"echasnovski/mini.icons",
+	},
 	---@type snacks.Config
 	opts = {
 		-- 1. 性能防护：打开超大文件（如日志/压缩包）自动禁用 Treesitter 与慢插件防卡死
@@ -21,12 +24,16 @@ return {
 		notifier = { enabled = true },
 		-- 6. 终端管理（替代 toggleterm.nvim，支持浮动/分屏与多实例切换）
 		terminal = { enabled = true },
-		-- 7. 侧边栏文件树（替代 nvim-tree.lua，复用 picker 架构，支持实时模糊过滤）
+		-- 7. 同名符号自动高亮与跳转（替代 autocmds.lua 手动 LspDocumentHighlight）
+		words = { enabled = true },
+		-- 8. 左侧行号与状态列美化（规整诊断图标、行号与代码折叠列，支持鼠标点击折叠）
+		statuscolumn = { enabled = true },
+		-- 9. 侧边栏文件树（替代 nvim-tree.lua，复用 picker 架构，支持实时模糊过滤）
 		explorer = {
 			enabled = true,
 			replace_netrw = true,
 		},
-		-- 8. 统一模糊搜索器（替代 telescope.nvim + 接管 vim.ui.select）
+		-- 10. 统一模糊搜索器（替代 telescope.nvim + 接管 vim.ui.select）
 		picker = {
 			enabled = true,
 			ui_select = true, -- 自动接管 gra (Code Action) 与 Overseer 选择弹窗
@@ -117,7 +124,7 @@ return {
 		{
 			"<leader>tf",
 			function()
-				Snacks.terminal.toggle(nil, { win = { position = "float", border = "curved" } })
+				Snacks.terminal.toggle(nil, { win = { position = "float", border = "rounded" } })
 			end,
 			desc = "Toggle floating terminal",
 		},
@@ -135,5 +142,43 @@ return {
 			end,
 			desc = "Toggle vertical terminal",
 		},
+		-- Git 辅助：弹出当前光标所在行最近 5 次 Git Commit 与 Diff 历史
+		{
+			"<leader>gb",
+			function()
+				Snacks.git.blame_line()
+			end,
+			desc = "Git blame line (Snacks)",
+		},
+		-- 同名符号引用上下跳转（配合 snacks.words）
+		{
+			"]]",
+			function()
+				Snacks.words.jump(vim.v.count1, true)
+			end,
+			desc = "Next Reference (Snacks)",
+			mode = { "n", "t" },
+		},
+		{
+			"[[",
+			function()
+				Snacks.words.jump(-vim.v.count1, true)
+			end,
+			desc = "Prev Reference (Snacks)",
+			mode = { "n", "t" },
+		},
 	},
+	init = function()
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "VeryLazy",
+			callback = function()
+				-- 与 which-key 深度集成的动态状态开关（自带绿/黄状态图标）
+				Snacks.toggle.option("wrap", { name = "Wrap (自动折行)" }):map("<leader>uw")
+				Snacks.toggle.option("relativenumber", { name = "Relative Number (相对行号)" }):map("<leader>ur")
+				Snacks.toggle.diagnostics():map("<leader>ud")
+				Snacks.toggle.inlay_hints():map("<leader>uh")
+				Snacks.toggle.indent():map("<leader>ui")
+			end,
+		})
+	end,
 }

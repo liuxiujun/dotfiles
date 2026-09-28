@@ -21,14 +21,16 @@ return {
 	"akinsho/bufferline.nvim",
 	version = "*", -- 跟踪最新稳定版
 	dependencies = {
-		"nvim-tree/nvim-web-devicons", -- 文件图标
+		"echasnovski/mini.icons", -- 文件图标
 	},
 	event = "VeryLazy", -- 确保插件在启动时加载
 	opts = {
 		options = {
 			mode = "buffers",
 			-- 关闭按钮、图标、名称等显示方式
-			close_command = "bdelete! %d", -- 关闭 buffer 的命令
+			close_command = function(n)
+				Snacks.bufdelete(n)
+			end, -- 关闭 buffer 的命令（保持窗口布局不乱）
 			left_mouse_command = "buffer %d", -- 左键切换到 buffer
 			middle_mouse_command = nil, -- 中键无操作
 
@@ -45,11 +47,11 @@ return {
 				end
 				return s
 			end,
-            hover = {
-                enabled = true,
-                delay = 200,
-                reveal = {'close'}
-            },
+			hover = {
+				enabled = true,
+				delay = 200,
+				reveal = { "close" },
+			},
 			-- 偏移量：为 snacks.explorer 文件树保留左侧空间
 			offsets = {
 				{
