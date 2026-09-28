@@ -1,204 +1,161 @@
-" basic stuff {{{
-" Though the default behaviour may be surprising, 
-" the backspace 'not working' can be considered a feature;
-" it can prevent you from accidentally removing indentation, 
-" and from removing too much text by restricting it to the current line and/or the start of the insert.
-set backspace=indent,eol,start
+" ============================================================================
+" Basic Options {{{
+" ============================================================================
+set nocompatible
 
+" Leader 键与 Neovim 保持一致（空格）
+let mapleader = " "
+let maplocalleader = " "
+
+" 文件类型与语法高亮
+filetype plugin indent on
+syntax on
+
+" 编码与换行符
 set encoding=UTF-8
-set fileformats=unix,dos,mac    "打开时自动识别，优先使用unix
-set fileformat=unix             "新建文件默认保存为unix
+set fileformats=unix,dos,mac    " 打开时自动识别，优先使用 unix
+set fileformat=unix             " 新建文件默认保存为 unix
 
-" Set bell style
+" 静音提示音与闪烁
 set belloff=all
 set vb t_vb=
 
-" Disable compatibility with vi which can cause unexpected issues.
-set nocompatible
-
-" Enable type file detection. Vim will be able to try to detect the type of file in use.
-filetype on
-
-" Enable plugins and load plugin for the detected file type.
-filetype plugin on
-
-" Load an indent file for the detected file type.
-filetype indent on
-
-" Turn syntax highlighting on.
-syntax on
-
-" Add numbers to each line on the left-hand side.
-set number
-
-" Highlight cursor line underneath the cursor horizontally.
-set cursorline
-
-" Highlight cursor line underneath the cursor vertically.
-set cursorcolumn
-
-" Set shift width to 4 spaces.
+" 编辑与缩进
+set backspace=indent,eol,start
 set shiftwidth=4
-
-" Set tab width to 4 columns.
 set tabstop=4
-
-" Use space characters instead of tabs.
+set softtabstop=4
 set expandtab
+set autoindent
+set smartindent
 
-" Do not save backup files.
-set nobackup
-
-" Do not let cursor scroll below or above N number of lines when scrolling.
+" 界面与行号（与 Neovim 对齐：默认开启相对行号，关闭晃眼的 cursorcolumn）
+set number
+set relativenumber
+set cursorline
 set scrolloff=10
-
-" Do not wrap lines. Allow long lines to extend as far as the line goes.
 set nowrap
-
-" While searching though a file incrementally highlight matching characters as you type.
-set incsearch
-
-" Ignore capital letters during search.
-set ignorecase
-
-" Override the ignorecase option if searching for capital letters.
-" This will allow you to search specifically for capital letters.
-set smartcase
-
-" Show partial command you type in the last line of the screen.
 set showcmd
-
-" Show the mode you are on the last line.
 set showmode
-
-" Show matching words during a search.
 set showmatch
+set signcolumn=yes
+set splitbelow
+set splitright
 
-" Use highlighting when doing a search.
-set hlsearch
-
-" Set the commands to save in history default number is 20.
+" 缓冲区与文件状态
+set hidden                      " 允许在有未保存修改时切换 Buffer
+set autoread                    " 文件在外部被修改时自动重新加载
+set nobackup
+set noswapfile
 set history=1000
 
-" Enable auto completion menu after pressing TAB.
+" 搜索设置
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+
+" 命令行补全增强（Vim 9+ 启用纵向弹出菜单与模糊匹配）
 set wildmenu
-
-" Make wildmenu behave like similar to Bash completion.
-set wildmode=list:longest
-
-" There are certain files that we would never want to edit with Vim.
-" Wildmenu will ignore files with these extensions.
+if exists('+wildoptions')
+    set wildoptions=pum,fuzzy
+else
+    set wildmode=list:longest,full
+endif
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
-" 内置语法设置json文件不隐藏双引号
+" 内置语法：JSON 文件不隐藏双引号
 let g:vim_json_conceal = 0
-
 au BufNewFile,BufRead Jenkinsfile setf groovy
 
+" 内置 netrw 文件树兜底配置（在未安装 NERDTree 的裸机上也能显示清爽树状目录）
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 20
+
+" Vim 9.1+ 内置原生注释插件兜底（未安装 vim-commentary 时依然可用 gc / gcc）
+if has('patch-9.1.0375')
+    silent! packadd! comment
+endif
+
+" 平台差异化设置（移除在无 zsh / 无 ibus 的服务器上会报错卡顿的硬编码）
 if has('win32')
     set clipboard=unnamed
     set t_Co=256
     set t_ut=
     set guifont=Consolas:h12
-    " plug.vim stuff {{{
-        " https://github.com/junegunn/vim-plug/issues/895 
-        " https://github.com/junegunn/vim-plug/issues/852#issuecomment-696431055
-        set shell=cmd.exe
-    " }}}
-endif
-
-if has("unix")
-    set clipboard=unnamedplus 
-    set shell=zsh
+    set shell=cmd.exe
+elseif has('unix')
+    set clipboard=unnamedplus
 endif
 " }}}
 
-" GUI {{{
+" ============================================================================
+" GUI Settings {{{
+" ============================================================================
 let $LANG='en'
 set langmenu=en_US.UTF-8
 if has("gui_running")
-  if has("gui_gtk2")
-    set guifont=Inconsolata\ 12
-  elseif has("gui_macvim")
-    set guifont=Meslo\ Regular:h14
-  elseif has("gui_win32")
-    set guifont=MesloLGS\ Nerd\ Font:h11
-    set guifontwide=FangSong:h11
-  endif
-endif
-" }}}
-
-" Input Method {{{
-if has('unix')
-  let g:input_status = ''
-
-  function! SaveInputStatus() 
-    let g:input_status = system('ibus engine')
-  endfunction
-
-  function! SetEnglish()
-    call system('ibus engine xkb:us::eng')
-  endfunction
-
-  function! RestoreInput()
-    if g:input_status != ''
-      call system('ibus engine ' . g:input_status)
+    if has("gui_gtk2")
+        set guifont=Inconsolata\ 12
+    elseif has("gui_macvim")
+        set guifont=Meslo\ Regular:h14
+    elseif has("gui_win32")
+        set guifont=MesloLGS\ Nerd\ Font:h11
+        set guifontwide=FangSong:h11
     endif
-  endfunction
-  autocmd InsertEnter * call RestoreInput()
-  autocmd InsertLeave * call SaveInputStatus() | call SetEnglish()
 endif
 " }}}
 
-" Plugins {{{
-call plug#begin()
-Plug 'easymotion/vim-easymotion'
-Plug 'ayu-theme/ayu-vim'
-Plug 'Yggdroot/indentLine'
-Plug 'preservim/nerdtree' 
-Plug 'vim-airline/vim-airline'
-Plug 'tpope/vim-commentary'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-entire'
-Plug 'machakann/vim-highlightedyank'
-" Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
-Plug 'liuchengxu/vim-which-key'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-" Plug 'sheerun/vim-polyglot'
-" Plug 'dense-analysis/ale'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'mattn/vim-lsp-settings'
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete-lsp.vim'
-call plug#end()
+" ============================================================================
+" Plugins (安全包裹：裸机未安装 vim-plug 时自动静默跳过，0 报错启动) {{{
+" ============================================================================
+if !empty(glob('~/.vim/autoload/plug.vim')) || !empty(glob('~/vimfiles/autoload/plug.vim'))
+    call plug#begin()
+    Plug 'easymotion/vim-easymotion'
+    Plug 'ayu-theme/ayu-vim'
+    Plug 'Yggdroot/indentLine'
+    Plug 'preservim/nerdtree'
+    Plug 'vim-airline/vim-airline'
+    Plug 'tpope/vim-commentary'
+    Plug 'kana/vim-textobj-user'
+    Plug 'kana/vim-textobj-entire'
+    Plug 'machakann/vim-highlightedyank'
+    Plug 'liuchengxu/vim-which-key'
+    Plug 'tpope/vim-fugitive'
+    Plug 'airblade/vim-gitgutter'
+    call plug#end()
+endif
 " }}}
 
-" key mappings {{{
-" map leader to ,
-let mapleader = ","
+" ============================================================================
+" Key Mappings {{{
+" ============================================================================
+" 退出插入模式（与 Neovim 肌肉记忆对齐）
+inoremap jk <Esc>
 
-" save 
+" 取消搜索高亮（改用 <Esc> 和 <leader>nh，避免覆盖 <CR> 导致 Quickfix 列表无法回车跳转）
+nnoremap <silent> <Esc> :noh<CR><Esc>
+nnoremap <silent> <leader>nh :noh<CR>
+
+" 保存与退出
 nnoremap <leader>s :w<CR>
-
-" This unsets the 'last search pattern' register by hitting return
-nnoremap <CR> :noh<CR><CR>
-
-" source vimrc
-nnoremap <leader>. :e $VIMRC<CR>
-nnoremap <leader>0 :so $VIMRC<CR>
-
-" close 
 nnoremap <leader>x :q<CR>
 nnoremap <leader>X :qa<CR>
 
-" switch between splits
+" 快速编辑与重载 vimrc
+nnoremap <leader>. :e $MYVIMRC<CR>
+nnoremap <leader>0 :so $MYVIMRC<CR>
+
+" 窗口焦点切换（与 Neovim 一致）
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-" switch between tabs
+" 标签页切换
 nnoremap <A-n> :tabn<CR>
 nnoremap <A-p> :tabp<CR>
 nnoremap <leader>1 1gt
@@ -211,156 +168,114 @@ nnoremap <leader>7 7gt
 nnoremap <leader>8 8gt
 nnoremap <leader>9 9gt
 
-" vim-powered terminal in new tab
-:tmap <Esc> <C-W>N
+" 内置终端映射
+tnoremap <Esc> <C-\><C-n>
+tnoremap jk <C-\><C-n>
+nnoremap <leader>tt :botright term ++close ++rows=15<CR>
+nnoremap <leader>tv :vert term ++close<CR>
 
-:nmap <leader>tt :tab term ++close<cr>
-:nmap <leader>tv :vert term ++close<cr>
-
-" LSP Action
-nnoremap <leader>dd :LspDefinition<cr>
-nnoremap <leader>dn :LspNextDiagnostic<cr>
-nnoremap <leader>dp :LspPreviousDiagnostic<cr>
-nnoremap <leader>df :LspReferences<cr>
-nnoremap <leader>dr :LspRename<cr>
-nnoremap <leader>ds :LspStopServer<cr>
-nnoremap <leader>dp :LspPeekDefinition<cr>
-nnoremap <leader>da :LspCodeAction<cr>
-nnoremap <leader>dh :LspHover<cr>
-nnoremap <leader>df :LspDocumentFormat<cr> 
-nnoremap <leader>dd :LspDefinition<cr>
-
-" toggle line number relative
+" 切换相对行号
 function! NumberToggle()
-  if(&relativenumber == 1)
-    set norelativenumber
-  else
-    set relativenumber number
-  endif
+    if (&relativenumber == 1)
+        set norelativenumber
+    else
+        set relativenumber number
+    endif
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
+
+" 文件树开关（装了 NERDTree 则用 NERDTree，裸机未装插件则自动回退到内置树状 Lexplore）
+nnoremap <silent> <leader>e :execute exists(':NERDTreeToggle') ? 'NERDTreeToggle' : 'Lexplore'<CR>
 " }}}
 
-" Which-Key {{{
-let g:which_key_timeout = 500
-" map leader key
-call which_key#register('<,>', "g:which_key_map")
-nnoremap <silent> <leader> :silent <c-u> :silent WhichKey '<,>'<CR>
-vnoremap <silent> <leader> :silent <c-u> :silent WhichKeyVisual '<,>'<CR>
-" vim-which-key look
-let g:which_key_sep = '→'
-let g:which_key_use_floating_win = 0
-let g:which_key_max_size = 0
-autocmd! FileType which_key
-autocmd FileType which_key set laststatus=0 noshowmode noruler
-            \| autocmd BufLeave <buffer> set laststatus=2 noshowmode ruler
+" ============================================================================
+" Plugin Configurations {{{
+" ============================================================================
 
-" defining keybindings
-let g:which_key_map = {
-    \   'name'    :   'Leader'          ,
-    \   '.'     :   'edit vimrc'        ,
-    \   '0'     :   'source vimrc'      ,
-    \   'e'     :   'Side File Explorer'      ,
-    \   's'     :   'Save'              ,
-    \   'x'     :   'Close'             ,
-    \   'X'     :   'Quit'              ,
-    \   '1'     :   'tab1'             ,
-    \   '2'     :   'tab2'             ,
-    \   '3'     :   'tab3'             ,
-    \   '4'     :   'tab4'             ,
-    \   '5'     :   'tab5'             ,
-    \   '6'     :   'tab6'             ,
-    \   '7'     :   'tab7'             ,
-    \   '8'     :   'tab8'             ,
-    \   '9'     :   'tab9'             ,
-    \   }
-" }}}
+" --- Which-Key (仅在插件已安装时加载) ---
+if exists('*which_key#register')
+    set timeoutlen=500
+    let g:which_key_sep = '→'
+    let g:which_key_use_floating_win = 0
+    let g:which_key_max_size = 0
 
-" IndentLine {{{
-let g:indentLine_char =  '┊'   
-let g:indentLine_first_char = '┊'   
+    let g:which_key_map = {
+        \ 'name' : 'Leader',
+        \ '.'    : 'edit vimrc',
+        \ '0'    : 'source vimrc',
+        \ 'e'    : 'File Explorer',
+        \ 's'    : 'Save',
+        \ 'x'    : 'Close Window',
+        \ 'X'    : 'Quit All',
+        \ 'n'    : { 'name': '+nohl', 'h': 'Clear Search Highlight' },
+        \ 't'    : { 'name': '+terminal', 't': 'Bottom Terminal', 'v': 'Vertical Terminal' },
+        \ '1'    : 'Tab 1',
+        \ '2'    : 'Tab 2',
+        \ '3'    : 'Tab 3',
+        \ '4'    : 'Tab 4',
+        \ '5'    : 'Tab 5',
+        \ '6'    : 'Tab 6',
+        \ '7'    : 'Tab 7',
+        \ '8'    : 'Tab 8',
+        \ '9'    : 'Tab 9',
+        \ }
+
+    call which_key#register('<Space>', "g:which_key_map")
+    nnoremap <silent> <leader> :<c-u>WhichKey '<Space>'<CR>
+    vnoremap <silent> <leader> :<c-u>WhichKeyVisual '<Space>'<CR>
+
+    augroup vim_which_key
+        autocmd!
+        autocmd FileType which_key set laststatus=0 noshowmode noruler
+            \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+    augroup END
+endif
+
+" --- IndentLine ---
+let g:indentLine_char = '┊'
+let g:indentLine_first_char = '┊'
 let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_setColors = 0
-" }}}
 
-" instant_markdown {{{
-let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
-"Uncomment to override defaults:
-"let g:instant_markdown_slow = 1
-"let g:instant_markdown_autostart = 0
-"let g:instant_markdown_open_to_the_world = 1
-"let g:instant_markdown_allow_unsafe_content = 1
-"let g:instant_markdown_allow_external_content = 0
-let g:instant_markdown_mathjax = 1
-let g:instant_markdown_mermaid = 1
-"let g:instant_markdown_autoscroll = 0
-"let g:instant_markdown_port = 8888
-"let g:instant_markdown_python = 1
-let g:instant_markdown_theme = 'dark'
-" }}}
-
-" NERDTree {{{
+" --- NERDTree (仅在插件存在时注册自动命令) ---
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeAutoDeleteBuffer = 1
 let g:NERDTreeDirArrows = 1
-" let g:NERDTreeIgnore = ['\.DAT$', '\.LOG1$', '\.LOG1$']
 let g:NERDTreeIgnore = ['\c^ntuser\..*', '\~$']
 let g:NERDTreeMinimalUI = 1
 
-" Start NERDTree when Vim starts with a directory argument.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-    \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
-" Exit Vim if NERDTree is the only window remaining in the only tab.
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
-" Close the tab if NERDTree is the only window remaining in it.
-autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if winnr() == winnr('h') && bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
-" Open the existing NERDTree on each new tab.
-autocmd BufWinEnter * if &buftype != 'quickfix' && getcmdwintype() == '' | silent NERDTreeMirror | endif
-
-function! NERDTreeFocusToggle() 
-    if (winnr() == g:NERDTree.GetWinNum())
-        :NERDTreeToggle
-    else
-        :NERDTreeFocus
-    endif
-endfunction
-" NREDTree Key Mappings
-" nnoremap <silent> <leader>t :call NERDTreeFocusToggle()<CR>
-nnoremap <silent> <leader>e :NERDTreeToggle<CR>
+augroup vim_nerdtree
+    autocmd!
+    " 以目录作为参数启动 Vim 时自动打开 NERDTree
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if exists(':NERDTree') && argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
+        \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | endif
+    " 当 NERDTree 是最后一个窗口时自动退出
+    autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
+augroup END
 " }}}
 
-" ColorScheme Ayu {{{
-colorscheme ayu
-set termguicolors     " enable true colors support
-" let ayucolor="light"  " for light version of theme
-" let ayucolor="mirage" " for mirage version of theme
-let ayucolor="dark"   " for dark version of theme
+" ============================================================================
+" ColorScheme (修复加载顺序，并在未安装主题插件时自动回退内置主题) {{{
+" ============================================================================
+set background=dark
+if has('termguicolors')
+    set termguicolors
+endif
+
+let ayucolor = "dark" " 可选: "light" | "mirage" | "dark"
+try
+    colorscheme ayu
+catch /^Vim\%((\a\+)\)\=:E185/
+    silent! colorscheme habamax
+endtry
 " }}}
 
-" VIMSCRIPT -------------------------------------------------------------- {{{
-
-" This will enable code folding.
-" autocmd vimenter * ++nested colorscheme gruvbox
-" set bg=dark
-
-" Use the marker method of folding.
+" ============================================================================
+" Folding {{{
+" ============================================================================
 augroup filetype_vim
     autocmd!
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
-
-" More Vimscripts code goes here.
-
-" If your intention is just to avoid working outside of Vim 
-" The first line maps escape to the caps lock key when you enter Vim, and the second line returns normal functionality to caps lock when you quit. 
-" This requires Linux with the xorg-xmodmap package installed.
-" if has('Unix')
-"     au VimEnter * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
-"     au VimLeave * !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Caps_Lock'
-" endif
-
 " }}}
