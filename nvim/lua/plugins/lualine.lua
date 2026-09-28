@@ -8,6 +8,13 @@ return {
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 		{ "linrongbin16/lsp-progress.nvim", opts = {} },
+		{
+			"SmiteshP/nvim-navic",
+			opts = {
+				lsp = { auto_attach = true },
+				separator = "  ",
+			},
+		},
 	},
 	config = function()
 		local is_ok, lualine = pcall(require, "lualine")
@@ -15,15 +22,62 @@ return {
 			return
 		end
 
+		local lualine_theme = "auto"
+		local winbar_color = nil
+		if package.loaded["ofirkai"] then
+			local ok_theme, ofirkai_lualine = pcall(require, "ofirkai.statuslines.lualine")
+			if ok_theme then
+				lualine_theme = ofirkai_lualine.theme
+				winbar_color = ofirkai_lualine.winbar_color
+			end
+		end
+
+		local ok_navic, navic = pcall(require, "nvim-navic")
+		local winbar_c = {}
+		if ok_navic then
+			table.insert(winbar_c, {
+				navic.get_location,
+				icon = "",
+				cond = navic.is_available,
+				color = winbar_color,
+				separator = "",
+			})
+		end
+		-- 保持整行 winbar 背景色统一（即使当前文件未挂载 LSP / 无符号上下文）
+		table.insert(winbar_c, {
+			function()
+				return "%="
+			end,
+			color = winbar_color,
+			separator = "",
+		})
+
+		local winbar = {
+			lualine_a = {},
+			lualine_b = {
+				{
+					"filename",
+					icon = "",
+					color = winbar_color,
+					padding = { left = 4 },
+					separator = "",
+				},
+			},
+			lualine_c = winbar_c,
+			lualine_x = {},
+			lualine_y = {},
+			lualine_z = {},
+		}
+
 		lualine.setup({
 			options = {
 				icons_enabled = true,
-				theme = "auto",
+				theme = lualine_theme,
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {
 					statusline = {},
-					winbar = {},
+					winbar = { "gitcommit", "NvimTree", "toggleterm", "fugitive", "OverseerList" },
 				},
 				ignore_focus = {},
 				always_divide_middle = true,
@@ -76,8 +130,8 @@ return {
 				lualine_z = {},
 			},
 			tabline = {},
-			winbar = {},
-			inactive_winbar = {},
+			winbar = winbar,
+			inactive_winbar = winbar,
 			extensions = {},
 		})
 
