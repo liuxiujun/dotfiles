@@ -7,7 +7,11 @@ return {
     -- 1. Mason: 安装 LSP 服务器、DAP、Linter 等外部工具
     {
         "mason-org/mason.nvim",
+        cmd = "Mason",
         event = "VeryLazy",
+        keys = {
+            { "<leader>lM", "<cmd>Mason<CR>", desc = "Open [M]ason (LSP installer)" },
+        },
         opts = {
             ui = {
                 icons = {

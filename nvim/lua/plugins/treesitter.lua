@@ -5,7 +5,6 @@
 --   2. nvim-treesitter-textobjects 语法文本对象（提供 am/im/ac/ic 选中函数/类，以及 [m/]m 函数间跳转）
 --   3. nvim-treesitter-context     顶部上下文吸顶（滚动长函数时在窗口顶部固定显示当前所属函数签名）
 --   4. nvim-ts-autotag             HTML/JSX 标签自动闭合与同步重命名
---   5. nvim-treesitter-endwise     Lua/Bash/Ruby 等语言自动补全 end 关键字
 --------------------------------------------------------------------------------
 -- todo:
 --  nvim-treesitter-refactor 智能代码重构
@@ -77,10 +76,5 @@ return {
 		"windwp/nvim-ts-autotag",
 		event = "InsertEnter",
 		config = true,
-	},
-	-- 5. nvim-treesitter-endwise
-	{
-		"RRethy/nvim-treesitter-endwise",
-		event = "InsertEnter",
 	},
 }

@@ -5,6 +5,19 @@
 --------------------------------------------------------------------------------
 return {
 	"stevearc/overseer.nvim",
+	cmd = {
+		"OverseerRun",
+		"OverseerToggle",
+		"OverseerShell",
+		"OverseerTaskAction",
+		"OverseerInfo",
+	},
+	keys = {
+		{ "<leader>rr", "<cmd>OverseerRun<cr>", desc = "Run a task from a template" },
+		{ "<leader>rt", "<cmd>OverseerToggle<cr>", desc = "Toggle the overseer windows" },
+		{ "<leader>ra", "<cmd>OverseerShell<cr>", desc = "Run a shell command as an overseer task" },
+		{ "<leader>rc", "<cmd>OverseerTaskAction<cr>", desc = "Select a task to run an action on" },
+	},
 	dependencies = {
 		"nvim-telescope/telescope.nvim",
 		"akinsho/toggleterm.nvim",

@@ -1,29 +1,20 @@
 --------------------------------------------------------------------------------
 -- 插件名称：akinsho/bufferline.nvim
 -- 功能用途：顶部缓冲区标签栏（将已打开的 Buffer 渲染为类似 IDE 的顶部标签页，显示诊断图标）
--- 常用按键：[b / ]b (切换标签)、<leader>bp (字母快速跳选标签)、<leader>bd (关闭当前)
+-- 常用按键：[b / ]b (切换标签)、<leader>bp (字母快速跳选标签)、<leader>bo (关闭其他标签)
 --------------------------------------------------------------------------------
--- ui.lua：界面美化相关，包括主题（如 colorscheme.lua）、状态栏（lualine.lua）、文件树（nvim-tree.lua）、标签栏（bufferline 等）、缩进线（indent-blankline.lua）等。
---
--- lsp.lua：所有 LSP 相关，包括 Mason、lspconfig、cmp（补全）、Lsp-progress、trouble、vue 等。可以把 LSP 客户端、补全、诊断 UI 整合在一起。
---
--- treesitter.lua：Tree-sitter 核心及其扩展，如 treesitter.lua, treesitter-context.lua, treesitter-textobjects.lua。
---
--- editor.lua：编辑增强插件，如 comment.lua, surround.lua, hop.lua, accelerate-jk.lua, toggleterm.lua, which-key.lua 等。
---
--- tools.lua：工具类插件，如 telescope.lua, ufo.lua, dap.lua, conform.lua（格式化），osc52.lua 等。
---
--- config/ 目录：可以保持原样，也可以将 autocmd.lua、keymaps.lua、options.lua 合并为一个 settings.lua 或 core.lua，但保持分离也完全可以。
---
-
 return {
-	-- bufferline.nvim - 顶部标签栏
 	"akinsho/bufferline.nvim",
 	version = "*", -- 跟踪最新稳定版
 	dependencies = {
 		"nvim-tree/nvim-web-devicons", -- 文件图标
 	},
-	event = "VeryLazy", -- 确保插件在启动时加载
+	event = "VeryLazy",
+	keys = {
+		{ "<leader>bp", "<cmd>BufferLinePick<CR>", desc = "Pick buffer" },
+		{ "<leader>bP", "<cmd>BufferLinePickClose<CR>", desc = "Pick buffer to close" },
+		{ "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", desc = "Close other buffers" },
+	},
 	opts = {
 		options = {
 			mode = "buffers",

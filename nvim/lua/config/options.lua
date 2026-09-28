@@ -2,6 +2,10 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+-- 必须在加载任何插件或快捷键前最先设置 Leader 键
+vim.g.mapleader = ","
+vim.g.maplocalleader = "\\"
+
 local system = require("config.system")
 
 vim.opt.guifont = "MesloLGS Nerd Font:h11"
@@ -27,16 +31,39 @@ vim.filetype.add({
 	},
 })
 
--- 代码折叠不在这里全局设置：
--- treesitter 在 FileType 时设置 foldmethod=expr（配合 nvim-ufo），
--- 没有语法解析器的文件保持默认 manual，不做折叠
+-- 代码折叠（Neovim 0.10+ 原生彩色折叠，替代 nvim-ufo）：
+-- 具体 foldmethod=expr 由 treesitter.lua 在 FileType 时按需启用
+vim.opt.foldlevel = 99
+vim.opt.foldlevelstart = 99
+vim.opt.foldenable = true
+vim.opt.foldtext = "" -- 设为空字符串以保留折叠首行的 Treesitter 彩色语法高亮
+vim.opt.fillchars = {
+	foldopen = "",
+	foldclose = "",
+	fold = " ",
+	foldsep = " ",
+	diff = "╱",
+	eob = " ",
+}
 
 -- Clipboard
 -- Hint: use `:h <option>` to figure out the meaning if needed
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 
--- for Windows WSL
-if system.is_windows or system.is_wsl then
+-- SSH 远程会话：使用 Neovim 0.10+ 原生内置的 OSC52 剪贴板（替代 ojroques/nvim-osc52 插件）
+if vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+	vim.g.clipboard = {
+		name = "OSC 52",
+		copy = {
+			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+		},
+		paste = {
+			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+		},
+	}
+elseif system.is_windows or system.is_wsl then
 	if vim.fn.executable("win32yank.exe") == 1 then
 		vim.g.clipboard = {
 			name = "win32yank",
@@ -74,6 +101,7 @@ vim.opt.splitbelow = true -- open new vertical split bottom
 vim.opt.splitright = true -- open new horizontal splits right
 vim.opt.termguicolors = true -- enabl 24-bit RGB color in the TUI
 vim.opt.showmode = false -- we are experienced, wo don't need the "-- INSERT --" mode hint
+vim.opt.winborder = "rounded" -- Neovim 0.11+ 全局统一所有内置浮动窗口（K 悬浮文档、诊断等）为圆角边框
 
 -- Searching
 vim.opt.incsearch = true -- search as characters are entered

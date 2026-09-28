@@ -4,9 +4,10 @@
 --------------------------------------------------------------------------------
 return {
 	"nvim-lualine/lualine.nvim",
+	event = "VeryLazy",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
-		"linrongbin16/lsp-progress.nvim",
+		{ "linrongbin16/lsp-progress.nvim", opts = {} },
 	},
 	config = function()
 		local is_ok, lualine = pcall(require, "lualine")

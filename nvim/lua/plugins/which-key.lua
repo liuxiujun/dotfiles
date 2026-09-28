@@ -17,6 +17,7 @@ return {
             { "<leader>r", group = "Run (Overseer)" },
             { "<leader>c", group = "Code / Diagnostics" },
             { "<leader>d", group = "Debug (DAP)" },
+            { "<leader>g", group = "Git" },
             { "<leader>t", group = "Trouble" },
             { "<leader><leader>", group = "Flash Jump" },
         },

@@ -189,5 +189,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				group = clear_highlight_augroup,
 			})
 		end
+
+		-- 原生 LSP Inlay Hints（内联类型与参数名提示）：支持时默认开启，并提供 <leader>lh 随时开关
+		if client and client.server_capabilities.inlayHintProvider then
+			vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
+			vim.keymap.set("n", "<leader>lh", function()
+				local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
+				vim.lsp.inlay_hint.enable(not enabled, { bufnr = ev.buf })
+			end, vim.tbl_extend("keep", opts, { desc = "Toggle LSP Inlay [H]ints" }))
+		end
 	end,
 })
