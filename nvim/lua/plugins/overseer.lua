@@ -5,10 +5,6 @@
 --------------------------------------------------------------------------------
 return {
 	"stevearc/overseer.nvim",
-	dependencies = {
-		"nvim-telescope/telescope.nvim",
-		"akinsho/toggleterm.nvim",
-	},
 	opts = {
 		-- Patch nvim-dap to support preLaunchTask and postDebugTask
 		dap = true,

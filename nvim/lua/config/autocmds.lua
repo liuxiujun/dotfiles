@@ -54,46 +54,8 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
 local clear_highlight_augroup = vim.api.nvim_create_augroup("LspClearHighlight", { clear = true })
 
--- 使用 Telescope 接管全局 vim.ui.select（消灭底部简陋的 1. 2. 数字输入选择框，同时美化 gra Code Action 等）
-vim.ui.select = function(items, opts, on_choice)
-	opts = opts or {}
-	local ok, pickers = pcall(require, "telescope.pickers")
-	if not ok then
-		return
-	end
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-	local themes = require("telescope.themes")
-
-	pickers
-		.new(themes.get_dropdown({ previewer = false }), {
-			prompt_title = opts.prompt or "Select",
-			finder = finders.new_table({
-				results = items,
-				entry_maker = function(item)
-					local text = opts.format_item and opts.format_item(item) or tostring(item)
-					return { value = item, display = text, ordinal = text }
-				end,
-			}),
-			sorter = conf.generic_sorter({}),
-			attach_mappings = function(prompt_bufnr)
-				actions.select_default:replace(function()
-					actions.close(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					if selection then
-						on_choice(selection.value)
-					end
-				end)
-				return true
-			end,
-		})
-		:find()
-end
-
--- 使用 Telescope 接管 LSP typeHierarchy（让 vim.lsp.buf.typehierarchy("supertypes" / "subtypes") 告别原生 Quickfix 窗口）
-local function telescope_type_hierarchy_handler(title)
+-- 使用 Snacks.picker 接管 LSP typeHierarchy（让 grs 告别原生 Quickfix 简陋窗口）
+local function snacks_type_hierarchy_handler(title)
 	return function(_, result, ctx)
 		if not result or vim.tbl_isempty(result) then
 			vim.notify("No " .. title .. " found", vim.log.levels.INFO)
@@ -103,7 +65,7 @@ local function telescope_type_hierarchy_handler(title)
 		local client = vim.lsp.get_client_by_id(ctx.client_id)
 		local encoding = client and client.offset_encoding or "utf-16"
 
-		-- 只有 1 个目标时直接秒跳（与 Telescope 的 gd / gri 行为保持一致）
+		-- 只有 1 个目标时直接秒跳
 		if #result == 1 then
 			local item = result[1]
 			vim.lsp.util.show_document({
@@ -113,42 +75,27 @@ local function telescope_type_hierarchy_handler(title)
 			return
 		end
 
-		-- 多个目标时弹出带代码预览的 Telescope 窗口
+		-- 多个目标时弹出带代码预览的 Snacks.picker 窗口
 		local items = {}
 		for _, item in ipairs(result) do
 			local range = item.selectionRange or item.range
 			local detail = (item.detail and #item.detail > 0) and (" " .. item.detail) or ""
 			table.insert(items, {
-				filename = vim.uri_to_fname(item.uri),
-				lnum = range.start.line + 1,
-				col = range.start.character + 1,
+				file = vim.uri_to_fname(item.uri),
+				pos = { range.start.line + 1, range.start.character },
 				text = item.name .. detail,
 			})
 		end
 
-		local pickers = require("telescope.pickers")
-		local finders = require("telescope.finders")
-		local conf = require("telescope.config").values
-		local make_entry = require("telescope.make_entry")
-
-		pickers
-			.new({}, {
-				prompt_title = title,
-				finder = finders.new_table({
-					results = items,
-					entry_maker = make_entry.gen_from_quickfix({}),
-				}),
-				previewer = conf.qflist_previewer({}),
-				sorter = conf.generic_sorter({}),
-				push_cursor_on_edit = true,
-				push_tagstack_on_edit = true,
-			})
-			:find()
+		Snacks.picker.pick({
+			title = title,
+			items = items,
+		})
 	end
 end
 
-vim.lsp.handlers["typeHierarchy/supertypes"] = telescope_type_hierarchy_handler("LSP Supertypes")
-vim.lsp.handlers["typeHierarchy/subtypes"] = telescope_type_hierarchy_handler("LSP Subtypes")
+vim.lsp.handlers["typeHierarchy/supertypes"] = snacks_type_hierarchy_handler("LSP Supertypes")
+vim.lsp.handlers["typeHierarchy/subtypes"] = snacks_type_hierarchy_handler("LSP Subtypes")
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -156,24 +103,24 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		local opts = { buffer = ev.buf, remap = false }
 
 		-- 其余全部使用 Neovim 0.11 内置最佳实践：
-		-- grn (重命名), gra (Code Action，已由上方 vim.ui.select 接管为 Telescope), gO (大纲), K (悬浮文档)
-		-- 基础跳转与引用：全部接入 Telescope（单个目标时直接秒跳，多个目标时弹 Telescope 预览窗）
+		-- grn (重命名), gra (Code Action，已由 snacks.picker.ui_select 自动接管), gO (大纲), K (悬浮文档)
+		-- 基础跳转与引用：全部接入 Snacks.picker（单个目标时直接秒跳，多个目标时弹预览窗）
 		vim.keymap.set("n", "gd", function()
-			require("telescope.builtin").lsp_definitions()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto definition (Telescope)" }))
+			Snacks.picker.lsp_definitions()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto definition (Snacks)" }))
 		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("keep", opts, { desc = "Goto declaration" }))
 		vim.keymap.set("n", "gri", function()
-			require("telescope.builtin").lsp_implementations()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto implementation (Telescope)" }))
+			Snacks.picker.lsp_implementations()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto implementation (Snacks)" }))
 		vim.keymap.set("n", "grs", function()
 			vim.lsp.buf.typehierarchy("supertypes")
 		end, vim.tbl_extend("keep", opts, { desc = "Type hierarchy: Supertypes (父类/接口)" }))
 		vim.keymap.set("n", "grt", function()
-			require("telescope.builtin").lsp_type_definitions()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope)" }))
+			Snacks.picker.lsp_type_definitions()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Snacks)" }))
 		vim.keymap.set("n", "grr", function()
-			require("telescope.builtin").lsp_references({ include_declaration = false, show_line = true })
-		end, vim.tbl_extend("keep", opts, { desc = "Goto references / Find Usages (Telescope)" }))
+			Snacks.picker.lsp_references()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto references / Find Usages (Snacks)" }))
 
 		-- 光标停留高亮同名符号
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)

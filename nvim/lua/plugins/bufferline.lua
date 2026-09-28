@@ -50,17 +50,10 @@ return {
                 delay = 200,
                 reveal = {'close'}
             },
-			-- 偏移量：为 LSP 或文件树保留左侧空间
+			-- 偏移量：为 snacks.explorer 文件树保留左侧空间
 			offsets = {
 				{
-					filetype = "NvimTree",
-					-- text = "File Explorer",
-					text_align = "center",
-					separator = true,
-				},
-				{
-					filetype = "TelescopePrompt",
-					-- text = "Telescope",
+					filetype = "snacks_layout_box",
 					text_align = "center",
 					separator = true,
 				},

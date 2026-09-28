@@ -8,9 +8,10 @@ return {
 	cmd = "LazyDev",
 	opts = {
 		library = {
-			-- 当代码中出现 vim.uv 时，自动加载底层 libuv 的类型定义与补全
+			-- 当代码中出现 vim.uv 或 Snacks 时，自动加载对应的类型定义与补全
 			-- （其余通过 require("xxx") 引入的插件，lazydev 会自动按需识别，无需在此手动列出）
 			{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			{ path = "snacks.nvim", words = { "Snacks" } },
 		},
 	},
 }
