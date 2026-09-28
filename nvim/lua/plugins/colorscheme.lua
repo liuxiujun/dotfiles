@@ -17,21 +17,22 @@
 --     end,
 -- }
 return {
-	"sainnhe/sonokai",
+	"loctvl842/monokai-pro.nvim",
 	lazy = false,
 	priority = 1000,
 	config = function()
-		-- 必须在 colorscheme 命令之前设置风格才生效！
-		-- 可选 6 种风格：
-		--   "default"   : 经典 Monokai
-		--   "shusia"    : 对应 Monokai Pro (偏暖紫灰底)
-		--   "espresso"  : 对应 Monokai Ristretto (深浓咖啡暖黑底)
-		--   "andromeda" : 偏深蓝紫科技感
-		--   "atlantis"  : 偏深海蓝底
-		--   "maia"      : 偏暗青绿底
-		vim.g.sonokai_style = "default"
-		vim.g.sonokai_enable_italic = true
-		vim.g.sonokai_better_performance = 1
-		vim.cmd.colorscheme("sonokai")
+		require("monokai-pro").setup({
+			-- 可选 7 种风格 (filter)：
+			--   "pro"       : 默认 Monokai Pro（暖灰紫底）
+			--   "classic"   : 经典原版 Monokai
+			--   "octagon"   : 偏深蓝紫冷色调
+			--   "machine"   : 偏暗青绿冷色调
+			--   "ristretto" : 偏深咖啡暖棕色调
+			--   "spectrum"  : 纯净深灰底高对比度
+			--   "light"     : 亮色模式
+			filter = "classic",
+			devicons = true, -- 让 nvim-web-devicons 图标也自动适配 Monokai Pro 调色板
+		})
+		vim.cmd.colorscheme("monokai-pro")
 	end,
 }
