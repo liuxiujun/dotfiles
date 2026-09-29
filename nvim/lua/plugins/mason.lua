@@ -48,6 +48,7 @@ return {
                 "gofumpt",
                 -- perltidy 不在 mason 仓库，需自行安装：cpan Perl::Tidy
                 "eslint_d",
+                "tree-sitter-cli",
             },
             auto_update = true,
             run_on_start = true,

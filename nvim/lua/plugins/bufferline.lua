@@ -15,20 +15,10 @@ return {
 		{ "<leader>bP", "<cmd>BufferLinePickClose<CR>", desc = "Pick buffer to close" },
 		{ "<leader>bo", "<cmd>BufferLineCloseOthers<CR>", desc = "Close other buffers" },
 	},
-	opts = function()
-		local highlights = nil
-		if package.loaded["ofirkai"] then
-			local ok_hl, ofirkai_buf = pcall(require, "ofirkai.tablines.bufferline")
-			if ok_hl then
-				highlights = ofirkai_buf.highlights
-			end
-		end
-
-		return {
-			highlights = highlights,
-			options = {
-				mode = "buffers",
-				themable = true,
+	opts = {
+		options = {
+			mode = "buffers",
+			themable = true,
 			-- 关闭按钮、图标、名称等显示方式
 			close_command = "bdelete! %d", -- 关闭 buffer 的命令
 			left_mouse_command = "buffer %d", -- 左键切换到 buffer
@@ -68,6 +58,5 @@ return {
 				},
 			},
 		},
-		}
-	end,
+	},
 }

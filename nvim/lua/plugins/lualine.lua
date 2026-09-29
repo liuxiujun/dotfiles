@@ -15,18 +15,10 @@ return {
 			return
 		end
 
-		local lualine_theme = "auto"
-		if package.loaded["ofirkai"] then
-			local ok_theme, ofirkai_lualine = pcall(require, "ofirkai.statuslines.lualine")
-			if ok_theme then
-				lualine_theme = ofirkai_lualine.theme
-			end
-		end
-
 		lualine.setup({
 			options = {
 				icons_enabled = true,
-				theme = lualine_theme,
+				theme = "auto",
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = {

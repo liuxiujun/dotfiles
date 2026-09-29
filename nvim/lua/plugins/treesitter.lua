@@ -12,7 +12,6 @@
 
 return {
 	-- 1. treesitter
-	-- need to run: npm install -g tree-sitter-cli
 	{
 		"nvim-treesitter/nvim-treesitter",
 		lazy = false,
