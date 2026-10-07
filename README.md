@@ -5,6 +5,11 @@ cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git 
 ```
 
+### ssh config
+``` ps1
+New-Item -ItemType SymbolicLink -Path "$HOME\.ssh\config" -Target "$HOME\dotfiles\ssh\config" -Force
+```
+
 ### Wezterm
 ``` powershell
 New-Item -ItemType SymbolicLink -Path $HOME\.config\wezterm -Target $HOME\dotfiles\wezterm
