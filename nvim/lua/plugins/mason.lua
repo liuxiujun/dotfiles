@@ -26,8 +26,8 @@ return {
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
         dependencies = { "mason-org/mason.nvim" },
-        opts = {
-            ensure_installed = {
+        opts = function()
+            local ensure_installed = {
                 -- LSP（与 config/lsp.lua 的 vim.lsp.enable 对齐）
                 "lua-language-server",
                 "basedpyright",
@@ -38,20 +38,26 @@ return {
                 "clangd",
                 "typescript-language-server", -- ts_ls
                 "intelephense",               -- php
-                "gopls",
                 -- Formatters / Linters（与 conform.nvim 的 formatters_by_ft 对齐）
                 "stylua",
                 "prettier",
                 "shfmt",
                 "clang-format",
-                "goimports",
-                "gofumpt",
                 -- perltidy 不在 mason 仓库，需自行安装：cpan Perl::Tidy
                 "eslint_d",
                 "tree-sitter-cli",
-            },
-            auto_update = true,
-            run_on_start = true,
-        }
+            }
+
+            -- 仅当当前环境存在 go 编译器时，才自动安装 Go 相关的工具
+            if vim.fn.executable("go") == 1 then
+                vim.list_extend(ensure_installed, { "gopls", "goimports", "gofumpt" })
+            end
+
+            return {
+                ensure_installed = ensure_installed,
+                auto_update = true,
+                run_on_start = true,
+            }
+        end,
     },
 }
