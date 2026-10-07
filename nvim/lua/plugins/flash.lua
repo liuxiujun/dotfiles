@@ -25,6 +25,22 @@ return {
 			end,
 			desc = "Flash Treesitter (选中语法块)",
 		},
+		{
+			"r",
+			mode = "o",
+			function()
+				require("flash").remote()
+			end,
+			desc = "Remote Flash (隔空操作后光标回原位)",
+		},
+		{
+			"R",
+			mode = { "o", "x" },
+			function()
+				require("flash").treesitter_search()
+			end,
+			desc = "Treesitter Search (搜索并选中语法块)",
+		},
 		-- 兼容原有 hop 肌肉记忆快捷键
 		{
 			"<leader><leader>w",
