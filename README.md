@@ -100,6 +100,13 @@ New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.npmrc
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
 ```
+
+
+### ssh config
+``` bash
+ln -s ~/dotfiles/ssh/config ~/.ssh/config
+```
+
 ### Vim
 ``` bash
 ln -s ~/dotfiles/vim ~/.vim 
