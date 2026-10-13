@@ -470,10 +470,16 @@ let g:NERDTreeGitStatusConcealBrackets = 0
 
 augroup vim_nerdtree
     autocmd!
-    " 以目录作为参数启动 Vim 时自动打开 NERDTree
+    " 以目录作为参数启动 Vim 时自动打开 NERDTree（树独占布局）
     autocmd StdinReadPre * let s:std_in=1
+    " noautocmd close：关 netrw 窗口时抑制 BufEnter，否则"树是最后窗口即退出"
+    " 的下方 autocmd 会在启动瞬间把 vim 关掉；
+    " 随后清掉被弃置的原 buffer（netrw 列表/[No Name]），避免残留在 tabline
     autocmd VimEnter * if exists(':NERDTree') && argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-        \ execute 'NERDTree' argv()[0] | wincmd p | enew | execute 'cd '.argv()[0] | wincmd p | endif
+        \ execute 'NERDTree' argv()[0] | wincmd p | noautocmd close
+        \ | execute bufnr('#') > 0 && bufnr('#') != bufnr('%') && !getbufvar(bufnr('#'), '&modified')
+        \   ? 'silent! bwipeout ' . bufnr('#') : ''
+        \ | execute 'cd '.argv()[0] | endif
     " 当 NERDTree 是最后一个窗口时自动退出
     autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 augroup END
@@ -520,9 +526,10 @@ augroup END
 " View Persistence {{{
 " ============================================================================
 " 离开普通文件时保存视图（光标位置/折叠状态），再次打开自动恢复
+" （排除 NERDTree 等插件缓冲区，避免为目录树写无意义的视图文件）
 augroup vim_persist_view
     autocmd!
-    autocmd BufWinLeave * if &buftype ==# '' | mkview! | endif
-    autocmd BufWinEnter * if &buftype ==# '' | silent! loadview | endif
+    autocmd BufWinLeave * if &buftype ==# '' && !exists('b:NERDTree') | mkview! | endif
+    autocmd BufWinEnter * if &buftype ==# '' && !exists('b:NERDTree') | silent! loadview | endif
 augroup END
 " }}}
