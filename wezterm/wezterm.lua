@@ -42,7 +42,8 @@ local config = {}
 config.color_scheme = "Dracula"                 -- 可选：'GruvboxDark', 'Tokyo Night' 等
 
 if is_windows then
-    config.font = wezterm.font("Cascadia Code") -- 或 'Fira Code', 'JetBrains Mono'
+    -- config.font = wezterm.font("MesloLGS Nerd Font") -- 'Cascadia Code', 'Fira Code', 'JetBrains Mono'
+    config.font = wezterm.font("CaskaydiaCove Nerd Font")
 else
     config.font = wezterm.font("CaskaydiaCove Nerd Font")
 end
