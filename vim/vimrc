@@ -532,4 +532,17 @@ augroup vim_persist_view
     autocmd BufWinLeave * if &buftype ==# '' && !exists('b:NERDTree') | mkview! | endif
     autocmd BufWinEnter * if &buftype ==# '' && !exists('b:NERDTree') | silent! loadview | endif
 augroup END
+
+" --- tabline 可见性：零 listed buffer 时隐藏 ---
+" airline 的 buffer 页签在列表为空时（树独占启动：唯一缓冲区是 unlisted 的
+" NERDTree 树）仍会渲染一个 bufnr=-1 的幽灵条目，formatter 对无名 buffer
+" 固定输出 [No Name]。有 listed buffer（从树里打开文件）才显示 tabline。
+" 本块必须放在文件末尾：VimEnter 时要晚于 vim_nerdtree 的启动链才能拿到终态
+if &runtimepath =~# 'vim-airline'
+    augroup vim_tabline_visibility
+        autocmd!
+        autocmd VimEnter,BufEnter,BufAdd,BufDelete,BufWipeout *
+            \ let &showtabline = len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 0 ? 2 : 0
+    augroup END
+endif
 " }}}
