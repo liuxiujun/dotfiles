@@ -1,11 +1,17 @@
+" 启动耗时打点：起点（终点与显示在 §7 文件末尾的 VimEnter）
+let s:startup_t0 = reltime()
+
 " ============================================================================
-" Basic Options {{{
+" 1. 基础选项 {{{
 " ============================================================================
 set nocompatible
 
-" Leader 键（逗号）
 let mapleader = ","
 let maplocalleader = " "
+
+" 语言环境：菜单与消息用英文，避免终端乱码
+let $LANG = 'en'
+set langmenu=en_US.UTF-8
 
 " 文件类型与语法高亮
 filetype plugin indent on
@@ -13,14 +19,13 @@ syntax on
 
 " 编码与换行符
 set encoding=UTF-8
-set fileformats=unix,dos,mac    " 打开时自动识别，优先使用 unix
-set fileformat=unix             " 新建文件默认保存为 unix
+set fileformats=unix,dos,mac    " 打开时自动识别，优先 unix
+set fileformat=unix             " 新建文件默认 unix
 
-" 静音提示音与闪烁
 set belloff=all
 set vb t_vb=
 
-" 编辑与缩进
+" 编辑与缩进（全局 4 空格；常见配置格式在 §7 覆写为 2 空格）
 set backspace=indent,eol,start
 set shiftwidth=4
 set tabstop=4
@@ -29,31 +34,30 @@ set expandtab
 set autoindent
 set smartindent
 
-" 界面与行号（与 Neovim 对齐：默认开启相对行号，关闭晃眼的 cursorcolumn）
+" 界面
 set number
-" set relativenumber
 set cursorline
 set scrolloff=10
 set nowrap
 set showcmd
-set noshowmode                    " 模式提示交给 airline，避免与状态栏重复（勿改回 showmode）
+set noshowmode                    " 模式由状态栏显示（§6），关闭原生提示
 set showmatch
 set signcolumn=yes
 set splitbelow
 set splitright
-set mouse=a                       " 终端内启用鼠标定位（与 Neovim 一致）
-set virtualedit=block             " 可视块编辑允许越出行尾（改配置文件的列对齐场景）
-set title                         " 终端标签页显示正在编辑的文件名（wezterm 多窗格 / ssh 场景）
+set mouse=a
+set virtualedit=block             " 可视块编辑允许越出行尾
+set title                         " 终端标签显示文件名（wezterm/ssh 多窗格场景）
 
 " 缓冲区与文件状态
-set hidden                      " 允许在有未保存修改时切换 Buffer
-set autoread                    " 文件在外部被修改时自动重新加载
+set hidden                        " 允许带未保存修改切换 Buffer
+set autoread                      " 文件被外部修改时自动重载
 set nobackup
 set noswapfile
 set history=1000
 
-" 撤销历史持久化：文件关闭甚至 vim 退出后仍可撤销（与 Neovim 侧一致）
-" undo/view 目录在 vimfiles 下，已在根 .gitignore 排除（vim/undo/、vim/view/）
+" 撤销历史持久化（与 Neovim 一致）：退出后重开文件仍可撤销
+" undo/view 目录为机器本地状态，已在根 .gitignore 排除
 set undofile
 if has('win32')
     set undodir=$HOME/vimfiles/undo
@@ -66,18 +70,18 @@ for s:state_dir in [expand(&undodir), expand(&viewdir)]
     if !isdirectory(s:state_dir) | call mkdir(s:state_dir, 'p') | endif
 endfor
 
-" 搜索设置
+" 搜索
 set incsearch
 set ignorecase
 set smartcase
 set hlsearch
 
-" 装了 ripgrep 就用它接管 :grep（--vimgrep 的输出直接进 quickfix；未装则保持默认，退化安全）
+" 装了 ripgrep 就用它接管 :grep（输出直接进 quickfix；未装保持默认）
 if executable('rg')
     set grepprg=rg\ --vimgrep
 endif
 
-" 命令行补全增强（Vim 9+ 启用纵向弹出菜单与模糊匹配）
+" 命令行补全（Vim 9+ 弹出菜单 + 模糊匹配）
 set wildmenu
 if exists('+wildoptions')
     set wildoptions=pum,fuzzy
@@ -86,88 +90,48 @@ else
 endif
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
-" 内置语法：JSON 文件不隐藏双引号
-let g:vim_json_conceal = 0
-au BufNewFile,BufRead Jenkinsfile setf groovy
-
-" 内置 netrw 文件树兜底配置（在未安装 NERDTree 的裸机上也能显示清爽树状目录）
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_browse_split = 4
-let g:netrw_altv = 1
-let g:netrw_winsize = 20
-
-" Vim 9.1+ 内置原生注释插件兜底（未安装 vim-commentary 时依然可用 gc / gcc）
-if has('patch-9.1.0375')
-    silent! packadd! comment
-endif
-
-" 平台差异化设置（移除在无 zsh / 无 ibus 的服务器上会报错卡顿的硬编码）
+" 平台差异只留剪贴板（字体见 §6，其余用 vim 各平台默认值）
 if has('win32')
     set clipboard=unnamed
-    set t_Co=256
-    set t_ut=
-    set guifont=Consolas:h12
-    set shell=cmd.exe
 elseif has('unix')
     set clipboard=unnamedplus
 endif
 " }}}
 
 " ============================================================================
-" GUI Settings {{{
-" ============================================================================
-let $LANG='en'
-set langmenu=en_US.UTF-8
-if has("gui_running")
-    if has("gui_gtk2")
-        set guifont=Inconsolata\ 12
-    elseif has("gui_macvim")
-        set guifont=Meslo\ Regular:h14
-    elseif has("gui_win32")
-        set guifont=MesloLGS\ Nerd\ Font:h11
-        set guifontwide=FangSong:h11
-    endif
-endif
-" }}}
-
-" ============================================================================
-" Plugins (安全包裹：裸机未安装 vim-plug 时自动静默跳过，0 报错启动) {{{
+" 2. 插件列表（裸机未安装 vim-plug 时整块静默跳过，0 报错启动） {{{
 " ============================================================================
 if !empty(glob('~/.vim/autoload/plug.vim')) || !empty(glob('~/vimfiles/autoload/plug.vim'))
     call plug#begin()
     Plug 'easymotion/vim-easymotion'
     " j/k 加速移动（与 Neovim 同插件同参数，跨端手感一致）
     Plug 'rhysd/accelerated-jk'
-    " 模糊查找：自带 C 引擎、无外部二进制依赖；C 扩展编译失败时自动回退 vimscript 模式
+    " 模糊查找：自带 C 引擎、无外部二进制依赖
     Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
     Plug 'ayu-theme/ayu-vim'
     Plug 'Yggdroot/indentLine'
-    " 延迟加载：NERDTree 只在触发对应命令时载入（配置全是 g: 全局变量，加载前后行为一致）
+    " NERDTree 三件套延迟加载：仅在触发对应命令时载入
     Plug 'preservim/nerdtree', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFind'] }
     Plug 'Xuyuanp/nerdtree-git-plugin', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFind'] }
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
-    Plug 'tpope/vim-commentary'
+    Plug 'ryanoasis/vim-devicons'
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFind'] }
     Plug 'kana/vim-textobj-user'
     Plug 'kana/vim-textobj-entire'
     Plug 'machakann/vim-highlightedyank'
     Plug 'liuchengxu/vim-which-key'
     Plug 'tpope/vim-fugitive'
     Plug 'airblade/vim-gitgutter'
-    Plug 'ryanoasis/vim-devicons'
-    Plug 'tiagofumo/vim-nerdtree-syntax-highlight', { 'on': ['NERDTree', 'NERDTreeToggle', 'NERDTreeFind'] }
     call plug#end()
 endif
 " }}}
 
 " ============================================================================
-" Key Mappings {{{
+" 3. 按键映射 {{{
 " ============================================================================
 " 退出插入模式（与 Neovim 肌肉记忆对齐）
 inoremap jk <Esc>
 
-" 取消搜索高亮（改用 <Esc> 和 <leader>nh，避免覆盖 <CR> 导致 Quickfix 列表无法回车跳转）
+" 清除搜索高亮（<Esc> 与 <leader>nh 等价；不占用 <CR>）
 nnoremap <silent> <Esc> :noh<CR><Esc>
 nnoremap <silent> <leader>nh :noh<CR>
 
@@ -186,11 +150,9 @@ nnoremap Y y$
 nnoremap <leader>. :e $MYVIMRC<CR>
 nnoremap <leader>0 :so $MYVIMRC<CR>
 
-" 插件管理：更新 与 移动快照锚点 刻意分开——锚点必须停在"确认过没问题"的版本，
-" 组合成一键会让 :source 快照回滚到翻车版本，失去保护意义
-" 更新（翻车时 :source plug-snapshot.vim 回滚）
+" 插件更新（,pu）与快照锚点（,ps）刻意分开：锚点必须停在"确认过没问题"的
+" 版本，合并成一键会让 :source 快照回滚到翻车版本。翻车回滚：vim -S plug-snapshot.vim
 nnoremap <silent> <leader>pu :<c-u>execute exists(':PlugUpdate') ? 'PlugUpdate' : 'echo "vim-plug 未安装"'<CR>
-" 用几天确认无异常后，重新生成快照锚点（覆盖重写）
 nnoremap <silent> <leader>ps :<c-u>execute exists(':PlugSnapshot') ? 'PlugSnapshot ' . fnameescape(fnamemodify($MYVIMRC, ':h') . '/plug-snapshot.vim') : 'echo "vim-plug 未安装"'<CR>
 
 " 窗口焦点切换（与 Neovim 一致）
@@ -199,7 +161,7 @@ nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
 
-" 安全关闭当前 Buffer（保持分栏稳定，防止连带破坏 NERDTree 布局）
+" 安全关闭当前 Buffer（保持分栏稳定，不连带破坏文件树布局）
 function! s:safe_buffer_delete()
     if exists('b:NERDTree') && b:NERDTree.isTabTree()
         return
@@ -218,7 +180,7 @@ function! s:safe_buffer_delete()
     endif
 endfunction
 
-" Buffer 切换与关闭（与 Neovim 对齐，在侧边栏窗口内自动保护）
+" Buffer 切换与关闭（文件树窗口内自动保护；]b/[b 为 vim 0.11+ 内置等价键）
 nnoremap <silent> [b :if !exists('b:NERDTree') \| bprevious \| endif<CR>
 nnoremap <silent> ]b :if !exists('b:NERDTree') \| bnext \| endif<CR>
 nnoremap <silent> <S-h> :if !exists('b:NERDTree') \| bprevious \| endif<CR>
@@ -226,12 +188,26 @@ nnoremap <silent> <S-l> :if !exists('b:NERDTree') \| bnext \| endif<CR>
 nnoremap <silent> <leader>bd :call <SID>safe_buffer_delete()<CR>
 nnoremap <silent> <leader>bo :%bdelete\|edit #\|normal `"<CR>
 
-" Quickfix 跳转（vim 中 [q/]q 非内置；配合 :grep / Leaderf rg 使用，
-" 与 Neovim 侧 ]d/[d 诊断跳转的肌肉记忆一致）
+" Quickfix 跳转（vim 中 [q/]q 非内置；配合 :grep / ,fg）
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
 
-" 内置终端映射
+" 跨会话回到最近编辑的文件：循环 viminfo 编号 mark '0-'9
+"（nvim 靠 shada 持久化 jumplist 有同体验；'0=上次退出的文件与光标行）
+let s:last_edit_idx = 0
+function! s:last_edit_next() abort
+    let s:last_edit_idx = s:last_edit_idx % 9 + 1
+    try
+        execute "normal! '" . s:last_edit_idx
+        echo 'last-edited ' . s:last_edit_idx . '/9: ' . fnamemodify(@%, ':~:.')
+    catch /^Vim\%((\a\+)\)\=:E20/
+        echo 'last-edited: 没有更多历史了'
+        let s:last_edit_idx = 0
+    endtry
+endfunction
+nnoremap <silent> <BS> :call <SID>last_edit_next()<CR>
+
+" 内置终端
 tnoremap <Esc> <C-\><C-n>
 tnoremap jk <C-\><C-n>
 nnoremap <leader>tt :botright term ++close ++rows=15<CR>
@@ -247,28 +223,28 @@ function! NumberToggle()
 endfunction
 nnoremap <leader><Tab> :call NumberToggle()<CR>
 
-" 文件树开关与定位（装了 NERDTree 则用 NERDTree，裸机未装插件则自动回退到内置树状 Lexplore）
+" 文件树开关与定位（裸机未装插件时回退 netrw 的 Lexplore）
 nnoremap <silent> <leader>e :execute exists(':NERDTreeToggle') ? 'NERDTreeToggle' : 'Lexplore'<CR>
-" 在文件树中定位当前文件（与 Neovim 的 <leader>o 对齐）
 nnoremap <silent> <leader>o :execute exists(':NERDTreeFind') ? 'NERDTreeFind' : 'Lexplore'<CR>
 
-" Git 修改块导航与操作（vim-gitgutter）
+" Git 修改块（vim-gitgutter）
 nmap <silent> <leader>hp <Plug>(GitGutterPreviewHunk)
 nmap <silent> <leader>hu <Plug>(GitGutterUndoHunk)
 nmap <silent> <leader>hs <Plug>(GitGutterStageHunk)
 " }}}
 
 " ============================================================================
-" Plugin Configurations {{{
+" 4. 插件配置 {{{
 " ============================================================================
 
-" --- Which-Key (仅在插件已安装时加载) ---
+" --- which-key：按键提示 ---
 if &runtimepath =~# 'vim-which-key'
     set timeoutlen=500
     let g:which_key_sep = '→'
     let g:which_key_use_floating_win = 0
     let g:which_key_max_size = 0
 
+    " <leader> 字典：真实映射自动检出，字典只负责可读标签与组名
     let g:which_key_map = {
         \ 'name' : 'Leader',
         \ '.'    : '编辑配置 (.vimrc)',
@@ -277,6 +253,7 @@ if &runtimepath =~# 'vim-which-key'
         \ 'x'    : '关闭窗口 (Close Window)',
         \ 'X'    : '退出全部 (Quit All)',
         \ '<Tab>': '切换相对行号 (Toggle RelNumber)',
+        \ '<BS>' : '回退到最近编辑的文件 (''0-''9)',
         \ '/'    : '当前文件内模糊查找 (Fuzzy Lines)',
         \ 'e'    : '开关文件树 (Toggle Tree)',
         \ 'o'    : '在文件树中定位当前文件 (Reveal in Tree)',
@@ -318,10 +295,8 @@ if &runtimepath =~# 'vim-which-key'
     nnoremap <silent> <leader> :<c-u>WhichKey ','<CR>
     vnoremap <silent> <leader> :<c-u>WhichKeyVisual ','<CR>
 
-    " ---- 内置前缀键 z / g / [ / ] 的提示 ----
-    " 这些前缀下的命令大多是 vim 内置行为（不是 :map 映射，扫描不到），由字典声明；
-    " 真实存在的映射（[b/]b/[c/]c/gc）会被自动检出并采用下方的可读标签。
-    " fallback_to_native_key：字典条目没有对应映射时，按键原样交回 vim 执行内置行为
+    " 内置前缀 z/g/[/]：命令多为 vim 内置行为（:map 扫描不到），由字典声明；
+    " fallback_to_native_key：字典条目按键原样交回 vim 执行原生行为
     let g:which_key_fallback_to_native_key = 1
 
     let g:which_key_map_z = {
@@ -355,7 +330,7 @@ if &runtimepath =~# 'vim-which-key'
         \ 'U': 'gU  转大写 (后接范围)',
         \ '~': 'g~  大小写反转 (后接范围)',
         \ 'q': 'gq  重排文本格式 (后接范围)',
-        \ 'c': 'gc  注释 (commentary)',
+        \ 'c': 'gc  注释 (vim 9.1+ 内置)',
         \ }
 
     let g:which_key_map_lsb = {
@@ -389,111 +364,102 @@ if &runtimepath =~# 'vim-which-key'
     nnoremap <silent> [ :<c-u>WhichKey '['<CR>
     nnoremap <silent> ] :<c-u>WhichKey ']'<CR>
 
+    " which-key 弹窗期间隐藏状态栏，离开恢复
     augroup vim_which_key
         autocmd!
-        autocmd FileType which_key set laststatus=0 noshowmode noruler
-            \| autocmd BufLeave <buffer> set laststatus=2 noshowmode noruler
+        autocmd FileType which_key set laststatus=0
+            \| autocmd BufLeave <buffer> set laststatus=2
     augroup END
 endif
 
-" --- accelerate-jk：长按 j/k 纵向加速移动 ---
+" --- accelerate-jk：长按 j/k 纵向加速（参数与 Neovim 侧一致） ---
 if &runtimepath =~# 'accelerated-jk'
-    " 加速表与 Neovim 侧完全一致，保证两端手感相同
     let g:accelerated_jk_acceleration_table = [7, 13, 20, 33, 53, 86]
     nmap j <Plug>(accelerated_jk_gj)
     nmap k <Plug>(accelerated_jk_gk)
 endif
 
-" --- LeaderF：模糊查找（映射习惯与 Neovim telescope 对齐） ---
+" --- LeaderF：模糊查找（映射与 Neovim telescope 对齐） ---
 if &runtimepath =~# 'LeaderF'
-    " 交出插件默认占用的 <leader>f / <leader>b，避免吃掉 which-key 的 f/b 前缀组
+    " 释放插件默认占用的 <leader>f/<leader>b，让给 which-key 的 f/b 组
     let g:Lf_ShortcutF = ''
     let g:Lf_ShortcutB = ''
-    " 弹窗式候选窗口（vim 8.2+ popup，观感接近 telescope/fzf）
     let g:Lf_WindowPosition = 'popup'
-    " 文件查找沿用上方 wildignore 的二进制文件过滤
     let g:Lf_WildIgnore = { 'file': split(&wildignore, ',') }
 
     nnoremap <silent> <leader>ff :LeaderfFile<CR>
     nnoremap <silent> <leader>fr :LeaderfMru<CR>
     nnoremap <silent> <leader>fb :LeaderfBuffer<CR>
     nnoremap <silent> <leader>/  :LeaderfLine<CR>
-    " 全文搜索（需要系统装有 ripgrep，未装时会提示找不到 rg）
     nnoremap <silent> <leader>fg :LeaderfRg<CR>
 endif
 
-" --- Airline (与 ayu 主题 1:1 调色，并与 NERDTree 联动) ---
-let g:airline_theme = 'ayu'
-" let g:airline_theme = 'molokai'
-let g:airline_powerline_fonts = 1
-
-" 开启与 NERDTree 的状态栏集成（光标在侧边栏时呈现专属极简状态栏）
-let g:airline#extensions#nerdtree_status = 1
-
-" 顶部 Buffer 页签栏（严格隔离侧边栏与临时窗口）
-let g:airline#extensions#tabline#enabled = 1              " 开启顶部 Buffer 页签栏
-let g:airline#extensions#tabline#show_buffers = 1         " 显示所有打开的 Buffer
-let g:airline#extensions#tabline#formatter = 'default'
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerdtree|NERD_tree.*'
-
-" --- IndentLine ---
+" --- indentLine：缩进参考线 ---
 let g:indentLine_char = '┊'
 let g:indentLine_first_char = '┊'
 let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_setColors = 0
 let g:indentLine_fileTypeExclude = ['nerdtree', 'help', 'tagbar', 'leaderf']
 let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*']
+" }}}
 
-" --- NERDTree 现代美化与交互 ---
+" ============================================================================
+" 5. 文件树 {{{
+" ============================================================================
+" netrw 兜底：裸机未装插件时 <leader>e/o 回退到内置树状浏览（Lexplore）
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+let g:netrw_browse_split = 4
+let g:netrw_altv = 1
+let g:netrw_winsize = 20
+
+" NERDTree：级联/光标行高亮/Git 图标括号等均为插件默认值，不显式设置
 let g:NERDTreeShowHidden = 1
 let g:NERDTreeAutoDeleteBuffer = 1
-let g:NERDTreeDirArrows = 1
+let g:NERDTreeMinimalUI = 1
+" 箭头：Windows 上插件默认是 +/~ 的 ASCII 回退，显式指定以跨平台统一观感
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
-let g:NERDTreeMinimalUI = 1
-let g:NERDTreeCascadeSingleChildDir = 1
-let g:NERDTreeHighlightCursorline = 1
 let g:NERDTreeIgnore = ['\c^ntuser\..*', '\~$', '\.git$[[dir]]']
 
-" --- DevIcons 原生图标支持（让插件按官方标准自动接管） ---
-let g:webdevicons_enable_airline_statusline = 1
-let g:webdevicons_enable_nerdtree = 1
+" 图标：打开/关闭文件夹不同图标；LimitedSyntax 限制语法规则数保证性能
 let g:DevIconsEnableFoldersOpenClose = 1
-
-" --- NERDTree 彩色图标高亮（由 vim-nerdtree-syntax-highlight 插件原生提供） ---
 let g:NERDTreeLimitedSyntax = 1
 
-" --- NERDTree-Git 图标符号（官方明确警告：使用 devicons 时切勿开启 ConcealBrackets，防止字符挤压） ---
-let g:NERDTreeGitStatusConcealBrackets = 0
-
+" vim <目录> 启动 → 树独占布局：开树、关掉目录列表窗口（不产生 [No Name]），
+" 再清理被弃置的原 buffer 避免 tabline 残留
 augroup vim_nerdtree
     autocmd!
-    " 以目录作为参数启动 Vim 时自动打开 NERDTree（树独占布局）
     autocmd StdinReadPre * let s:std_in=1
-    " noautocmd close：关 netrw 窗口时抑制 BufEnter，否则"树是最后窗口即退出"
-    " 的下方 autocmd 会在启动瞬间把 vim 关掉；
-    " 随后清掉被弃置的原 buffer（netrw 列表/[No Name]），避免残留在 tabline
     autocmd VimEnter * if exists(':NERDTree') && argc() == 1 && isdirectory(argv()[0]) && !exists('s:std_in') |
-        \ execute 'NERDTree' argv()[0] | wincmd p | noautocmd close
+        \ execute 'NERDTree' argv()[0] | wincmd p | close
         \ | execute bufnr('#') > 0 && bufnr('#') != bufnr('%') && !getbufvar(bufnr('#'), '&modified')
         \   ? 'silent! bwipeout ' . bufnr('#') : ''
         \ | execute 'cd '.argv()[0] | endif
-    " 当 NERDTree 是最后一个窗口时自动退出
-    autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | call feedkeys(":quit\<CR>:\<BS>") | endif
 augroup END
 " }}}
 
 " ============================================================================
-" ColorScheme & UI Integration (ayu) {{{
+" 6. 外观：字体 / 配色 / 状态栏 / 页签 {{{
 " ============================================================================
+" GUI 字体（终端 vim 使用终端自身字体）
+if has("gui_running")
+    if has("gui_gtk2")
+        set guifont=Inconsolata\ 12
+    elseif has("gui_macvim")
+        set guifont=Meslo\ Regular:h14
+    elseif has("gui_win32")
+        set guifont=MesloLGS\ Nerd\ Font:h11
+        set guifontwide=FangSong:h11
+    endif
+endif
+
+" 配色（ayu 为插件，未装时回退内置 habamax）
 set background=dark
 if has('termguicolors')
     silent! set termguicolors
 endif
-
-let ayucolor = "dark" " 可选: "light" | "mirage" | "dark"
+let ayucolor = "dark"    " 可选: light | mirage | dark
 try
     colorscheme ayu
     " colorscheme molokai
@@ -501,48 +467,88 @@ catch /^Vim\%((\a\+)\)\=:E185/
     silent! colorscheme habamax
 endtry
 
-" 状态栏接管模式展示，关闭原生模式文本提示
-set noshowmode
-
-" 去除侧边栏与主窗口分割线的粗糙底色，保持背景浑然一体
-" highlight VertSplit cterm=NONE gui=NONE guibg=NONE
-
-" ============================================================================
-" Folding {{{
-" ============================================================================
-augroup filetype_vim
+" 页签配色：ayu 把 TabLine 设为 reverse 且未定义 TabLineFill/Sel（vim 默认
+" Fill 也是 reverse），深色主题下会渲染成亮/白条。统一链接到状态栏配色组
+augroup vim_tabline_colors
     autocmd!
-    autocmd FileType vim setlocal foldmethod=marker
+    autocmd ColorScheme *
+        \ highlight! link TabLine StatusLineNC
+        \ | highlight! link TabLineFill StatusLineNC
+        \ | highlight! link TabLineSel StatusLine
 augroup END
+highlight! link TabLine StatusLineNC
+highlight! link TabLineFill StatusLineNC
+highlight! link TabLineSel StatusLine
 
-augroup vim_ft_indent
+" 状态栏：模式 | 文件 | 修改标记 | 文件格式 | 行,列 | 百分比
+set laststatus=2
+set statusline=%{toupper(mode())}\ %<%f\ %h%m%r%=%{&fileformat}\ \ %-14.(%l,%c%V%)\ %P
+
+" 顶部页签：列出全部具名 listed buffer（树/帮助等 unlisted 不出现），
+" 当前项高亮、+ 表示未保存、序号即切换序
+function! MyTabLine() abort
+    let l:bufs = filter(range(1, bufnr('$')), 'buflisted(v:val) && !empty(bufname(v:val))')
+    if empty(l:bufs) | return '' | endif
+    let l:s = ''
+    let l:idx = 0
+    while l:idx < len(l:bufs)
+        let l:nr = l:bufs[l:idx]
+        let l:s .= (l:nr == bufnr('%') ? '%#TabLineSel#' : '%#TabLine#')
+        let l:s .= ' ' . (l:idx + 1) . ' ' . fnamemodify(bufname(l:nr), ':t')
+        \ . (getbufvar(l:nr, '&modified') ? '+' : '') . ' '
+        let l:idx += 1
+    endwhile
+    return l:s . '%#TabLineFill#'
+endfunction
+set tabline=%!MyTabLine()
+
+" 页签可见性：零具名 buffer 时（树独占启动）整行隐藏，打开文件后自动恢复。
+" 本组 VimEnter 需晚于 §5 的启动链注册，故置于其后
+augroup vim_tabline_visibility
     autocmd!
-    " 常见配置格式 2 空格缩进（YAML 对缩进严格，社区规范也是 2 空格）
-    autocmd FileType yaml,json,toml,html,css setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    autocmd VimEnter,BufEnter,BufAdd,BufDelete,BufWipeout *
+        \ let &showtabline = len(filter(range(1, bufnr('$')), 'buflisted(v:val) && !empty(bufname(v:val))')) > 0 ? 2 : 0
 augroup END
 " }}}
 
 " ============================================================================
-" View Persistence {{{
+" 7. 文件类型与持久化 {{{
 " ============================================================================
-" 离开普通文件时保存视图（光标位置/折叠状态），再次打开自动恢复
-" （排除 NERDTree 等插件缓冲区，避免为目录树写无意义的视图文件）
+" JSON 不隐藏引号
+let g:vim_json_conceal = 0
+
+augroup vim_filetype
+    autocmd!
+    autocmd BufNewFile,BufRead Jenkinsfile setf groovy
+    " 常见配置格式 2 空格（YAML 对缩进严格，社区规范也是 2 空格）
+    autocmd FileType yaml,json,toml,html,css setlocal tabstop=2 shiftwidth=2 softtabstop=2
+    " vim 脚本自身按 marker 折叠
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" vim 9.1+ 内置注释（gc/gcc）；更老的版本静默跳过
+if has('patch-9.1.0375')
+    silent! packadd! comment
+endif
+
+" 视图持久化：记住每个文件的光标位置与折叠
+" viewoptions 只留 folds,cursor：默认含 options 会把 statusline 等局部选项
+" 烤进 view 文件，日后换状态栏方案 loadview 会报 Unknown function
+set viewoptions=folds,cursor
 augroup vim_persist_view
     autocmd!
-    autocmd BufWinLeave * if &buftype ==# '' && !exists('b:NERDTree') | mkview! | endif
+    " 无名 buffer（如 <leader>bd 的兜底空 buffer）没有 view 文件名，跳过
+    autocmd BufWinLeave * if &buftype ==# '' && !exists('b:NERDTree') && bufname('') !=# '' | mkview! | endif
     autocmd BufWinEnter * if &buftype ==# '' && !exists('b:NERDTree') | silent! loadview | endif
 augroup END
 
-" --- tabline 可见性：零 listed buffer 时隐藏 ---
-" airline 的 buffer 页签在列表为空时（树独占启动：唯一缓冲区是 unlisted 的
-" NERDTree 树）仍会渲染一个 bufnr=-1 的幽灵条目，formatter 对无名 buffer
-" 固定输出 [No Name]。有 listed buffer（从树里打开文件）才显示 tabline。
-" 本块必须放在文件末尾：VimEnter 时要晚于 vim_nerdtree 的启动链才能拿到终态
-if &runtimepath =~# 'vim-airline'
-    augroup vim_tabline_visibility
-        autocmd!
-        autocmd VimEnter,BufEnter,BufAdd,BufDelete,BufWipeout *
-            \ let &showtabline = len(filter(range(1, bufnr('$')), 'buflisted(v:val)')) > 0 ? 2 : 0
-    augroup END
-endif
+" 启动耗时回显：vimrc 起点 → VimEnter（含插件加载与文件树启动链）。
+" 置于文件末尾使 VimEnter 晚于 §5/§6 注册，数字才是终态；只含 vimrc 之后的
+" 耗时（vim 二进制自身初始化约 10-20ms 不计），细分诊断用 vim --startuptime
+augroup vim_startup_time
+    autocmd!
+    autocmd VimEnter * echohl Comment
+        \ | echo '⏱  startup ' . printf('%.0f', str2float(reltimestr(reltime(s:startup_t0))) * 1000) . 'ms'
+        \ | echohl None
+augroup END
 " }}}
