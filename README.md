@@ -1,4 +1,19 @@
 # Windows
+
+## 快速开始（推荐）
+
+``` powershell
+cd $HOME
+git clone git@github.com:liuxiujun/dotfiles.git
+cd dotfiles
+# 交互式选择要建立的链接（也可 -List 只看计划 / -All 全部建立）
+powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1
+```
+
+脚本特性：所有路径从仓库位置推导（与用户名无关）；无管理员权限时自动降级
+（目录→Junction，文件→硬链接）；自动生成 `git/.gitconfig-platform` 平台配置。
+以下为各链接的手动等价命令，备查。
+
 ``` powershell
 # clone dotfiles repo
 cd $HOME
@@ -75,6 +90,9 @@ New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.w
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\git\.gitconfig
 ```
+setup.ps1 选择 git 项时还会自动生成 `git/.gitconfig-platform`（机器本地、已
+gitignore）：include 转发到 `.gitconfig-windows.conf` 的编辑器覆盖。注意
+`includeIf os:/exists:` 均非 upstream git 功能，勿改回条件包含写法。
 
 ### Win-vind
 ``` powershell
@@ -96,6 +114,19 @@ New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.npmrc
 ```
 
 # Linux
+## 快速开始（推荐）
+
+``` bash
+cd $HOME
+git clone git@github.com:liuxiujun/dotfiles.git
+cd dotfiles
+chmod +x setup.sh
+./setup.sh          # 交互式选择（--list 只看计划 / --all 全部建立）
+```
+
+脚本从仓库位置推导所有路径（与用户名无关），选择 git 项时自动生成
+`git/.gitconfig-platform`（指向本平台的 conf）。以下为手动等价命令，备查。
+
 ``` bash
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
@@ -111,12 +142,11 @@ ln -s ~/dotfiles/ssh/config ~/.ssh/config
 ``` bash
 ln -s ~/dotfiles/vim ~/.vim 
 
-echo 'export VIMRC=$HOME/.vim/vimrc' >> ~/.zshrc
-
-echo $VIMRC
+# 注：现代 vim 原生读取 ~/.vim/vimrc，无需设置 VIMRC 环境变量
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# 装锁定版本：vim -S ~/dotfiles/vim/plug-snapshot.vim（或 vim 内 :PlugInstall）
 ```
 
 ### NeoVim

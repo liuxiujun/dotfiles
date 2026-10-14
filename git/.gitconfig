@@ -1,19 +1,17 @@
 [include]
     path = ~/dotfiles/git/.gitconfig-common.conf
+    # 平台覆盖：.gitconfig-platform 是部署时创建的机器本地符号链接（gitignore），
+    # Windows/Linux/macOS 机器分别指向 .gitconfig-windows/linux/macos.conf。
+    # 不用 includeIf os:/exists: —— 两者均非 upstream git 功能，静默不生效；
+    # 无条件 include 指向缺失文件时 git 静默跳过，裸机安全
+    path = ~/dotfiles/git/.gitconfig-platform
+    # 本地私有配置（不提交到仓库，如工作邮箱、代理）；缺失时静默跳过
+    path = ~/dotfiles/git/.gitconfig-local.conf
 
-    [includeIf "os:linux"]
-        path = ~/dotfiles/git/.gitconfig-linux.conf
-    [includeIf "os:windows"]
-        path = ~/dotfiles/git/.gitconfig-windows.conf
-    [includeIf "os:darwin"]
-        path = ~/dotfiles/git/.gitconfig-macos.conf
-
-    # 本地私有配置（不提交到仓库，如工作邮箱、代理）
-    [includeIf "exists:.gitconfig-local.conf"]
-        path = ~/dotfiles/git/.gitconfig-local.conf
 [credential "helperselector"]
 	selected = manager
 [credential "https://gitee.com"]
 	provider = generic
 [core]
 	protectNTFS = false
+
