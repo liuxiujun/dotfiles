@@ -39,13 +39,15 @@ local config = {}
 -- config.experimental_handle_unsupported_control_sequences = true
 
 -- 基础外观
-config.color_scheme = "Dracula"                 -- 可选：'GruvboxDark', 'Tokyo Night' 等
+-- config.color_scheme = "ayu"                 -- 可选：'Dracula', 'GruvboxDark', 'Tokyo Night' 等
+config.color_scheme = 'Wez (Gogh)'
 
 if is_windows then
     -- config.font = wezterm.font("MesloLGS Nerd Font") -- 'Cascadia Code', 'Fira Code', 'JetBrains Mono'
+    -- config.font = wezterm.font("CaskaydiaCove Nerd Font")
     config.font = wezterm.font("CaskaydiaCove Nerd Font")
 else
-    config.font = wezterm.font("CaskaydiaCove Nerd Font")
+    config.font = wezterm.font("Ubuntu Mono")
 end
 -- 全局禁用连字功能
 config.harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' }
