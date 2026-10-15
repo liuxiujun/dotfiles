@@ -54,6 +54,7 @@ return {
 			map("n", "<leader>gd", gs.diffthis, "Git diff this file")
 			map({ "n", "v" }, "<leader>gs", ":Gitsigns stage_hunk<CR>", "Stage Git hunk")
 			map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", "Reset Git hunk")
+			map({ "n", "v" }, "<leader>gu", ":Gitsigns reset_hunk<CR>", "Undo / Reset Git hunk (alias)")
 			map("n", "<leader>gR", gs.reset_buffer, "Reset Git buffer")
 		end,
 	},

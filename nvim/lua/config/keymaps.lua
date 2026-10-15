@@ -56,6 +56,10 @@ vim.keymap.set('n', '<leader>b$', ':blast<CR>', { desc = "Last buffer" })
 vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show line diagnostics" } )
 vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Send diagnostics to loclist" } )
 
+-- LSP Code Actions & Rename (与 gra / grn 对齐的全局 Leader 快捷键)
+vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true, desc = "[Code] [A]ction" })
+vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "Rename symbol" })
+
 -- Manage Lsp 
 vim.keymap.set("n", "<leader>lC", "<cmd>checkhealth vim.lsp<CR>", { noremap = true, silent = true, desc = "[C]heckhealth (LspInfo)" })
 -- vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { noremap = true, silent = true, desc = "Start LSP server (if not started )" })

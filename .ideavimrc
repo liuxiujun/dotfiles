@@ -138,6 +138,7 @@ nmap <leader>h <Action>(HideSideWindows)
 nmap <leader>t <Action>(ActivateTerminalToolWindow)
 " Project 窗口
 nmap <leader>e <Action>(ActivateProjectToolWindow)
+
 " 在项目树中定位当前文件
 nmap <leader>o <Action>(SelectInProjectView)
 " Problems 窗口
@@ -145,7 +146,7 @@ nmap <leader>p <Action>(ActivateProblemsViewToolWindow)
 " Services 窗口
 nmap <leader>rs <Action>(ActivateServicesToolWindow)
 " Zen mode
-nmap <leader>zz <Action>(ToggleZenMode)
+nmap <leader>z <Action>(HideAllWindows)
 
 " -------------------------
 " Code Navigation (与 Neovim 0.11 gr* 体系完全对齐)
@@ -154,13 +155,15 @@ nmap <leader>zz <Action>(ToggleZenMode)
 nmap gd <Action>(GotoDeclaration)
 " 跳转到类型声明
 nmap gD <Action>(GotoTypeDeclaration)
-" 向下跳到实现类/重写方法（归还原生 gi 回到上次插入位置）
+" 向下跳到实现类/重写方法（gri 归还原生 gi；保留 gI 作为容错）
 nmap gri <Action>(GotoImplementation)
+nmap gI <Action>(GotoImplementation)
 " 向上跳到父类/父接口被重写的方法（与 gri 上下对称）
 nmap grs <Action>(GotoSuperMethod)
 " 查看完整类继承树 (Type Hierarchy)
 nmap grh <Action>(TypeHierarchy)
-" 跳转到变量的类型定义
+" 跳转到变量的类型定义（gy 与 grt 双键对齐）
+nmap gy <Action>(GotoTypeDeclaration)
 nmap grt <Action>(GotoTypeDeclaration)
 " 弹出悬浮引用预览框（体验对齐 Telescope grr）
 nmap grr <Action>(ShowUsages)
@@ -246,10 +249,9 @@ nmap <leader>cei <Action>(IntroduceParameter)
 " -------------------------
 " Fold
 " -------------------------
-" 折叠全部代码块
-nmap <leader>zc <Action>(CollapseAllRegions)
-" 展开全部代码块
-nmap <leader>zo <Action>(ExpandAllRegions)
+nmap zM <Action>(CollapseAllRegions)
+nmap zR <Action>(ExpandAllRegions)
+nmap za <Action>(ExpandCollapseToggleAction)
 
 " -------------------------
 " New / Create
@@ -286,6 +288,8 @@ let g:WhichKey_SortCaseSensitive = "false"
 
 let g:WhichKeyDesc_gd = "gd Go to declaration"
 let g:WhichKeyDesc_gD = "gD Go to type declaration"
+let g:WhichKeyDesc_gy = "gy Go to type definition"
+let g:WhichKeyDesc_gI = "gI Go to implementation"
 let g:WhichKeyDesc_gO = "gO File structure outline"
 let g:WhichKeyDesc_gr = "gr LSP Goto / Refactor"
 let g:WhichKeyDesc_gri = "gri Go to implementation"
@@ -298,6 +302,10 @@ let g:WhichKeyDesc_grn = "grn Rename symbol"
 let g:WhichKeyDesc_gra = "gra Code action / Intention"
 let g:WhichKeyDesc_ge = "ge Go to test"
 let g:WhichKeyDesc_gn = "gn Show navigation bar"
+
+let g:WhichKeyDesc_za = "za Toggle fold"
+let g:WhichKeyDesc_zM = "zM Collapse all regions"
+let g:WhichKeyDesc_zR = "zR Expand all regions"
 
 let g:WhichKeyDesc_gl = "gl Show error description"
 let g:WhichKeyDesc_prev_diag = "[d Previous diagnostic"
@@ -335,11 +343,7 @@ let g:WhichKeyDesc_e = "<leader>e Project tool window"
 let g:WhichKeyDesc_o = "<leader>o Reveal current file in project"
 let g:WhichKeyDesc_p = "<leader>p Problems tool window"
 let g:WhichKeyDesc_rs = "<leader>rs Services tool window"
-let g:WhichKeyDesc_zz = "<leader>zz Toggle Zen Mode"
-
-let g:WhichKeyDesc_z = "<leader>z Fold"
-let g:WhichKeyDesc_zc = "<leader>zc Collapse all regions"
-let g:WhichKeyDesc_zo = "<leader>zo Expand all regions"
+let g:WhichKeyDesc_z = "<leader>z Toggle Zen Mode"
 
 let g:WhichKeyDesc_c = "<leader>c Code"
 let g:WhichKeyDesc_ca = "<leader>ca Show context actions"

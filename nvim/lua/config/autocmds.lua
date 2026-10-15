@@ -53,44 +53,7 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -- 高亮相关的 augroup 只创建一次；光标停留时高亮符号，移动时清除
 local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
 local clear_highlight_augroup = vim.api.nvim_create_augroup("LspClearHighlight", { clear = true })
-
--- 使用 Telescope 接管全局 vim.ui.select（消灭底部简陋的 1. 2. 数字输入选择框，同时美化 gra Code Action 等）
-vim.ui.select = function(items, opts, on_choice)
-	opts = opts or {}
-	local ok, pickers = pcall(require, "telescope.pickers")
-	if not ok then
-		return
-	end
-	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
-	local actions = require("telescope.actions")
-	local action_state = require("telescope.actions.state")
-	local themes = require("telescope.themes")
-
-	pickers
-		.new(themes.get_dropdown({ previewer = false }), {
-			prompt_title = opts.prompt or "Select",
-			finder = finders.new_table({
-				results = items,
-				entry_maker = function(item)
-					local text = opts.format_item and opts.format_item(item) or tostring(item)
-					return { value = item, display = text, ordinal = text }
-				end,
-			}),
-			sorter = conf.generic_sorter({}),
-			attach_mappings = function(prompt_bufnr)
-				actions.select_default:replace(function()
-					actions.close(prompt_bufnr)
-					local selection = action_state.get_selected_entry()
-					if selection then
-						on_choice(selection.value)
-					end
-				end)
-				return true
-			end,
-		})
-		:find()
-end
+-- 全局 vim.ui.select（gra / Code Action 弹窗）已由 plugins/telescope.lua (telescope-ui-select) 官方扩展统一接管
 
 -- 使用 Telescope 接管 LSP typeHierarchy（让 vim.lsp.buf.typehierarchy("supertypes" / "subtypes") 告别原生 Quickfix 窗口）
 local function telescope_type_hierarchy_handler(title)
@@ -155,25 +118,23 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(ev)
 		local opts = { buffer = ev.buf, remap = false }
 
-		-- 其余全部使用 Neovim 0.11 内置最佳实践：
-		-- grn (重命名), gra (Code Action，已由上方 vim.ui.select 接管为 Telescope), gO (大纲), K (悬浮文档)
-		-- 基础跳转与引用：全部接入 Telescope（单个目标时直接秒跳，多个目标时弹 Telescope 预览窗）
-		vim.keymap.set("n", "gd", function()
-			require("telescope.builtin").lsp_definitions()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto definition (Telescope)" }))
-		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("keep", opts, { desc = "Goto declaration" }))
-		vim.keymap.set("n", "gri", function()
-			require("telescope.builtin").lsp_implementations()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto implementation (Telescope)" }))
-		vim.keymap.set("n", "grs", function()
-			vim.lsp.buf.typehierarchy("supertypes")
-		end, vim.tbl_extend("keep", opts, { desc = "Type hierarchy: Supertypes (父类/接口)" }))
-		vim.keymap.set("n", "grt", function()
-			require("telescope.builtin").lsp_type_definitions()
-		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope)" }))
+		-- 1. 查引用（grr / Find Usages）：使用 Telescope 双栏带代码高亮上下文实时预览
 		vim.keymap.set("n", "grr", function()
 			require("telescope.builtin").lsp_references({ include_declaration = false, show_line = true })
 		end, vim.tbl_extend("keep", opts, { desc = "Goto references / Find Usages (Telescope)" }))
+
+		-- 2. 类型继承树：查看父类/父接口（Java/C++ 常用）
+		vim.keymap.set("n", "grs", function()
+			vim.lsp.buf.typehierarchy("supertypes")
+		end, vim.tbl_extend("keep", opts, { desc = "Type hierarchy: Supertypes" }))
+
+		-- 3. 查类型定义（grt / gy）：多类型时使用 Telescope 代码预览
+		vim.keymap.set("n", "grt", function()
+			require("telescope.builtin").lsp_type_definitions()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope)" }))
+		vim.keymap.set("n", "gy", function()
+			require("telescope.builtin").lsp_type_definitions()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope, alias)" }))
 
 		-- 光标停留高亮同名符号
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)

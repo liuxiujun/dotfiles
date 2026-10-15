@@ -2,7 +2,7 @@
 
 ## 快速开始（推荐）
 
-``` powershell
+```powershell
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
 cd dotfiles
@@ -14,31 +14,35 @@ powershell -NoProfile -ExecutionPolicy Bypass -File setup.ps1
 （目录→Junction，文件→硬链接）；自动生成 `git/.gitconfig-platform` 平台配置。
 以下为各链接的手动等价命令，备查。
 
-``` powershell
+```powershell
 # clone dotfiles repo
 cd $HOME
-git clone git@github.com:liuxiujun/dotfiles.git 
+git clone git@github.com:liuxiujun/dotfiles.git
 ```
 
 ### ssh config
-``` ps1
+
+```ps1
 New-Item -ItemType SymbolicLink -Path "$HOME\.ssh\config" -Target "$HOME\dotfiles\ssh\config" -Force
 ```
 
 ### Wezterm
-``` powershell
+
+```powershell
 New-Item -ItemType SymbolicLink -Path $HOME\.config\wezterm -Target $HOME\dotfiles\wezterm
 ```
 
 ### PowerShell
-``` powershell
-# (Run as Administrator) 
+
+```powershell
+# (Run as Administrator)
 # vim $profile
 New-Item -ItemType SymbolicLink -Path $HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1 -Target $HOME\dotfiles\powershell\Microsoft.PowerShell_profile.ps1
 ```
 
-### Vim 
-``` powershell
+### Vim
+
+```powershell
 # (Run as Administrator) Create a link of vim config to home
 New-Item -ItemType SymbolicLink -Path $HOME\vimfiles -Target $HOME\dotfiles\vim
 
@@ -54,69 +58,81 @@ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
 ```
 
 ### NeoVim
-``` powershell
-# (Run as Administrator) 
+
+```powershell
+# (Run as Administrator)
 New-Item -ItemType SymbolicLink -Path $HOME\AppData\Local\nvim -Target $HOME\dotfiles\nvim
 ```
 
 ### Intellij IDEA .ideavimrc
+
 IDEA Plugins:
 `IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
 
-IDEA Keymaps: 
-> `Up`      :   Ctrl+k  
-> `Down`    :   Ctrl+j  
-> `Left`    :   Ctrl+h  
-> `Right`   :   Ctrl+l  
+IDEA Keymaps:
 
-``` powershell
+> `Up` : Ctrl+k  
+> `Down` : Ctrl+j  
+> `Left` : Ctrl+h  
+> `Right` : Ctrl+l
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.ideavimrc -Target $HOME\dotfiles\.ideavimrc
 ```
+
 ### eclipse vrapper plugin
-``` powershell
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.vrapperrc -Target $HOME\dotfiles\.vrapperrc
 ```
 
 ### WSL2
-``` powershell
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.wslconfig -Target $HOME\dotfiles\.wslconfig
 ```
 
 ### Git
-``` powershell
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.gitconfig -Target $HOME\dotfiles\git\.gitconfig
 ```
+
 setup.ps1 选择 git 项时还会自动生成 `git/.gitconfig-platform`（机器本地、已
 gitignore）：include 转发到 `.gitconfig-windows.conf` 的编辑器覆盖。注意
 `includeIf os:/exists:` 均非 upstream git 功能，勿改回条件包含写法。
 
 ### Win-vind
-``` powershell
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.win-vind\.vindrc -Target $HOME\dotfiles\.vindrc
 ```
 
 ### mpv
-``` powershell
+
+```powershell
 # https://mpv.io/manual/stable/#files-on-windows
 # ~/.config/mpv/input.conf consists of a list of key bindings
 New-Item -ItemType SymbolicLink -Path $HOME\.config\mpv\input.conf -Target $HOME\dotfiles\input.conf
 ```
 
 ### NPM
-``` powershell
+
+```powershell
 # Run as Administrator
 New-Item -ItemType SymbolicLink -Path $HOME\.npmrc -Target $HOME\dotfiles\.npmrc
 ```
 
 # Linux
+
 ## 快速开始（推荐）
 
-``` bash
+```bash
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
 cd dotfiles
@@ -127,20 +143,21 @@ chmod +x setup.sh
 脚本从仓库位置推导所有路径（与用户名无关），选择 git 项时自动生成
 `git/.gitconfig-platform`（指向本平台的 conf）。以下为手动等价命令，备查。
 
-``` bash
+```bash
 cd $HOME
 git clone git@github.com:liuxiujun/dotfiles.git
 ```
 
-
 ### ssh config
-``` bash
+
+```bash
 ln -s ~/dotfiles/ssh/config ~/.ssh/config
 ```
 
 ### Vim
-``` bash
-ln -s ~/dotfiles/vim ~/.vim 
+
+```bash
+ln -s ~/dotfiles/vim ~/.vim
 
 # 注：现代 vim 原生读取 ~/.vim/vimrc，无需设置 VIMRC 环境变量
 
@@ -150,17 +167,20 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ```
 
 ### NeoVim
-``` bash
+
+```bash
 ln -s ~/dotfiles/nvim ~/.config/nvim
 ```
 
 ### Tmux
-``` bash
+
+```bash
 ln -s ~/dotfiles/.tmux.conf ~/.tmux.conf
 ```
 
 ### Terminal Proxy
-``` bash
+
+```bash
 sudo tee -a ~/.profile << EOF
 export http_proxy='http://127.0.0.1:7890'
 export https_proxy='http://127.0.0.1:7890'
@@ -168,30 +188,36 @@ EOF
 ```
 
 ### IdeaVim
+
 IDEA Plugins:
 `IdeaVim`, `AceJump`, `IdeaVim-EasyMotion`, `Which-Key`
 
-IDEA Keymaps: 
-> `Up`      :   Ctrl+k  
-> `Down`    :   Ctrl+j  
-> `Left`    :   Ctrl+h  
-> `Right`   :   Ctrl+l  
-``` bash
+IDEA Keymaps:
+
+> `Up` : Ctrl+k  
+> `Down` : Ctrl+j  
+> `Left` : Ctrl+h  
+> `Right` : Ctrl+l
+
+```bash
 ln -s ~/dotfiles/.ideavimrc ~/.ideavimrc
 ```
 
 ### Git
-``` bash
+
+```bash
 ln -s ~/dotfiles/git/.gitconfig ~/.gitconfig
 ```
 
 ### NPM
-``` bash
+
+```bash
 ln -s ~/dotfiles/.npmrc ~/.npmrc
 ```
 
 ### IBUS
-``` bash
+
+```bash
 # 中文输入法
 sudo apt install ibus-pinyin ibus-libpinyin
 # 한국어 input method
@@ -199,7 +225,8 @@ sudo apt install ibus-hangul
 ```
 
 ### Vim clipboard
-``` bash
+
+```bash
 sudo apt install vim-gtk3
 
 # sudo update-alternatives --install /usr/bin/vim vim /usr/bin/vim/gtk3 100
@@ -209,7 +236,8 @@ sudo update-alternatives --config vim
 ```
 
 ### wps输入中文
-``` bash
+
+```bash
 sudo tee -a /usr/bin/wps /usr/bin/et << EOF
 export XMODIFIERS="@im=ibus"
 export QT_IM_MODULE="ibus"

@@ -227,10 +227,12 @@ nnoremap <leader><Tab> :call NumberToggle()<CR>
 nnoremap <silent> <leader>e :execute exists(':NERDTreeToggle') ? 'NERDTreeToggle' : 'Lexplore'<CR>
 nnoremap <silent> <leader>o :execute exists(':NERDTreeFind') ? 'NERDTreeFind' : 'Lexplore'<CR>
 
-" Git 修改块（vim-gitgutter）
-nmap <silent> <leader>hp <Plug>(GitGutterPreviewHunk)
-nmap <silent> <leader>hu <Plug>(GitGutterUndoHunk)
-nmap <silent> <leader>hs <Plug>(GitGutterStageHunk)
+" Git 增强操作 (vim-fugitive & vim-gitgutter)
+nnoremap <silent> <leader>gd :Gvdiffsplit<CR>
+nnoremap <silent> <leader>gg :Git<CR>
+nmap <silent> <leader>gp <Plug>(GitGutterPreviewHunk)
+nmap <silent> <leader>gu <Plug>(GitGutterUndoHunk)
+nmap <silent> <leader>gs <Plug>(GitGutterStageHunk)
 " }}}
 
 " ============================================================================
@@ -283,11 +285,19 @@ if &runtimepath =~# 'vim-which-key'
             \ 't': '底部终端 (Bottom Terminal)',
             \ 'v': '右侧终端 (Vertical Terminal)',
             \ },
+        \ 'g'    : {
+            \ 'name': '+git (Git 操作)',
+            \ 'd': '对比当前文件差异 (Git Diff)',
+            \ 'g': 'Git 状态面板 (:Git)',
+            \ 'p': '预览修改块 (Preview Hunk)',
+            \ 'u': '撤销修改块 (Undo Hunk)',
+            \ 's': '暂存修改块 (Stage Hunk)',
+            \ },
         \ 'h'    : {
-            \ 'name': '+git (代码变动)',
-            \ 'p': '预览修改 (Preview Hunk)',
-            \ 'u': '撤销修改 (Undo Hunk)',
-            \ 's': '暂存修改 (Stage Hunk)',
+            \ 'name': '+git-hunk (兼容旧按键)',
+            \ 'p': '预览修改块 (Preview Hunk)',
+            \ 'u': '撤销修改块 (Undo Hunk)',
+            \ 's': '暂存修改块 (Stage Hunk)',
             \ },
         \ }
 
