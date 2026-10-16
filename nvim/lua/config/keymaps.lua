@@ -35,8 +35,8 @@ vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, des
 -- <C-^> (:b # 的快捷键)  快速切换至上次缓冲区
 -- 缓冲区切换使用 nvim 内置的 ]b / [b（0.11+ 自带），不再映射 <Tab>/<S-Tab>：
 -- <Tab> 与 <C-i> 在终端里同键码，映射 <Tab> 会导致 jumplist 前进跳转失效
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
-vim.keymap.set("n", "<leader>bD", "<cmd>bdelete!<CR>", { desc = "Force close buffer" })
+vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", { desc = "Close buffer (switch to previous)" })
+vim.keymap.set("n", "<leader>bD", "<cmd>Bdelete!<CR>", { desc = "Force close buffer" })
 vim.keymap.set('n', '<leader>b0', ':bfirst<CR>', { desc = "First buffer" })
 vim.keymap.set('n', '<leader>b$', ':blast<CR>', { desc = "Last buffer" })
 

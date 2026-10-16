@@ -4,6 +4,8 @@
 " 注意：IdeaVim 中 set 命令同行末尾不要写注释，否则注释内容可能被当作参数读取执行
 " 显示绝对行号
 set number
+" 保持光标上下保留 10 行可视距离（与 Vim / Neovim / VS Code 统一）
+set scrolloff=10
 " 默认寄存器接入系统剪贴板，并优先使用 IDE 原生粘贴
 set clipboard+=unnamed,ideaput
 " 显示空白字符

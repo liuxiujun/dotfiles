@@ -97,6 +97,7 @@ vim.opt.expandtab = true -- tabs are spaces, mainly because of python
 vim.opt.number = true -- show absolute number
 vim.opt.relativenumber = false -- add numbers to each line on the left side
 vim.opt.cursorline = true -- highlight cursor line underneath the cursor horizontally
+vim.opt.scrolloff = 10 -- 光标上下保留 10 行可视距离（与 Vim / VS Code / IDEA 统一）
 vim.opt.splitbelow = true -- open new vertical split bottom
 vim.opt.splitright = true -- open new horizontal splits right
 vim.opt.termguicolors = true -- enabl 24-bit RGB color in the TUI

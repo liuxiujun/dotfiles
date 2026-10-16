@@ -8,6 +8,7 @@ return {
 	version = "*", -- 跟踪最新稳定版
 	dependencies = {
 		"nvim-tree/nvim-web-devicons", -- 文件图标
+		{ "famiu/bufdelete.nvim", cmd = { "Bdelete", "Bwipeout" } }, -- 安全删除 buffer，保留窗口布局并自动切到上一个标签
 	},
 	event = "VeryLazy",
 	keys = {
@@ -20,7 +21,12 @@ return {
 			mode = "buffers",
 			themable = true,
 			-- 关闭按钮、图标、名称等显示方式
-			close_command = "bdelete! %d", -- 关闭 buffer 的命令
+			close_command = function(bufnr)
+				require("bufdelete").bufdelete(bufnr, false)
+			end,
+			right_mouse_command = function(bufnr)
+				require("bufdelete").bufdelete(bufnr, false)
+			end,
 			left_mouse_command = "buffer %d", -- 左键切换到 buffer
 			middle_mouse_command = nil, -- 中键无操作
 
