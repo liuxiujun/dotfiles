@@ -6,6 +6,9 @@
 return {
     "akinsho/toggleterm.nvim",
     version = "*",
+    keys = {
+        { [[<C-\>]], desc = "Toggle Terminal" },
+    },
     config = function()
         local is_ok, toggleterm = pcall(require, "toggleterm")
         if not is_ok then

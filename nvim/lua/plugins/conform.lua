@@ -31,7 +31,7 @@ return {
             bash = { "shfmt" },
             c = { "clang-format" },
             cpp = { "clang-format" },
-            python = { "ruff" },
+            python = { "ruff_organize_imports", "ruff_format" },
             perl = { "perltidy" },
             go = { "goimports", "gofumpt" },
             -- vue = { "prettier", "eslint_d" },

@@ -1,3 +1,6 @@
+-- 启动耗时打点：起点（终点与显示在文件末尾的 VimEnter，与 vimrc 风格统一）
+local startup_t0 = vim.uv.hrtime()
+
 -- Options are automatically loaded before lazy.nvim startup
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
@@ -168,3 +171,14 @@ if vim.g.neovide then
 		vim.api.nvim_command("redraw!")
 	end, { desc = "Reset Neovide scale" })
 end
+
+-- 启动耗时回显：起点 → VimEnter（含插件加载与 UI 就绪，格式与 vimrc 保持一致）
+vim.api.nvim_create_autocmd("VimEnter", {
+	group = vim.api.nvim_create_augroup("nvim_startup_time", { clear = true }),
+	callback = function()
+		vim.schedule(function()
+			local ms = (vim.uv.hrtime() - startup_t0) / 1e6
+			vim.api.nvim_echo({ { string.format("⏱  startup %.0fms", ms), "Comment" } }, false, {})
+		end)
+	end,
+})

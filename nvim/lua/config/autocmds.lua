@@ -50,9 +50,6 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 -----------------------------------------------------------------
 --- LspAttach 回调：所有 LSP 功能快捷键在这里设置
 -----------------------------------------------------------------
--- 高亮相关的 augroup 只创建一次；光标停留时高亮符号，移动时清除
-local highlight_augroup = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
-local clear_highlight_augroup = vim.api.nvim_create_augroup("LspClearHighlight", { clear = true })
 -- 全局 vim.ui.select（gra / Code Action 弹窗）已由 plugins/telescope.lua (telescope-ui-select) 官方扩展统一接管
 
 -- 使用 Telescope 接管 LSP typeHierarchy（让 vim.lsp.buf.typehierarchy("supertypes" / "subtypes") 告别原生 Quickfix 窗口）
@@ -138,21 +135,33 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		-- 光标停留高亮同名符号
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
-		if client and client.server_capabilities.documentHighlightProvider then
+		if client and client:supports_method("textDocument/documentHighlight", ev.buf) then
+			local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight_" .. ev.buf, { clear = true })
 			vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 				buffer = ev.buf,
+				group = highlight_group,
 				callback = vim.lsp.buf.document_highlight,
-				group = highlight_augroup,
 			})
-			vim.api.nvim_create_autocmd("CursorMoved", {
+			vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
 				buffer = ev.buf,
+				group = highlight_group,
 				callback = vim.lsp.buf.clear_references,
-				group = clear_highlight_augroup,
+			})
+
+			-- 当 LSP 服务端断开时，自动清理当前 buffer 上的高亮 autocommand
+			vim.api.nvim_create_autocmd("LspDetach", {
+				buffer = ev.buf,
+				callback = function(detach_ev)
+					if detach_ev.data.client_id == ev.data.client_id then
+						vim.lsp.buf.clear_references()
+						vim.api.nvim_clear_autocmds({ group = highlight_group, buffer = ev.buf })
+					end
+				end,
 			})
 		end
 
 		-- 原生 LSP Inlay Hints（内联类型与参数名提示）：支持时默认开启，并提供 <leader>lh 随时开关
-		if client and client.server_capabilities.inlayHintProvider then
+		if client and client:supports_method("textDocument/inlayHint", ev.buf) then
 			vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
 			vim.keymap.set("n", "<leader>lh", function()
 				local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })

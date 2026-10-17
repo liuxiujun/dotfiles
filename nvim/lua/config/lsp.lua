@@ -101,8 +101,6 @@ vim.lsp.config("basedpyright", {
 				diagnosticSeverity = {
 					reportUndefinedVariable = "error",
 				},
-				-- 如果你希望禁用基于 pyright 的 import 组织（交给 ruff），可以保留
-				disableOrganizeImports = true,
 				-- 删除无效的 extraPaths，或者改用 Windows 路径（一般不需要）
 				-- extraPaths = {},
 
@@ -111,28 +109,6 @@ vim.lsp.config("basedpyright", {
 				reportUnknownMemberType = "none",
 				reportFunctionMemberAccess = "none",
 				reportAny = false,
-			},
-		},
-	},
-})
-
--- 配置 Ruff 内置语言服务器（负责 linting 和 formatting）
-vim.lsp.config("ruff", {
-	cmd = { "ruff", "server" },
-	filetypes = { "python" },
-	root_markers = { ".git", "pyproject.toml", "pyrightconfig.json", "ruff.toml", ".ruff.toml" },
-	capabilities = capabilities,
-	-- 可选：覆盖某些能力，避免与 pyright 重复
-	on_attach = function(client)
-		-- 禁用 hover 能力，让 basedpyright 提供更好的类型信息
-		-- （格式化统一走 conform 的 <leader>cf，不在这里挂保存时自动格式化）
-		client.server_capabilities.hoverProvider = false
-	end,
-	init_options = {
-		settings = {
-			-- 你可以在这里配置 ruff 的具体行为，也可以在项目根目录的 ruff.toml 或 pyproject.toml 中配置
-			lint = {
-				ignore = { "F821" },
 			},
 		},
 	},
@@ -232,7 +208,6 @@ vim.lsp.config("racket_langserver", {
 vim.lsp.enable({
 	"lua_ls",
 	"basedpyright",
-	"ruff",
 	"perlnavigator",
 	"bashls",
 	"ts_ls",

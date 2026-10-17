@@ -22,10 +22,11 @@ return {
             },
         },
     },
-    -- 2. mason-tool-installer: 插件会在nvim启动时自动检查并安装缺失的 Lsp Server, linter, formatter
+    -- 2. mason-tool-installer: 插件在后台检查并自动安装缺失的 Lsp Server, linter, formatter
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
         dependencies = { "mason-org/mason.nvim" },
+        event = "VeryLazy",
         opts = function()
             local ensure_installed = {
                 -- LSP（与 config/lsp.lua 的 vim.lsp.enable 对齐）
@@ -33,6 +34,7 @@ return {
                 "basedpyright",
                 "ruff",
                 "debugpy",
+                "js-debug-adapter",
                 "bash-language-server",
                 "perlnavigator",
                 "clangd",
@@ -55,8 +57,15 @@ return {
 
             return {
                 ensure_installed = ensure_installed,
-                auto_update = true,
-                run_on_start = true,
+                auto_update = false, -- 关闭每次启动时自动全量升级，需要升级时使用 :MasonToolsUpdate
+                run_on_start = true, -- 保留自动检查并安装缺失工具的功能
+                start_delay = 3000, -- 关键优化：延迟 3 秒后在后台静默执行，完全避开前台首屏交互
+                debounce_hours = 12, -- 关键优化：12 小时内最多执行一次，防止频繁开启新窗口重复扫描
+                integrations = {
+                    ["mason-lspconfig"] = false,
+                    ["mason-null-ls"] = false,
+                    ["mason-nvim-dap"] = false, -- 关键优化：防止启动时反向强制拉起 mason-nvim-dap
+                },
             }
         end,
     },
