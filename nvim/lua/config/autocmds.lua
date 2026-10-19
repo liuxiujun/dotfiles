@@ -47,12 +47,13 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 	end,
 })
 
------------------------------------------------------------------
---- LspAttach 回调：所有 LSP 功能快捷键在这里设置
------------------------------------------------------------------
--- 全局 vim.ui.select（gra / Code Action 弹窗）已由 plugins/telescope.lua (telescope-ui-select) 官方扩展统一接管
+------------------------------------------------------------------------------------
+--- LspAttach 回调：LSP 按键映射与高亮增强
+--- 注：Neovim 内置默认生效按键（无需重复绑定）：
+---   K (悬浮文档), gra (代码操作), grn (重命名), gri (实现), <C-s> (签名提示)
+------------------------------------------------------------------------------------
 
--- 使用 Telescope 接管 LSP typeHierarchy（让 vim.lsp.buf.typehierarchy("supertypes" / "subtypes") 告别原生 Quickfix 窗口）
+-- 使用 Telescope 接管 LSP typeHierarchy（查看父类/父接口）
 local function telescope_type_hierarchy_handler(title)
 	return function(_, result, ctx)
 		if not result or vim.tbl_isempty(result) then
@@ -63,7 +64,7 @@ local function telescope_type_hierarchy_handler(title)
 		local client = vim.lsp.get_client_by_id(ctx.client_id)
 		local encoding = client and client.offset_encoding or "utf-16"
 
-		-- 只有 1 个目标时直接秒跳（与 Telescope 的 gd / gri 行为保持一致）
+		-- 仅 1 个目标时直接跳转
 		if #result == 1 then
 			local item = result[1]
 			vim.lsp.util.show_document({
@@ -73,7 +74,7 @@ local function telescope_type_hierarchy_handler(title)
 			return
 		end
 
-		-- 多个目标时弹出带代码预览的 Telescope 窗口
+		-- 多个目标时弹出带预览的 Telescope 列表
 		local items = {}
 		for _, item in ipairs(result) do
 			local range = item.selectionRange or item.range
@@ -115,29 +116,39 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(ev)
 		local opts = { buffer = ev.buf, remap = false }
 
-		-- 1. 查引用（grr / Find Usages）：使用 Telescope 双栏带代码高亮上下文实时预览
+		-- 1. 跳转定义与声明（gd / gD）
+		-- gd：单定义直接秒跳，多定义弹出 Telescope 悬浮预览
+		vim.keymap.set("n", "gd", function()
+			require("telescope.builtin").lsp_definitions()
+		end, vim.tbl_extend("keep", opts, { desc = "Goto definition (Telescope)" }))
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, vim.tbl_extend("keep", opts, { desc = "Goto declaration" }))
+
+		-- 2. 查引用（grr / Find Usages）
 		vim.keymap.set("n", "grr", function()
 			require("telescope.builtin").lsp_references({ include_declaration = false, show_line = true })
-		end, vim.tbl_extend("keep", opts, { desc = "Goto references / Find Usages (Telescope)" }))
+		end, vim.tbl_extend("keep", opts, { desc = "Goto references (Telescope)" }))
 
-		-- 2. 类型继承树：查看父类/父接口（Java/C++ 常用）
-		vim.keymap.set("n", "grs", function()
-			vim.lsp.buf.typehierarchy("supertypes")
-		end, vim.tbl_extend("keep", opts, { desc = "Type hierarchy: Supertypes" }))
-
-		-- 3. 查类型定义（grt / gy）：多类型时使用 Telescope 代码预览
+		-- 3. 类型定义与继承树（grt / gy / grs）
 		vim.keymap.set("n", "grt", function()
 			require("telescope.builtin").lsp_type_definitions()
 		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope)" }))
 		vim.keymap.set("n", "gy", function()
 			require("telescope.builtin").lsp_type_definitions()
 		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope, alias)" }))
+        -- Java/C++ 常用
+		vim.keymap.set("n", "grs", function()
+			vim.lsp.buf.typehierarchy("supertypes")
+		end, vim.tbl_extend("keep", opts, { desc = "Type hierarchy: Supertypes" }))
 
-        -- 4. 将 gO 绑定为打开右侧树形大纲并聚焦光标
-        vim.keymap.set("n", "gO", "<cmd>Trouble symbols toggle focus=true<cr>", 
-            vim.tbl_extend("keep", opts, { desc = "Document Outline Tree (Trouble)" }))
+		-- 4. 文档符号大纲（gO）：使用 Trouble 渲染可折叠树形大纲
+		vim.keymap.set(
+			"n",
+			"gO",
+			"<cmd>Trouble symbols toggle focus=true<cr>",
+			vim.tbl_extend("keep", opts, { desc = "Document Outline Tree (Trouble)" })
+		)
 
-		-- 光标停留高亮同名符号
+		-- 5. 光标停留高亮同名符号（LspDetach 时自动注销清理）
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
 		if client and client:supports_method("textDocument/documentHighlight", ev.buf) then
 			local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight_" .. ev.buf, { clear = true })
@@ -152,7 +163,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 				callback = vim.lsp.buf.clear_references,
 			})
 
-			-- 当 LSP 服务端断开时，自动清理当前 buffer 上的高亮 autocommand
 			vim.api.nvim_create_autocmd("LspDetach", {
 				buffer = ev.buf,
 				callback = function(detach_ev)
@@ -164,13 +174,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			})
 		end
 
-		-- 原生 LSP Inlay Hints（内联类型与参数名提示）：支持时默认开启，并提供 <leader>lh 随时开关
+		-- 6. 内联类型与参数名提示（Inlay Hints）：支持时默认开启
 		if client and client:supports_method("textDocument/inlayHint", ev.buf) then
 			vim.lsp.inlay_hint.enable(true, { bufnr = ev.buf })
 			vim.keymap.set("n", "<leader>lh", function()
 				local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
 				vim.lsp.inlay_hint.enable(not enabled, { bufnr = ev.buf })
-			end, vim.tbl_extend("keep", opts, { desc = "Toggle LSP Inlay [H]ints" }))
+			end, vim.tbl_extend("keep", opts, { desc = "Toggle LSP Inlay Hints" }))
 		end
 	end,
 })
