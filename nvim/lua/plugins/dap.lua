@@ -90,12 +90,48 @@ return {
 			"theHamsta/nvim-dap-virtual-text",
 		},
 		keys = {
-			{ "<F5>", function() require("dap").continue() end, desc = "Debug: start/continue" },
-			{ "<F9>", function() require("dap").toggle_breakpoint() end, desc = "Debug: toggle breakpoint" },
-			{ "<F10>", function() require("dap").step_over() end, desc = "Debug: step over" },
-			{ "<F11>", function() require("dap").step_into() end, desc = "Debug: step into" },
-			{ "<F12>", function() require("dap").step_out() end, desc = "Debug: step out" },
-			{ "<leader>db", function() require("dap").toggle_breakpoint() end, desc = "Debug: toggle breakpoint" },
+			{
+				"<F5>",
+				function()
+					require("dap").continue()
+				end,
+				desc = "Debug: start/continue",
+			},
+			{
+				"<F9>",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "Debug: toggle breakpoint",
+			},
+			{
+				"<F10>",
+				function()
+					require("dap").step_over()
+				end,
+				desc = "Debug: step over",
+			},
+			{
+				"<F11>",
+				function()
+					require("dap").step_into()
+				end,
+				desc = "Debug: step into",
+			},
+			{
+				"<F12>",
+				function()
+					require("dap").step_out()
+				end,
+				desc = "Debug: step out",
+			},
+			{
+				"<leader>db",
+				function()
+					require("dap").toggle_breakpoint()
+				end,
+				desc = "Debug: toggle breakpoint",
+			},
 			{
 				"<leader>dB",
 				function()
@@ -103,10 +139,34 @@ return {
 				end,
 				desc = "Debug: conditional breakpoint",
 			},
-			{ "<leader>dc", function() require("dap").run_to_cursor() end, desc = "Debug: run to cursor" },
-			{ "<leader>dr", function() require("dap").repl.open() end, desc = "Debug: open REPL" },
-			{ "<leader>dl", function() require("dap").run_last() end, desc = "Debug: run last" },
-			{ "<leader>dx", function() require("dap").terminate() end, desc = "Debug: terminate" },
+			{
+				"<leader>dc",
+				function()
+					require("dap").run_to_cursor()
+				end,
+				desc = "Debug: run to cursor",
+			},
+			{
+				"<leader>dr",
+				function()
+					require("dap").repl.open()
+				end,
+				desc = "Debug: open REPL",
+			},
+			{
+				"<leader>dl",
+				function()
+					require("dap").run_last()
+				end,
+				desc = "Debug: run last",
+			},
+			{
+				"<leader>dx",
+				function()
+					require("dap").terminate()
+				end,
+				desc = "Debug: terminate",
+			},
 		},
 		config = function()
 			local dap = require("dap")
@@ -117,10 +177,10 @@ return {
 			-- 3.2 自定义断点与调试指示图标（Nerd Font 图标与语义化着色）
 			vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
 			local dap_icons = {
-                Stopped             = { "➜ ", "DiagnosticWarn", "DapStoppedLine" },
-                Breakpoint          = { "● ", "DiagnosticError" },
-                BreakpointCondition = { "○ ", "DiagnosticWarn" },
-                LogPoint            = { "◆ ", "DiagnosticInfo" },
+				Stopped = { "➜ ", "DiagnosticWarn", "DapStoppedLine" },
+				Breakpoint = { "● ", "DiagnosticError" },
+				BreakpointCondition = { "○ ", "DiagnosticWarn" },
+				LogPoint = { "◆ ", "DiagnosticInfo" },
 			}
 			for name, sign in pairs(dap_icons) do
 				vim.fn.sign_define("Dap" .. name, {
@@ -211,8 +271,22 @@ return {
 		ft = "python",
 		dependencies = { "mfussenegger/nvim-dap", "mason-org/mason.nvim" },
 		keys = {
-			{ "<leader>dpm", function() require("dap-python").test_method() end, desc = "Debug: Python test method", ft = "python" },
-			{ "<leader>dpc", function() require("dap-python").test_class() end, desc = "Debug: Python test class", ft = "python" },
+			{
+				"<leader>dpm",
+				function()
+					require("dap-python").test_method()
+				end,
+				desc = "Debug: Python test method",
+				ft = "python",
+			},
+			{
+				"<leader>dpc",
+				function()
+					require("dap-python").test_class()
+				end,
+				desc = "Debug: Python test class",
+				ft = "python",
+			},
 		},
 		config = function()
 			local dappy = require("dap-python")
@@ -238,7 +312,10 @@ return {
 					if cur_dir == "" then
 						cur_dir = vim.fn.getcwd()
 					end
-					local venvs = vim.fs.find({ ".venv", "venv" }, { upward = true, path = cur_dir, type = "directory" })
+					local venvs = vim.fs.find(
+						{ ".venv", "venv" },
+						{ upward = true, path = cur_dir, type = "directory" }
+					)
 					if #venvs > 0 then
 						local pyw = vim.fs.joinpath(venvs[1], "Scripts", "pythonw.exe")
 						if vim.fn.filereadable(pyw) == 1 then
@@ -307,8 +384,21 @@ return {
 			"nvim-neotest/nvim-nio",
 		},
 		keys = {
-			{ "<leader>dt", function() require("dapui").toggle() end, desc = "Debug: toggle UI" },
-			{ "<leader>de", function() require("dapui").eval() end, desc = "Debug: eval expression", mode = { "n", "v" } },
+			{
+				"<leader>dt",
+				function()
+					require("dapui").toggle()
+				end,
+				desc = "Debug: toggle UI",
+			},
+			{
+				"<leader>de",
+				function()
+					require("dapui").eval(nil, { enter = true })
+				end,
+				desc = "Debug: eval expression",
+				mode = { "n", "v" },
+			},
 			{
 				"<F8>",
 				function()

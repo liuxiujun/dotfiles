@@ -1,6 +1,15 @@
-[experimental]
-autoMemoryReclaim=gradual  
+[wsl2]
+# 开启镜像网络模式
 networkingMode=mirrored
+# 开启 DNS 隧道，使 DNS 解析通过 Windows 进行，完美兼容代理与 Fake-IP
 dnsTunneling=true
-firewall=true
-autoProxy=true
+# 关闭自动代理注入（避免与 TUN 虚拟网卡模式产生代理冲突）
+autoProxy=false
+# 关闭 Hyper-V 防火墙过滤，防止镜像网卡流量被拦截丢弃
+firewall=false
+
+[experimental]
+# 闲置时自动回收内存
+autoMemoryReclaim=gradual
+# 允许 WSL 访问 Windows 宿主机 127.0.0.1 上的服务
+hostAddressLoopback=true

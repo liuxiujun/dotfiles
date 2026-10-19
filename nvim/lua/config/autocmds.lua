@@ -133,6 +133,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			require("telescope.builtin").lsp_type_definitions()
 		end, vim.tbl_extend("keep", opts, { desc = "Goto type definition (Telescope, alias)" }))
 
+        -- 4. 将 gO 绑定为打开右侧树形大纲并聚焦光标
+        vim.keymap.set("n", "gO", "<cmd>Trouble symbols toggle focus=true<cr>", 
+            vim.tbl_extend("keep", opts, { desc = "Document Outline Tree (Trouble)" }))
+
 		-- 光标停留高亮同名符号
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
 		if client and client:supports_method("textDocument/documentHighlight", ev.buf) then
