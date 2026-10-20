@@ -117,6 +117,8 @@ vim.opt.smartcase = true -- but make it case sensitive if an uppercase is entere
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+-- 创建占位 augroup，防止 nvim-tree 执行 `autocmd! FileExplorer *` 时触发 E216 错误并污染 vim.v.errmsg
+vim.api.nvim_create_augroup("FileExplorer", { clear = false })
 
 -- Diagnostic
 -- :help vim.diagnostic.Opts

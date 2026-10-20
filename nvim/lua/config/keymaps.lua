@@ -27,9 +27,9 @@ vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", opts)
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", opts)
 
 -- custom
-vim.keymap.set("n", "<leader>s", ":w<CR>", { noremap = true, silent = true, desc="[S]ave" })
-vim.keymap.set("n", "<leader>x", ":q<CR>", { noremap = true, silent = true, desc="Close" })
-vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, desc="Close All" })
+vim.keymap.set("n", "<leader>s", ":w<CR>", { noremap = true, silent = true, desc = "[S]ave" })
+vim.keymap.set("n", "<leader>x", ":q<CR>", { noremap = true, silent = true, desc = "Close" })
+vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, desc = "Close All" })
 
 -- Buffer（原生命令；BufferLine 专属按键见 plugins/bufferline.lua）
 -- <C-^> (:b # 的快捷键)  快速切换至上次缓冲区
@@ -37,8 +37,8 @@ vim.keymap.set("n", "<leader>X", ":qa<CR>", { noremap = true, silent = true, des
 -- <Tab> 与 <C-i> 在终端里同键码，映射 <Tab> 会导致 jumplist 前进跳转失效
 vim.keymap.set("n", "<leader>bd", "<cmd>Bdelete<CR>", { desc = "Close buffer (switch to previous)" })
 vim.keymap.set("n", "<leader>bD", "<cmd>Bdelete!<CR>", { desc = "Force close buffer" })
-vim.keymap.set('n', '<leader>b0', ':bfirst<CR>', { desc = "First buffer" })
-vim.keymap.set('n', '<leader>b$', ':blast<CR>', { desc = "Last buffer" })
+vim.keymap.set("n", "<leader>b0", ":bfirst<CR>", { desc = "First buffer" })
+vim.keymap.set("n", "<leader>b$", ":blast<CR>", { desc = "Last buffer" })
 
 -- For nvim-surround
 --     Old text                    Command         New text
@@ -53,27 +53,59 @@ vim.keymap.set('n', '<leader>b$', ':blast<CR>', { desc = "Last buffer" })
 -- For diagnostic
 -- vim.keymap.set("n", "]d", function() vim.diagnostic.goto_next() end, { desc = "Next diagnostic" })
 -- vim.keymap.set("n", "[d", function() vim.diagnostic.goto_prev() end, { noremap = true, silent = true, desc = "Previous diagnostic" } )
-vim.keymap.set("n", "<leader>cd", vim.diagnostic.open_float, { noremap = true, silent = true, desc = "Show line diagnostics" } )
-vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, { noremap = true, silent = true, desc = "Send diagnostics to loclist" } )
+vim.keymap.set(
+	"n",
+	"<leader>cd",
+	vim.diagnostic.open_float,
+	{ noremap = true, silent = true, desc = "Show line diagnostics" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>cq",
+	vim.diagnostic.setloclist,
+	{ noremap = true, silent = true, desc = "Send diagnostics to loclist" }
+)
 
 -- LSP Code Actions & Rename (与 gra / grn 对齐的全局 Leader 快捷键)
-vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true, desc = "[Code] [A]ction" })
-vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, { noremap = true, silent = true, desc = "Rename symbol" })
+vim.keymap.set({ "n", "v" }, "<leader>ca", function()
+	vim.lsp.buf.code_action({
+		filter = function(action)
+			return not action.disabled
+		end,
+	})
+end, { noremap = true, silent = true, desc = "[Code] [A]ction" })
 
--- Manage Lsp 
-vim.keymap.set("n", "<leader>lC", "<cmd>checkhealth vim.lsp<CR>", { noremap = true, silent = true, desc = "[C]heckhealth (LspInfo)" })
+-- 行内实时模态重命名（与 IDEA / IdeaVim 行为一致：触发时直接进入 Normal 模式，保持光标原位，支持 ciw/A/I 等并实时预览）
+vim.keymap.set("n", "<leader>cr", function()
+	require("live-rename").rename()
+end, { desc = "Rename symbol (Live inline)" })
+vim.keymap.set("n", "grn", function()
+	require("live-rename").rename()
+end, { desc = "Rename symbol (Live inline)" })
+
+-- Manage Lsp
+vim.keymap.set(
+	"n",
+	"<leader>lC",
+	"<cmd>checkhealth vim.lsp<CR>",
+	{ noremap = true, silent = true, desc = "[C]heckhealth (LspInfo)" }
+)
 -- vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { noremap = true, silent = true, desc = "Start LSP server (if not started )" })
-vim.keymap.set("n", "<leader>lR", 
-    function() 
-        local bufnr = vim.api.nvim_get_current_buf()
-        for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-            client:stop()
-            vim.lsp.start(client.config, { bufnr = bufnr })
-        end 
-        vim.notify("LSP clients restarted", vim.log.levels.INFO)
-    end , { desc = "[R]estart LSP clients for current buffer" })
+vim.keymap.set("n", "<leader>lR", function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+		client:stop()
+		vim.lsp.start(client.config, { bufnr = bufnr })
+	end
+	vim.notify("LSP clients restarted", vim.log.levels.INFO)
+end, { desc = "[R]estart LSP clients for current buffer" })
 -- vim.keymap.set("n", "<leader>lS", "<cmd>LspStop<CR>", { noremap = true, silent = true, desc = "Stop LSP server" })
-vim.keymap.set("n", "<leader>lL", "<cmd>lua vim.cmd('edit ' .. vim.lsp.get_log_path())<CR>", { noremap = true, silent = true, desc = "Show LSP [L]og" })
+vim.keymap.set(
+	"n",
+	"<leader>lL",
+	"<cmd>lua vim.cmd('edit ' .. vim.lsp.get_log_path())<CR>",
+	{ noremap = true, silent = true, desc = "Show LSP [L]og" }
+)
 
 -----------------
 -- Visual mode --
@@ -84,7 +116,6 @@ vim.keymap.set("v", "<", "<gv", opts)
 vim.keymap.set("v", ">", ">gv", opts)
 
 -- treesitter 文本对象与函数跳转（am/im/ac/ic、]m/]M/[m/[M）见 plugins/treesitter.lua
-
 
 -------------------
 -- Terminal mode --

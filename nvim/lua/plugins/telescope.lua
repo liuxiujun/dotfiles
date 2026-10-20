@@ -10,6 +10,23 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 		event = "VeryLazy",
+		opts = function()
+			local actions = require("telescope.actions")
+			return {
+				defaults = {
+					mappings = {
+						i = {
+							["<C-j>"] = actions.move_selection_next, -- 插入模式下 Ctrl+j 向下移动
+							["<C-k>"] = actions.move_selection_previous, -- 插入模式下 Ctrl+k 向上移动
+						},
+						n = {
+							["<C-j>"] = actions.move_selection_next,
+							["<C-k>"] = actions.move_selection_previous,
+						},
+					},
+				},
+			}
+		end,
 		cmd = "Telescope",
 		keys = {
 			{

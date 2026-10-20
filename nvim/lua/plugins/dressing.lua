@@ -1,8 +1,8 @@
 --------------------------------------------------------------------------------
 -- 插件名称：stevearc/dressing.nvim
 -- 功能用途：统一接管 Neovim 的微型 UI 表单（接管 vim.ui.input 与 vim.ui.select）
---   1. grn (<leader>cr) 重命名：在光标处弹出圆角悬浮卡片
---   2. gra (<leader>ca) 快速修复：通过 Telescope 下拉式卡片展示修复选项
+--   1. gra (<leader>ca) 快速修复：接管 vim.ui.select，通过 Telescope 下拉式卡片展示修复选项
+--   2. 各类插件输入框：接管 vim.ui.input，在需要输入时弹出圆角悬浮卡片
 --------------------------------------------------------------------------------
 return {
 	"stevearc/dressing.nvim",
