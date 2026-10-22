@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------
 -- 插件名称：stevearc/overseer.nvim
 -- 功能用途：异步任务运行与构建管理器（类似 VSCode Tasks，支持运行脚本、编译构建与查看任务输出面板）
--- 常用按键：<leader>rr (选择任务运行)、<leader>rt (开关任务输出面板)、<leader>ra (运行单条 Shell 命令)
+-- 常用按键：<leader>rr (选择任务)、<leader>rl (重跑上次任务)、<leader>rx (停止任务)、<leader>rt (开关任务面板)、<leader>rc (清理已完成)
 --------------------------------------------------------------------------------
 return {
 	"stevearc/overseer.nvim",
@@ -10,13 +10,97 @@ return {
 		"OverseerToggle",
 		"OverseerShell",
 		"OverseerTaskAction",
-		"OverseerInfo",
 	},
 	keys = {
-		{ "<leader>rr", "<cmd>OverseerRun<cr>", desc = "Run a task from a template" },
-		{ "<leader>rt", "<cmd>OverseerToggle<cr>", desc = "Toggle the overseer windows" },
-		{ "<leader>ra", "<cmd>OverseerShell<cr>", desc = "Run a shell command as an overseer task" },
-		{ "<leader>rc", "<cmd>OverseerTaskAction<cr>", desc = "Select a task to run an action on" },
+		-- 任务运行与管理
+		{ "<leader>rr", "<cmd>OverseerRun<cr>", desc = "Run task from template" },
+		{
+			"<leader>rl",
+			function()
+				local overseer = require("overseer")
+				local tasks = overseer.list_tasks({ recent_first = true })
+				if vim.tbl_isempty(tasks) then
+					vim.notify("No recent task to re-run", vim.log.levels.WARN)
+				else
+					overseer.run_action(tasks[1], "restart")
+				end
+			end,
+			desc = "Re-run last task",
+		},
+		{
+			"<leader>rx",
+			function()
+				local overseer = require("overseer")
+				local running = overseer.list_tasks({ status = "RUNNING" })
+				if #running == 0 then
+					vim.notify("No running tasks to stop", vim.log.levels.WARN)
+				elseif #running == 1 then
+					running[1]:stop()
+					vim.notify("Stopped task: " .. running[1].name, vim.log.levels.INFO)
+				else
+					overseer.task_action()
+				end
+			end,
+			desc = "Stop running task",
+		},
+		{
+			"<leader>rX",
+			function()
+				local overseer = require("overseer")
+				local running = overseer.list_tasks({ status = "RUNNING" })
+				if #running == 0 then
+					vim.notify("No running tasks to stop", vim.log.levels.WARN)
+				else
+					for _, task in ipairs(running) do
+						task:stop()
+					end
+					vim.notify(string.format("Stopped %d running task(s)", #running), vim.log.levels.INFO)
+				end
+			end,
+			desc = "Stop ALL running tasks",
+		},
+		{
+			"<leader>rt",
+			function()
+				local ok_dapui, dapui = pcall(require, "dapui")
+				if ok_dapui then
+					dapui.close()
+				end
+				require("overseer").toggle()
+			end,
+			desc = "Toggle task list panel (close dap-ui)",
+		},
+		{
+			"<leader>ro",
+			function()
+				local overseer = require("overseer")
+				local tasks = overseer.list_tasks({ recent_first = true })
+				if vim.tbl_isempty(tasks) then
+					vim.notify("No tasks found", vim.log.levels.WARN)
+				else
+					tasks[1]:open_output("float")
+				end
+			end,
+			desc = "Open last task output (Float)",
+		},
+		{ "<leader>rb", "<cmd>OverseerRun BUILD<cr>", desc = "Run build task" },
+		{ "<leader>ra", "<cmd>OverseerShell<cr>", desc = "Run shell command as task" },
+		{ "<leader>rq", "<cmd>OverseerTaskAction<cr>", desc = "Select a task action" },
+		{
+			"<leader>rc",
+			function()
+				local overseer = require("overseer")
+				local count = 0
+				for _, task in ipairs(overseer.list_tasks()) do
+					if task:is_complete() then
+						task:dispose()
+						count = count + 1
+					end
+				end
+				vim.notify(string.format("Cleared %d completed task(s)", count), vim.log.levels.INFO)
+			end,
+			desc = "Clear completed tasks",
+		},
 	},
 	dependencies = {
 		"nvim-telescope/telescope.nvim",
@@ -56,6 +140,28 @@ return {
 			sort = function(a, b)
 				return require("overseer.task_list").default_sort(a, b)
 			end,
+			-- 任务面板内部的极速操作按键
+			keymaps = {
+				["?"] = "keymap.show_help",
+				["g?"] = "keymap.show_help",
+				["<CR>"] = "keymap.run_action",
+				["x"] = { "keymap.run_action", opts = { action = "stop" }, desc = "Stop task" },
+				["s"] = { "keymap.run_action", opts = { action = "stop" }, desc = "Stop task" },
+				["<C-c>"] = { "keymap.run_action", opts = { action = "stop" }, desc = "Stop task" },
+				["r"] = { "keymap.run_action", opts = { action = "restart" }, desc = "Restart task" },
+				["w"] = { "keymap.run_action", opts = { action = "watch" }, desc = "Watch on save" },
+				["dd"] = { "keymap.run_action", opts = { action = "dispose" }, desc = "Dispose task" },
+				["o"] = "keymap.open",
+				["<C-f>"] = { "keymap.open", opts = { dir = "float" }, desc = "Open task output in float" },
+				["<C-v>"] = { "keymap.open", opts = { dir = "vsplit" }, desc = "Open task output in vsplit" },
+				["<C-s>"] = { "keymap.open", opts = { dir = "split" }, desc = "Open task output in split" },
+				["p"] = "keymap.toggle_preview",
+				["{"] = "keymap.prev_task",
+				["}"] = "keymap.next_task",
+				["<C-k>"] = "keymap.scroll_output_up",
+				["<C-j>"] = "keymap.scroll_output_down",
+				["q"] = { "<cmd>close<cr>", desc = "Close task list" },
+			},
 		},
 		-- Custom actions for tasks. See :help overseer-actions
 		actions = {},
@@ -88,6 +194,8 @@ return {
 				"on_exit_set_status",
 				"on_complete_notify",
 				{ "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
+                -- 只要任务启动，如果底部窗口未开就自动停靠展开，且 focus = false 绝不抢走代码光标
+                { "open_output", direction = "dock", on_start = "always", focus = false },
 			},
 			-- Tasks from tasks.json use these components
 			default_vscode = {

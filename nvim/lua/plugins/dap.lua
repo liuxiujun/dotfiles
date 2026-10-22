@@ -38,11 +38,6 @@ local function debugpy_python()
 	end
 
 	if vim.fn.has("win32") == 1 then
-		-- Windows 下优先使用 pythonw.exe 运行 debugpy 适配器，彻底杜绝弹出 cmd/控制台黑框
-		local pythonw = join_paths(debugpy, "venv", "Scripts", "pythonw.exe")
-		if vim.fn.filereadable(pythonw) == 1 then
-			return pythonw
-		end
 		return join_paths(debugpy, "venv", "Scripts", "python.exe")
 	end
 
@@ -180,6 +175,7 @@ return {
 				Stopped = { "➜ ", "DiagnosticWarn", "DapStoppedLine" },
 				Breakpoint = { "● ", "DiagnosticError" },
 				BreakpointCondition = { "○ ", "DiagnosticWarn" },
+				BreakpointRejected = { " ", "DiagnosticWarn" }, -- 断点被调试器拒绝/未挂载成功（VS Code 中的空心/不可用断点）
 				LogPoint = { "◆ ", "DiagnosticInfo" },
 			}
 			for name, sign in pairs(dap_icons) do
@@ -249,9 +245,14 @@ return {
 						port = 9229,
 						cwd = "${workspaceFolder}",
 						sourceMaps = true,
+						restart = true,
 						skipFiles = {
 							"<node_internals>/**",
 							"node_modules/**",
+						},
+						resolveSourceMapLocations = {
+							"${workspaceFolder}/**",
+							"!**/node_modules/**",
 						},
 					},
 				}
@@ -292,44 +293,7 @@ return {
 			local dappy = require("dap-python")
 			dappy.setup(debugpy_python(), {
 				console = "internalConsole",
-				-- console = "integratedTerminal",
 			})
-
-			if vim.fn.has("win32") == 1 then
-				-- Windows 环境下：优先使用虚拟环境中的 pythonw.exe，彻底消灭调试时弹出的空黑框
-				dappy.resolve_python = function()
-					-- 1. 优先检查当前激活的环境变量 ($VIRTUAL_ENV)
-					local venv_env = os.getenv("VIRTUAL_ENV")
-					if venv_env and venv_env ~= "" then
-						local pyw = vim.fs.joinpath(venv_env, "Scripts", "pythonw.exe")
-						if vim.fn.filereadable(pyw) == 1 then
-							return pyw
-						end
-					end
-
-					-- 2. 向上递归搜索当前文件目录或工作目录下的 .venv / venv
-					local cur_dir = vim.fn.expand("%:p:h")
-					if cur_dir == "" then
-						cur_dir = vim.fn.getcwd()
-					end
-					local venvs = vim.fs.find(
-						{ ".venv", "venv" },
-						{ upward = true, path = cur_dir, type = "directory" }
-					)
-					if #venvs > 0 then
-						local pyw = vim.fs.joinpath(venvs[1], "Scripts", "pythonw.exe")
-						if vim.fn.filereadable(pyw) == 1 then
-							return pyw
-						end
-					end
-
-					-- 3. 单文件运行（无项目虚拟环境）：优先使用全局 pythonw.exe 彻底杜绝控制台黑框
-					if vim.fn.exepath("pythonw") ~= "" then
-						return "pythonw"
-					end
-					return "python"
-				end
-			end
 
 			-- 精炼定制 Python configurations（与全局 REPL 控制台及常用调试场景对齐）
 			local dap = require("dap")
@@ -387,6 +351,10 @@ return {
 			{
 				"<leader>dt",
 				function()
+					local ok_overseer, overseer = pcall(require, "overseer")
+					if ok_overseer then
+						overseer.close()
+					end
 					require("dapui").toggle()
 				end,
 				desc = "Debug: toggle UI",
@@ -434,33 +402,29 @@ return {
 				},
 			})
 
-			-- 调试会话建立时：自动收起 nvim-tree（避免与左侧面板冲突），并展开 dap-ui
-			local nvim_tree_was_open = false
-			dap.listeners.after.event_initialized["dapui_config"] = function()
+			local function close_colliding_sidebars()
 				local ok_tree, tree_api = pcall(require, "nvim-tree.api")
 				if ok_tree and tree_api.tree.is_visible() then
-					nvim_tree_was_open = true
 					tree_api.tree.close()
-				else
-					nvim_tree_was_open = false
 				end
+				local ok_overseer, overseer = pcall(require, "overseer")
+				if ok_overseer then
+					overseer.close()
+				end
+			end
+
+			-- 调试会话建立时：自动收起 nvim-tree 与 overseer 窗口（互斥），展开 dap-ui
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				close_colliding_sidebars()
 				dapui.open()
 			end
-
-			-- 调试会话结束时：自动收起 dap-ui，若调试前打开过 nvim-tree 则自动恢复
-			local function restore_ui()
+			-- 调试结束/退出时：自动关闭 dap-ui，恢复干净的编辑区
+			dap.listeners.before.event_terminated["dapui_config"] = function()
 				dapui.close()
-				if nvim_tree_was_open then
-					local ok_tree, tree_api = pcall(require, "nvim-tree.api")
-					if ok_tree then
-						tree_api.tree.open()
-					end
-					nvim_tree_was_open = false
-				end
 			end
-
-			dap.listeners.before.event_terminated["dapui_config"] = restore_ui
-			dap.listeners.before.event_exited["dapui_config"] = restore_ui
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				dapui.close()
+			end
 		end,
 	},
 
