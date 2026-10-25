@@ -34,6 +34,9 @@ vim.filetype.add({
 	},
 })
 
+-- 禁用 Neovim 内置的 editorconfig 解析器，避免因行内注释报错
+vim.g.editorconfig = false
+
 -- 代码折叠（Neovim 0.10+ 原生彩色折叠，替代 nvim-ufo）：
 -- 具体 foldmethod=expr 由 treesitter.lua 在 FileType 时按需启用
 vim.opt.foldlevel = 99

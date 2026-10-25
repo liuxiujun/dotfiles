@@ -52,6 +52,31 @@ local function js_debug_adapter_path()
 	return join_paths(pkg, "js-debug", "src", "dapDebugServer.js")
 end
 
+local function delve_path()
+	-- 1. 优先定位 Mason 包内的原生二进制 dlv.exe（避免使用 Windows 下 uv.spawn 无法执行的 dlv.cmd 包装脚本）
+	local delve = mason_package_path("delve")
+	if delve then
+		local dlv_bin = vim.fn.has("win32") == 1 and join_paths(delve, "dlv.exe") or join_paths(delve, "dlv")
+		if vim.fn.filereadable(dlv_bin) == 1 then
+			return dlv_bin
+		end
+	end
+
+	-- 2. 检查 ~/go/bin 目录
+	local go_bin = vim.fn.expand("~/go/bin/dlv" .. (vim.fn.has("win32") == 1 and ".exe" or ""))
+	if vim.fn.filereadable(go_bin) == 1 then
+		return go_bin
+	end
+
+	-- 3. 检查系统全局 PATH（但排除 .cmd/.bat 包装脚本，因为 libuv 必须执行原生 .exe）
+	local exepath = vim.fn.exepath("dlv")
+	if exepath ~= "" and not exepath:match("%.cmd$") and not exepath:match("%.bat$") then
+		return exepath
+	end
+
+	return "dlv"
+end
+
 return {
 	-- ========================================================================
 	-- 2. 外部调试器安装集成 (mason-nvim-dap)
@@ -68,6 +93,7 @@ return {
 					require("mason-nvim-dap").default_setup(config)
 				end,
 				python = function() end, -- 禁用 mason-nvim-dap 对 python 的默认配置，由 nvim-dap-python 独占管理
+				delve = function() end, -- 禁用 mason-nvim-dap 对 delve 的默认配置，由 nvim-dap-go 独占管理
 			},
 		},
 	},
@@ -438,5 +464,31 @@ return {
 			"nvim-treesitter/nvim-treesitter",
 		},
 		opts = {},
+	},
+	-- ========================================================================
+	-- 7. Go 专属适配与测试扩展 (nvim-dap-go 官方最佳实践)
+	-- ========================================================================
+	{
+		"leoluz/nvim-dap-go",
+		ft = "go",
+		dependencies = { "mfussenegger/nvim-dap" },
+		keys = {
+			{
+				"<leader>dgt",
+				function()
+					require("dap-go").debug_test()
+				end,
+				desc = "Debug: Go test under cursor",
+				ft = "go",
+			},
+		},
+		config = function()
+			require("dap-go").setup({
+				delve = {
+					path = delve_path(),
+					initialize_timeout_sec = 20,
+				},
+			})
+		end,
 	},
 }

@@ -113,12 +113,45 @@ vim.lsp.config("basedpyright", {
 		},
 	},
 })
-
+-- 获取 Mason 安装的 vue-language-server 路径（Windows 兼容路径）
+local vue_language_server_path = vim.fs.joinpath(
+    vim.fn.stdpath("data"),
+    "mason",
+    "packages",
+    "vue-language-server",
+    "node_modules",
+    "@vue",
+    "language-server"
+)
 vim.lsp.config("ts_ls", {
-	cmd = { "typescript-language-server", "--stdio" },
-	filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
-	root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
-	capabilities = capabilities,
+    cmd = { "typescript-language-server", "--stdio" },
+    filetypes = { "typescript", "javascript", "typescriptreact", "javascriptreact", "vue" },
+    root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+    capabilities = capabilities,
+    init_options = {
+        -- 关闭后台自动在线下载 @types，避免后台继续暗中发网络请求
+        disableAutomaticTypingAcquisition = true,
+        plugins = {
+            {
+                name = "@vue/typescript-plugin",
+                location = vue_language_server_path,
+                languages = { "vue" },
+            },
+        },
+    },
+})
+
+vim.lsp.config("volar", {
+    cmd = { "vue-language-server", "--stdio" },
+    filetypes = { "vue" },
+    root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+    capabilities = capabilities,
+    init_options = {
+        vue = {
+            -- 启用混合模式，TS 逻辑全权交由上面的 ts_ls 接管
+            hybridMode = true,
+        },
+    },
 })
 
 -- Neovim 运行时与插件类型提示已由 plugins/lazydev.lua 按需接管，
@@ -211,6 +244,7 @@ vim.lsp.enable({
 	"perlnavigator",
 	"bashls",
 	"ts_ls",
+    "volar",
 	"clangd",
 	"gopls",
 	"intelephense",

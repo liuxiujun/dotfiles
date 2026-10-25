@@ -39,6 +39,7 @@ return {
                 "perlnavigator",
                 "clangd",
                 "typescript-language-server", -- ts_ls
+                "vue-language-server", -- Volar 
                 "intelephense",               -- php
                 -- Formatters / Linters（与 conform.nvim 的 formatters_by_ft 对齐）
                 "stylua",
@@ -52,7 +53,7 @@ return {
 
             -- 仅当当前环境存在 go 编译器时，才自动安装 Go 相关的工具
             if vim.fn.executable("go") == 1 then
-                vim.list_extend(ensure_installed, { "gopls", "goimports", "gofumpt" })
+                vim.list_extend(ensure_installed, { "gopls", "goimports", "gofumpt", "delve" })
             end
 
             return {
