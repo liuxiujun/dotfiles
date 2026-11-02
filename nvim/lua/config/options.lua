@@ -65,8 +65,8 @@ if vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION
 			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
 		},
 		paste = {
-			["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-			["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+            ["+"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
+            ["*"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
 		},
 	}
 elseif system.is_windows or system.is_wsl then
