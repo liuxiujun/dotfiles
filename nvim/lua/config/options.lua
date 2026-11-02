@@ -52,43 +52,32 @@ vim.opt.fillchars = {
 	eob = " ",
 }
 
--- Clipboard
--- Hint: use `:h <option>` to figure out the meaning if needed
-vim.opt.clipboard = "unnamedplus" -- use system clipboard
-
--- SSH 远程会话：使用 Neovim 0.10+ 原生内置的 OSC52 剪贴板（替代 ojroques/nvim-osc52 插件）
+-- ============================================================================
+-- 剪贴板配置
+-- (Windows / WSL / Linux 桌面无需任何代码，Neovim 会自动识别 win32yank/wl-copy/xclip)
+-- ============================================================================
+vim.opt.clipboard = "unnamedplus"
 if vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil then
+    -- 仅在 SSH 远程会话下启用：
+    --    - Copy (y): 使用 Neovim 0.10+ 原生 OSC 52 单向推送到本地终端剪贴板（安全且受 WezTerm 支持）
+    --    - Paste (p): 回退为读取 Neovim 内部寄存器，坚决不向终端发送会被拦截的读查询，彻底杜绝 10 秒卡死
+    --    - 跨机粘贴提示：从本地电脑往远程粘贴，请使用终端原生快捷键 <Ctrl+Shift+V>
 	vim.g.clipboard = {
-		name = "OSC 52",
+		name = "OSC 52 (Safe Remote)",
 		copy = {
 			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
 			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
 		},
 		paste = {
-            ["+"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
-            ["*"] = function() return vim.split(vim.fn.getreg('"'), "\n") end,
+			["+"] = function()
+				return { vim.fn.getreg('"', 1, true), vim.fn.getregtype('"') }
+			end,
+			["*"] = function()
+				return { vim.fn.getreg('"', 1, true), vim.fn.getregtype('"') }
+			end,
 		},
 	}
-elseif system.is_windows or system.is_wsl then
-	if vim.fn.executable("win32yank.exe") == 1 then
-		vim.g.clipboard = {
-			name = "win32yank",
-			copy = { ["+"] = "win32yank.exe -i --crlf", ["*"] = "win32yank.exe -i --crlf" },
-			paste = { ["+"] = "win32yank.exe -o --lf", ["*"] = "win32yank.exe -o --lf" },
-			cache_enabled = 0,
-		}
-	else
-		vim.notify("📋 win32yank not found, clipboard may not work on Windows/WSL", vim.log.levels.INFO)
-	end
 end
-
--- set terminal (windows)
--- if system.is_windows then
--- 	vim.opt.shell = "pwsh"
--- 	vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
--- 	vim.opt.shellquote = ""
--- 	vim.opt.shellxquote = ""
--- end
 
 -- Mouse
 vim.opt.mouse = "a" -- allow the mouse to be used in Nvim
