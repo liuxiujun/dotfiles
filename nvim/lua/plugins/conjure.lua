@@ -7,7 +7,7 @@
 -- 完整列表见 :h conjure-mappings
 return {
     "olical/conjure",
-    ft = { "racket", "scheme", "clojure", "fennel", "janet" },
+    ft = { "racket", "scheme", "clojure", "fennel", "janet", "javascript", "typescript" },
     init = function()
         -- Windows 修复：conjure 的 racket 客户端把文件路径原样拼进 ",enter <path>"（auto_enter），
         -- 而 Racket 读取器把 \ 当转义符，C:\Users\... 会被读成 C:Users... 导致 "unknown module"。
