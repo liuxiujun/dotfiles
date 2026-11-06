@@ -194,8 +194,8 @@ return {
 				"on_exit_set_status",
 				"on_complete_notify",
 				{ "on_complete_dispose", require_view = { "SUCCESS", "FAILURE" } },
-                -- 只要任务启动，如果底部窗口未开就自动停靠展开，且 focus = false 绝不抢走代码光标
-                { "open_output", direction = "dock", on_start = "always", focus = false },
+				-- 只要任务启动，如果底部窗口未开就自动停靠展开，且 focus = false 绝不抢走代码光标
+				{ "open_output", direction = "dock", on_start = "always", focus = false },
 			},
 			-- Tasks from tasks.json use these components
 			default_vscode = {
@@ -234,4 +234,28 @@ return {
 			},
 		},
 	},
+	config = function(_, opts)
+		local overseer = require("overseer")
+		overseer.setup(opts)
+		-- 注册全局自定义模板
+		overseer.register_template({
+			name = "Go: Run Current File",
+			condition = { filetype = { "go" } },
+			builder = function()
+				return {
+					cmd = { "go", "run", vim.fn.expand("%:p") },
+				}
+			end,
+		})
+		overseer.register_template({
+			name = "Go: Run Current Package",
+			condition = { filetype = { "go" } },
+			builder = function()
+				return {
+					cmd = { "go", "run", "." },
+					cwd = vim.fn.expand("%:p:h"),
+				}
+			end,
+		})
+	end,
 }

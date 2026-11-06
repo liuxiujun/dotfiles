@@ -16,20 +16,23 @@ return {
 		vim.g["conjure#client#racket#stdio#auto_enter"] = false
         -- Visual 模式下同样使用 \ee 执行选中代码（替代默认的大写 \E）
         vim.g["conjure#mapping#eval_visual"] = "ee"
-		vim.g["conjure#mapping#eval_visual"] = "ee"
 	end,
 	config = function()
 		-- 1. 覆写 eval-file（\ef）：",require-reloadable <path>" 有同样的反斜杠问题，
 		--    发送前把路径转成正斜杠（Racket 在 Windows 上完全接受正斜杠路径）
-		local client = require("conjure.client.racket.stdio")
-		client["eval-file"] = function(opts)
-			return client["eval-str"](vim.tbl_extend("force", opts, {
+		local racket_client = require("conjure.client.racket.stdio")
+		racket_client["eval-file"] = function(opts)
+			return racket_client["eval-str"](vim.tbl_extend("force", opts, {
 				code = ",require-reloadable " .. opts["file-path"]:gsub("\\", "/"),
 			}))
 		end
 
         -- 2. 补齐 JavaScript 客户端遗漏的 `var` 变量声明 AST 节点
         local js_client = require("conjure.client.javascript.stdio")
+        -- 【核心配置】：清空 on-load，打开 JS/TS 文件时不启动后台 Node 进程
+        -- 想用 REPL 时，在 buffer 内按 `\cs` (Client Start) 即可手动启动
+        js_client["on-load"] = function() end
+
         local orig_form_node = js_client["form-node?"]
         js_client["form-node?"] = function(node)
             return node:type() == "variable_declaration" or orig_form_node(node)
