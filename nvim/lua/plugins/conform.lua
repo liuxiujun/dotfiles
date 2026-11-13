@@ -42,6 +42,7 @@ return {
 			scss = { "prettier" },
 			json = { "prettier" },
 			racket = { "raco_fmt" },
+			fsharp = { "fantomas" },
 		},
 		-- The options you set here will be merged with the builtin formatters.
 		-- You can also define any custom formatters here.

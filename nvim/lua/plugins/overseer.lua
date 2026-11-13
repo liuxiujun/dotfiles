@@ -257,5 +257,26 @@ return {
 				}
 			end,
 		})
+		-- 运行 F# 脚本 (.fsx)
+		overseer.register_template({
+			name = "F#: Run Script (FSI)",
+			condition = { filetype = { "fsharp" } },
+			builder = function()
+				return {
+					cmd = { "dotnet", "fsi", vim.fn.expand("%:p") },
+				}
+			end,
+		})
+		-- 运行整个 F# 项目
+		overseer.register_template({
+			name = "F#: Run Project",
+			condition = { filetype = { "fsharp" } },
+			builder = function()
+				return {
+					cmd = { "dotnet", "run" },
+					cwd = vim.fn.expand("%:p:h"),
+				}
+			end,
+		})
 	end,
 }
