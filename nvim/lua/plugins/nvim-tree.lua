@@ -22,6 +22,8 @@ return {
 			},
 			renderer = {
 				group_empty = true,
+				highlight_git = "all",
+				special_files = {},
 				icons = {
 					show = {
 						git = true,
@@ -50,13 +52,6 @@ return {
 		})
 	end,
 	keys = {
-		-- {
-		-- 	"<leader>e",
-		-- 	function()
-		-- 		local api = require("nvim-tree.api").tree.toggle({ focus = false })
-		-- 	end,
-		--           desc = "Toggle [E]xplorer without focus",
-		-- },
 		{ "<leader>e", "<cmd>NvimTreeToggle<CR>", desc = "Toggle [E]xplorer" },
 		{ "<leader>o", "<cmd>NvimTreeFindFile<CR>", desc = "Reveal current file" },
 	},

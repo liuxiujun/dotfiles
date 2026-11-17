@@ -278,6 +278,22 @@ vmap <leader>de <Action>(EvaluateExpression)
 " 打开/隐藏 Debug 窗口（对齐 Neovim <leader>du）
 nmap <leader>du <Action>(ActivateDebugToolWindow)
 
+" -------------------------
+" Git (与 Neovim gitsigns 对齐)
+" -------------------------
+" 查看当前文件与仓库版本的差异 (Git Diff，对齐 Neovim <leader>gd)
+nmap <leader>gd <Action>(Compare.SameVersion)
+" 展开行内 Git 差异/改动块预览 (对齐 Neovim <leader>gp)
+nmap <leader>gp <Action>(Vcs.ShowDiffChangedLines)
+" 切换 Git Blame 悬浮行/侧边栏注解 (对齐 Neovim <leader>gb)
+nmap <leader>gb <Action>(Annotate)
+" 回滚当前改动块 (对齐 Neovim <leader>gr)
+nmap <leader>gr <Action>(Vcs.RollbackChangedLines)
+vmap <leader>gr <Action>(Vcs.RollbackChangedLines)
+" 跳转至下一个/上一个 Git 改动块 (对齐 Neovim ]h / [h)
+nmap ]h <Action>(VcsShowNextChangeMarker)
+nmap [h <Action>(VcsShowPrevChangeMarker)
+
 " =====================================================================================================
 " 4. Which-Key settings
 " =====================================================================================================
@@ -386,6 +402,12 @@ let g:WhichKeyDesc_d = "<leader>d Debug"
 let g:WhichKeyDesc_db = "<leader>db Toggle breakpoint"
 let g:WhichKeyDesc_de = "<leader>de Evaluate expression"
 let g:WhichKeyDesc_du = "<leader>du Toggle debug window"
+
+let g:WhichKeyDesc_g = "<leader>g Git"
+let g:WhichKeyDesc_gp = "<leader>gp Preview git hunk"
+let g:WhichKeyDesc_gb = "<leader>gb Git blame (annotate)"
+let g:WhichKeyDesc_next_hunk = "]h Next git hunk"
+let g:WhichKeyDesc_prev_hunk = "[h Previous git hunk"
 
 " =====================================================================================================
 " 5. Shortcut conflicts for active keymap
